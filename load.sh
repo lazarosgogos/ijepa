@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH -J IJEPA_pretrained
-#SBATCH -t 15:00
-#SBATCH --mem=512G
-#SBATCH -c 32
+#SBATCH -J vith_load_ampere
+#SBATCH -t 10:00
+#SBATCH --mem=64G
+#SBATCH -c 16
 #SBATCH -n 1
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=lazarosg@csd.auth.gr

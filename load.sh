@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J vith_load_ampere
+#SBATCH -J DOWNSTREAM_TASK_IJEPA
 #SBATCH -t 10:00
 #SBATCH --mem=64G
 #SBATCH -c 16

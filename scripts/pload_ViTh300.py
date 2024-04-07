@@ -5,9 +5,9 @@ model = vit_huge(patch_size=4, num_classes=1000) # Adjust num_classes if needed
 
 
 encoder, predictor = helper.init_model(device='cuda', 
-                                       patch_size=4,
+                                       patch_size=14,
                                        model_name='vit_huge',
-                                       crop_size=64,
+                                       crop_size=224,
                                        pred_depth=12,
                                        pred_emb_dim=384)
 
@@ -15,7 +15,7 @@ encoder, predictor = helper.init_model(device='cuda',
 
 import torch
 # Load the state dictionary from the file
-load_path = 'logs/tin_vith16.64-bs.128-ep.5/jepa-latest.pth.tar'
+load_path = 'pretrained_models/vith.pth.tar'
 ckpt = torch.load(load_path, map_location=torch.device('cpu'))
 # state_dict = torch.load('/content/IN1K-vit.h.14-300e.pth.tar')
 pretrained_dict = ckpt['encoder']
@@ -26,22 +26,6 @@ pretrained_dict = ckpt['encoder']
 # -- loading encoder
 for k, v in pretrained_dict.items():
   encoder.state_dict()[k[len('module.'):]].copy_(v) 
-
-# state_dict() is a torch.nn.Module function
-# load_state_dict() is a torch.nn.Module function too
-
-# Load the state dictionary into the model
-# model.load_state_dict(state_dict)
-
-# Print the layers/modules of the model for inspection
-def print_model_layers(model, prefix=''):
-  for name, module in model.named_children():
-    if isinstance(module, torch.nn.Module):
-      module_name = prefix + '.' + name if prefix else name
-      print(module_name)
-      print_model_layers(module, prefix=module_name)
-
-# print_model_layers(encoder) # alright this works :)
 
 import torch.nn as nn
 import torch.nn.functional as F
@@ -88,8 +72,8 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 
 lr = 0.001
-num_epochs = 10
-batch_size = 32
+num_epochs = 1
+batch_size = 128
 
 criterion = nn.CrossEntropyLoss()
 optim = optim.Adam(model.parameters(), lr=lr)
@@ -99,7 +83,7 @@ from torchvision.datasets import ImageFolder
 
 # Define transformations to be applied to the images
 transform = transforms.Compose([
-  transforms.Resize((64, 64)), # Resize images to the same size
+  transforms.Resize((224, 224)), # Resize images to the same size
   transforms.ToTensor(), # Convert images to PyTorch tensors
   transforms.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5]) # Normalize the images
 ])
@@ -113,16 +97,16 @@ val_dataset = ImageFolder(root=val_data_path, transform=transform)
 
 # Uncomment the following lines if you want to load a subset of the dataset
 # for faster data processing, but worse accuracy ofc
-# subset_size = 64
-# total_size_tr = len(train_dataset)
-# total_size_val = len(val_dataset)
-# subset_dataset_tr, _ = random_split(train_dataset, [subset_size, total_size_tr-subset_size])
-# subset_dataset_val, _ = random_split(val_dataset, [subset_size, total_size_val-subset_size])
-# train_loader = DataLoader(subset_dataset_tr, batch_size=batch_size, shuffle=True)
-# val_loader = DataLoader(subset_dataset_val, batch_size=batch_size)
+subset_size = 64
+total_size_tr = len(train_dataset)
+total_size_val = len(val_dataset)
+subset_dataset_tr, _ = random_split(train_dataset, [subset_size, total_size_tr-subset_size])
+subset_dataset_val, _ = random_split(val_dataset, [subset_size, total_size_val-subset_size])
+train_loader = DataLoader(subset_dataset_tr, batch_size=batch_size, shuffle=True)
+val_loader = DataLoader(subset_dataset_val, batch_size=batch_size)
 
-train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=batch_size)
+# train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+# val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
 
 for epoch in range(num_epochs):

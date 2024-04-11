@@ -144,7 +144,7 @@ python main_distributed.py \
 See the [LICENSE](./LICENSE) file for details about the license under which this code is made available.
 
 ## Citation
-If you find this repository useful in your research, please consider giving a star :star: and a citation
+If you find the [original repository](https://github.com/facebookresearch/ijepa) useful in your research, please consider giving a star :star: and a citation
 ```
 @article{assran2023self,
   title={Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture},

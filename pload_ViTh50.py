@@ -87,8 +87,8 @@ model.to(device)
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 
-lr = 0.001
-num_epochs = 10
+lr = 0.01
+num_epochs = 50
 batch_size = 32
 
 criterion = nn.CrossEntropyLoss()

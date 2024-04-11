@@ -73,7 +73,7 @@ from torch.utils.data import DataLoader, random_split
 
 lr = 0.001
 num_epochs = 1
-batch_size = 128
+batch_size = 32
 
 criterion = nn.CrossEntropyLoss()
 optim = optim.Adam(model.parameters(), lr=lr)
@@ -97,16 +97,17 @@ val_dataset = ImageFolder(root=val_data_path, transform=transform)
 
 # Uncomment the following lines if you want to load a subset of the dataset
 # for faster data processing, but worse accuracy ofc
-subset_size = 64
-total_size_tr = len(train_dataset)
-total_size_val = len(val_dataset)
-subset_dataset_tr, _ = random_split(train_dataset, [subset_size, total_size_tr-subset_size])
-subset_dataset_val, _ = random_split(val_dataset, [subset_size, total_size_val-subset_size])
-train_loader = DataLoader(subset_dataset_tr, batch_size=batch_size, shuffle=True)
-val_loader = DataLoader(subset_dataset_val, batch_size=batch_size)
 
-# train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-# val_loader = DataLoader(val_dataset, batch_size=batch_size)
+# subset_size = 64
+# total_size_tr = len(train_dataset)
+# total_size_val = len(val_dataset)
+# subset_dataset_tr, _ = random_split(train_dataset, [subset_size, total_size_tr-subset_size])
+# subset_dataset_val, _ = random_split(val_dataset, [subset_size, total_size_val-subset_size])
+# train_loader = DataLoader(subset_dataset_tr, batch_size=batch_size, shuffle=True)
+# val_loader = DataLoader(subset_dataset_val, batch_size=batch_size)
+
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
 
 for epoch in range(num_epochs):

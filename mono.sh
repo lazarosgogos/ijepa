@@ -1,14 +1,15 @@
 #!/bin/bash
 
-#SBATCH -J IJEPA_short_job
-#SBATCH -t 05:59:00
-#SBATCH --mem=256G
-#SBATCH -c 32
+#SBATCH -J IJEPA_100_EPOCHS
+#SBATCH -t 5-00:00:00
+#SBATCH --mem=64G
+#SBATCH -c 16
 #SBATCH -n 1
-#SBATCH --mail-type=NONE
+#SBATCH --mail-type=END
 #SBATCH --mail-user=lazarosg@csd.auth.gr
 #SBATCH -p ampere
 #SBATCH --gres=gpu:1
+#SBATCH --qos=ampere-extd
 
 module load gcc miniconda3 cuda
 source $CONDA_PROFILE/conda.sh

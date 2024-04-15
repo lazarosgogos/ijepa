@@ -70,9 +70,13 @@ class Both(nn.Module):
   def __init__(self, encoder, num_classes):
     super(Both, self).__init__()
     self.encoder = encoder
+    # Freeze encoder so that it is not trained
+    for param in encoder.parameters():
+      param.requires_grad = False
     self.head = ClassifierHead(1280, num_classes)
 
   def forward(self, x):
+    # with torch.no_grad(): 
     x = self.encoder(x)
     x = self.head(x)
     return x
@@ -89,7 +93,7 @@ from torch.utils.data import DataLoader, random_split
 
 lr = 0.01
 num_epochs = 50
-batch_size = 32
+batch_size = 50
 
 criterion = nn.CrossEntropyLoss()
 optim = optim.Adam(model.parameters(), lr=lr)

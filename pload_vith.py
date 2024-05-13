@@ -139,13 +139,6 @@ for epoch in range(num_epochs):
 
     # perform one-hot-encoding
     one_hot_labels = F.one_hot(labels, num_classes=num_classes).to(device)
-
-    # # reshape if not all labels were found in this batch 
-    # # Crucial step when dealing with small batch sizes!
-    # if (one_hot_labels.shape[1] < 200):
-    #   diff = 200 - one_hot_labels.shape[1]
-    #   zeros_tensor = torch.zeros(one_hot_labels.shape[0], diff).to(device)
-    #   one_hot_labels = torch.cat((one_hot_labels, zeros_tensor), dim=1).type(torch.LongTensor).to(device)
     
     optim.zero_grad() # set grads to zero
     outputs = model(inputs) # predictions
@@ -166,12 +159,8 @@ for epoch in range(num_epochs):
     for inputs, labels in val_loader:
       inputs, labels = inputs.to(device), labels.to(device) # move data to device
     
-      one_hot_labels = F.one_hot(labels).to(device)
-      # reshape if not all labels were found in this batch
-      # if (one_hot_labels.shape[1] < 200):
-      #   diff = 200 - one_hot_labels.shape[1]
-      #   zeros_tensor = torch.zeros(one_hot_labels.shape[0], diff).to(device)
-      #   one_hot_labels = torch.cat((one_hot_labels, zeros_tensor), dim=1).type(torch.LongTensor).to(device)
+      one_hot_labels = F.one_hot(labels, num_classes=num_classes).to(device)
+      
       outputs = model(inputs)
       _, predicted = torch.max(outputs, 1)
       val_correct += (predicted == one_hot_labels).sum().item()

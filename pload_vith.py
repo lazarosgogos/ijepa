@@ -1,5 +1,12 @@
 from src.models.vision_transformer import vit_huge
 from src import helper
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, random_split
+import torchvision.transforms as transforms
+from torchvision.datasets import ImageFolder
+import torch.nn.functional as F
 # Initialize the ViT-H model with the specified patch size and resolution
 model = vit_huge(patch_size=4, num_classes=1000) # Adjust num_classes if needed
 
@@ -13,25 +20,15 @@ encoder, predictor = helper.init_model(device='cuda',
 
 
 
-import torch
 # Load the state dictionary from the file
 load_path = 'logs/tin_vith16.64-bs.128-ep.5/jepa-latest.pth.tar'
 ckpt = torch.load(load_path, map_location=torch.device('cpu'))
 # state_dict = torch.load('/content/IN1K-vit.h.14-300e.pth.tar')
 pretrained_dict = ckpt['encoder']
 
-# encoder = vit_huge(patch_size=4)
-# print(pretrained_dict)
-
 # -- loading encoder
 for k, v in pretrained_dict.items():
   encoder.state_dict()[k[len('module.'):]].copy_(v) 
-
-# state_dict() is a torch.nn.Module function
-# load_state_dict() is a torch.nn.Module function too
-
-# Load the state dictionary into the model
-# model.load_state_dict(state_dict)
 
 # Print the layers/modules of the model for inspection
 def print_model_layers(model, prefix=''):
@@ -42,28 +39,24 @@ def print_model_layers(model, prefix=''):
       print_model_layers(module, prefix=module_name)
 
 # print_model_layers(encoder) # alright this works :)
+print('INFO Gogos - Printing the predictor\'s architecture.')
+print_model_layers(predictor) # 
+print('Done with predictor\'s architecture.')
 
-import torch.nn as nn
-import torch.nn.functional as F
-
-# We already have an encoder loaded
-# output neurons is 1280
-# let's try adding a head
 
 class ClassifierHead(nn.Module):
   def __init__(self, input_size, num_classes):
     super(ClassifierHead, self).__init__()
     hidden_size = 512
-    self.fc1 = nn.Linear(input_size, hidden_size )
-    self.fc2 = nn.Linear(hidden_size, num_classes)
+    self.fc1 = nn.Linear(input_size, hidden_size)
+    self.fc2 = nn.Linear(hidden_size, hidden_size)
+    self.fc3 = nn.Linear(hidden_size, num_classes)
     self.softmax = nn.Softmax(dim=1) # this might be problematic
 
   def forward(self, x):
-    # x = torch.flatten(x, 1) # flatten the output
-    x = self.fc1(x)
-    x = F.gelu(x) # cause why not
-    x = self.fc2(x)
-    x = self.softmax(x)
+    x = F.gelu(self.fc1(x))
+    x = F.gelu(self.fc2(x)) 
+    x = self.softmax(self.fc3(x))
     return x
 
 class Both(nn.Module):
@@ -82,24 +75,17 @@ class Both(nn.Module):
     return x
 
 num_classes = 200
-
 model = Both(encoder, num_classes)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
-# let's train it!!!
-
-import torch.optim as optim
-from torch.utils.data import DataLoader, random_split
 
 lr = 0.01
-num_epochs = 50
+num_epochs = 200
 batch_size = 50
 
+# let's train it!!!
 criterion = nn.CrossEntropyLoss()
 optim = optim.Adam(model.parameters(), lr=lr)
-
-import torchvision.transforms as transforms
-from torchvision.datasets import ImageFolder
 
 # Define transformations to be applied to the images
 transform = transforms.Compose([
@@ -117,6 +103,7 @@ val_dataset = ImageFolder(root=val_data_path, transform=transform)
 
 # Uncomment the following lines if you want to load a subset of the dataset
 # for faster data processing, but worse accuracy ofc
+#--
 # subset_size = 64
 # total_size_tr = len(train_dataset)
 # total_size_val = len(val_dataset)
@@ -129,22 +116,40 @@ train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
 
+def save_checkpoint(model, optim, epoch, save_path, checkpoint_freq=50):
+  '''Save a checkpoint of a given model & an optimizer. 
+  Every 50 epochs save the model in a different file as well for post-use'''
+  save_dict = {
+      'model': model.state_dict(),
+      'opt': optim.state_dict(),
+      'epoch': epoch,
+  }
+  ep = epoch + 1 # temp epoch to avoid alchemy with string formats :)
+  torch.save(save_dict, save_path)
+  save_path = save_path + f'-ep{ep}.pth.tar'
+  if (ep) % checkpoint_freq == 0:
+      torch.save(save_dict, save_path)
+
 for epoch in range(num_epochs):
   model.train() # set the model to training mode
   running_loss = 0.0
   for inputs, labels in train_loader:
+    # send data to appropriate device
     inputs, labels = inputs.to(device), labels.to(device)
-    # one_hot_labels = torch.nn.functional.one_hot(labels)
+
+    # perform one-hot-encoding
     one_hot_labels = F.one_hot(labels).to(device)
-    # reshape if not all labels were found in this batch
+
+    # reshape if not all labels were found in this batch 
+    # Crucial step when dealing with small batch sizes!
     if (one_hot_labels.shape[1] < 200):
       diff = 200 - one_hot_labels.shape[1]
       zeros_tensor = torch.zeros(one_hot_labels.shape[0], diff).to(device)
       one_hot_labels = torch.cat((one_hot_labels, zeros_tensor), dim=1).type(torch.LongTensor).to(device)
+    
     optim.zero_grad() # set grads to zero
-    outputs = model(inputs)
-    # print('outputs:', outputs)
-    # print('one_hot_labels:', one_hot_labels)
+    outputs = model(inputs) # predictions
+    
     # break
     loss = criterion(outputs, one_hot_labels) # compute the loss
     loss.backward() # backward pass
@@ -177,5 +182,9 @@ for epoch in range(num_epochs):
   val_accuracy = val_correct / len(val_dataset)
   print(f'Epoch {epoch+1}/{num_epochs}, \nLoss: {epoch_loss}, \
         \nValidation accuracy: {val_accuracy}')
+  # save model to disk 
+  save_path = 'jepa_classifier'
+  save_checkpoint(model, optim, epoch, save_path)
 
 print('Done')
+

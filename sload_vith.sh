@@ -17,4 +17,4 @@ source $CONDA_PROFILE/conda.sh
 conda activate ijepa
 export PATH=$CONDA_PREFIX/bin:$PATH
 
-python pload_ViTh50.py
+python pload_vith.py

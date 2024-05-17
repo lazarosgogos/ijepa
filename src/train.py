@@ -63,6 +63,12 @@ torch.backends.cudnn.benchmark = True
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
 
+def force_cudnn_initialization():
+    s = 32
+    print('Forced cudnn initialization')
+    dev = torch.device('cuda:0')
+    torch.nn.functional.conv2d(torch.zeros(s, s, s, s, device=dev), torch.zeros(s, s, s, s, device=dev))
+
 
 def main(args, resume_preempt=False):
 
@@ -124,7 +130,7 @@ def main(args, resume_preempt=False):
     # -- LOGGING
     folder = args['logging']['folder']
     tag = args['logging']['write_tag']
-
+    force_cudnn_initialization()
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:
         yaml.dump(args, f)

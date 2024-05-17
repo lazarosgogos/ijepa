@@ -5,6 +5,11 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "2" 
+os.environ["WORLD_SIZE"] = "1"
+
+
 import argparse
 
 import multiprocessing as mp

@@ -11,7 +11,7 @@
 #SBATCH -c 32
 
 python main_distributed.py \
-	--fname configs/tin_vith16_ep5.yaml \
+	--fname configs/tin_A100.yaml \
 	--folder logs/tin_A100/ \
 	--partition ampere \
 	--nodes 2 \

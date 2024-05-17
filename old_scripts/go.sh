@@ -16,7 +16,7 @@ conda activate ijepa
 export PATH=$CONDA_PREFIX/bin:$PATH
 
 python main_distributed.py \
-	--fname configs/tin_vith16_ep5.yaml \
+	--fname configs/tin_A100.yaml \
 	--folder logs/tin_A100/ \
 	--partition ampere \
 	--nodes 1 \

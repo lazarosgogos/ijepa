@@ -16,5 +16,5 @@ conda activate ijepa
 export PATH=$CONDA_PREFIX/bin:$PATH
 
 python main.py  \
-	--fname configs/tin_vith16_ep5.yaml \
+	--fname configs/tin_A100.yaml \
 	--devices cuda:0 cuda:1 cuda:2 cuda:3

@@ -21,7 +21,7 @@ encoder, predictor = helper.init_model(device='cuda',
 
 
 # Load the state dictionary from the file
-load_path = 'logs/tin_vith16.64-bs.128-ep.5/jepa-latest.pth.tar'
+load_path = 'logs/tin_A100/jepa-latest.pth.tar'
 ckpt = torch.load(load_path, map_location=torch.device('cpu'))
 # state_dict = torch.load('/content/IN1K-vit.h.14-300e.pth.tar')
 pretrained_dict = ckpt['encoder']

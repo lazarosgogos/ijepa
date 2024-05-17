@@ -17,7 +17,7 @@ export PATH=$CONDA_PREFIX/bin:$PATH
 
 python main_distributed.py \
 	--fname configs/tin_vith16_ep5.yaml \
-	--folder logs/tin_vith16.64-bs.128-ep.5/ \
+	--folder logs/tin_A100/ \
 	--partition ampere \
 	--nodes 1 \
 	--tasks-per-node 1 \

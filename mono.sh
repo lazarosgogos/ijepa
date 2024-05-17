@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH -J IJEPA_100_EPOCHS
-#SBATCH -t 5-00:00:00
+#SBATCH -t 6-00:00:00
 #SBATCH --mem=64G
 #SBATCH -c 16
 #SBATCH -n 1

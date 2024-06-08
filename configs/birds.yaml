@@ -1,5 +1,5 @@
 data:
-  batch_size: 128
+  batch_size: 32
   color_jitter_strength: 0.0
   crop_scale:
   - 0.3
@@ -32,17 +32,17 @@ mask:
   - 0.2
 meta:
   copy_data: false
-  load_checkpoint: false
-  model_name: vit_large
+  load_checkpoint: true
+  model_name: vit_base
   pred_depth: 12
   pred_emb_dim: 384
-  read_checkpoint: null
-  use_bfloat16: true
+  read_checkpoint: jepa_birds-latest.pth.tar
+  use_bfloat16: false
 optimization:
   ema:
   - 0.996
   - 1.0
-  epochs: 436
+  epochs: 100
   final_lr: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0

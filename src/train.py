@@ -64,6 +64,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
 
 def force_cudnn_initialization():
+    return
     s = 32
     print('Forced cudnn initialization')
     dev = torch.device('cuda:0')

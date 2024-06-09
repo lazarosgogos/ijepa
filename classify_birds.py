@@ -126,7 +126,7 @@ def save_checkpoint(model, optim, epoch, save_path, checkpoint_freq=50):
       'epoch': epoch,
   }
   ep = epoch + 1 # temp epoch to avoid alchemy with string formats :)
-  torch.save(save_dict, save_path)
+  torch.save(save_dict, save_path+'-latest.pth.tar')
   save_path = save_path + f'-ep{ep}.pth.tar'
   if (ep) % checkpoint_freq == 0:
       torch.save(save_dict, save_path)
@@ -173,7 +173,7 @@ for epoch in range(num_epochs):
   print(f'Epoch {epoch+1}/{num_epochs}, \nLoss: {epoch_loss}, \
         \nValidation accuracy: {val_accuracy}')
   # save model to disk 
-  save_path = 'jepa_classifier'
+  save_path = 'jepa_birds_classifier'
   save_checkpoint(model, optim, epoch, save_path)
 
 print('Done')

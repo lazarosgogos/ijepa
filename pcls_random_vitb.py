@@ -15,11 +15,11 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 150
 NUM_CLASSES = 6
-SAVE_PATH = 'jepa_classifier'
+SAVE_PATH = 'jepa_iic_classifier'
 LR = 0.001
 NUM_EPOCHS = 300
 NUM_EPOCHS = 2
-BATCH_SIZE = 2**2
+BATCH_SIZE = 2**5
 # Define paths to datasets
 train_data_path = 'datasets/intel-image-classification/train'
 val_data_path = 'datasets/intel-image-classification/test'
@@ -74,7 +74,8 @@ class ClassifierHead(nn.Module):
     self.softmax = nn.Softmax(dim=1) # this might be problematic
 
   def forward(self, x):
-    print('x size before any gelu',x.size())
+    # print('x size before any gelu',x.size())
+    x = torch.mean(x, dim=1, dtype=x.dtype) # do average pooling on patch-level reprs
     x = F.gelu(self.fc1(x))
     x = F.gelu(self.fc2(x)) 
     x = self.softmax(self.fc3(x))
@@ -157,21 +158,23 @@ for epoch in range(NUM_EPOCHS):
     inputs, labels = inputs.to(device), labels.to(device)
 
     # perform one-hot-encoding
-    one_hot_labels = F.one_hot(labels, num_classes=NUM_CLASSES).to(device)
-    
+    one_hot_labels = F.one_hot(labels, num_classes=NUM_CLASSES).type(torch.float32).to(device)
+
     optim.zero_grad() # set grads to zero
     outputs = model(inputs) # predictions
-    _, indices = torch.max(outputs.data, 1) # we do not care about the values
-    print(indices)
-    exit(1)
+    _, indices = outputs.max(dim=1) # we do not care about the values (underscore)
+    # print(indices)
+    # exit(1)
     # print(values, indices)    
 
     predicted = indices
-    train_correct += (predicted == one_hot_labels).sum().item()
+    one_hot_predicted = F.one_hot(predicted, num_classes=NUM_CLASSES).type(torch.float32).to(device)
+    # print(predicted.size(), labels.size())
+    # exit(1)
+    train_correct += (one_hot_predicted == one_hot_labels).sum().item()
     total_train += labels.size(0)
-    
     # break
-    loss = criterion(outputs, one_hot_labels) # compute the loss
+    loss = criterion(one_hot_predicted, one_hot_labels) # compute the loss
     loss.backward() # backward pass
     optim.step() # update weights
     running_loss += loss.item()
@@ -189,16 +192,19 @@ for epoch in range(NUM_EPOCHS):
     for inputs, labels in val_loader:
       inputs, labels = inputs.to(device), labels.to(device) # move data to device
     
-      one_hot_labels = F.one_hot(labels, num_classes=NUM_CLASSES).to(device)
+      # one_hot_labels = F.one_hot(labels, num_classes=NUM_CLASSES).to(device)
       
       outputs = model(inputs)
-      _, predicted = torch.max(outputs.data, 1)
+      _, predicted = outputs.max(dim=1) # underscore is the values
       total_val += labels.size(0)
-      val_correct += (predicted == one_hot_labels).sum().item()
+      val_correct += (predicted == labels).sum().item()
   
   time_taken = time.perf_counter() - epoch_start_time
   duration = timedelta(seconds=time_taken)
   val_accuracy = val_correct / total_val
+
+  print(predicted, labels)
+  exit(1)
   # print('val_correct',val_accuracy)
   # print('len(val_dataset)',len(val_dataset))
 

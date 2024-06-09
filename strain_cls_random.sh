@@ -1,0 +1,1 @@
+nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_random_vitb.py &> cls_random_vit.out &

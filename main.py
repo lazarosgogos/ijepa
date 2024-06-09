@@ -78,5 +78,5 @@ if __name__ == '__main__':
     for rank in range(num_gpus):
         mp.Process(
             target=process_main,
-            args=(rank, args.fname, num_gpus, args.devices, args.test)
+            args=(rank, args.fname, num_gpus, args.devices, test)
         ).start()

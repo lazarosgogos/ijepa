@@ -15,10 +15,10 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 150
 NUM_CLASSES = 6
-SAVE_PATH = 'jepa_iic_classifier'
+SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_randomvitb'
 LR = 0.001
 NUM_EPOCHS = 300
-NUM_EPOCHS = 2
+NUM_EPOCHS = 100
 BATCH_SIZE = 2**5
 # Define paths to datasets
 train_data_path = 'datasets/intel-image-classification/train'
@@ -71,7 +71,7 @@ class ClassifierHead(nn.Module):
     self.fc1 = nn.Linear(input_size, hidden_size)
     self.fc2 = nn.Linear(hidden_size, hidden_size)
     self.fc3 = nn.Linear(hidden_size, num_classes)
-    self.softmax = nn.Softmax(dim=1) # this might be problematic
+    self.softmax = nn.Softmax(dim=1)
 
   def forward(self, x):
     # print('x size before any gelu',x.size())
@@ -141,7 +141,7 @@ def save_checkpoint(model, optim, epoch, save_path, checkpoint_freq=50):
       'epoch': epoch,
   }
   ep = epoch + 1 # temp epoch to avoid alchemy with string formats :)
-  torch.save(save_dict, save_path)
+  torch.save(save_dict, save_path+'-latest.pth.tar')
   save_path = save_path + f'-ep{ep}.pth.tar'
   if (ep) % checkpoint_freq == 0:
       torch.save(save_dict, save_path)
@@ -157,32 +157,23 @@ for epoch in range(NUM_EPOCHS):
     # send data to appropriate device
     inputs, labels = inputs.to(device), labels.to(device)
 
-    # perform one-hot-encoding
-    one_hot_labels = F.one_hot(labels, num_classes=NUM_CLASSES).type(torch.float32).to(device)
-
     optim.zero_grad() # set grads to zero
     outputs = model(inputs) # predictions
-    _, indices = outputs.max(dim=1) # we do not care about the values (underscore)
-    # print(indices)
-    # exit(1)
-    # print(values, indices)    
-
-    predicted = indices
-    one_hot_predicted = F.one_hot(predicted, num_classes=NUM_CLASSES).type(torch.float32).to(device)
-    # print(predicted.size(), labels.size())
-    # exit(1)
-    train_correct += (one_hot_predicted == one_hot_labels).sum().item()
+    
+    _, predicted = outputs.max(dim=1) # we do not care about the values (underscore)
+    
+    train_correct += (predicted == labels).sum().item()
     total_train += labels.size(0)
-    # break
-    loss = criterion(one_hot_predicted, one_hot_labels) # compute the loss
+
+    loss = criterion(outputs, labels) # compute the loss
     loss.backward() # backward pass
     optim.step() # update weights
     running_loss += loss.item()
-  
+
   train_accuracy = train_correct / total_train
 
   # calculate average loss for the epoch
-  epoch_loss = running_loss /total_train
+  epoch_loss = running_loss / total_train
 
   # Validation
   model.eval() # set the model to eval mode
@@ -191,9 +182,7 @@ for epoch in range(NUM_EPOCHS):
   with torch.no_grad():
     for inputs, labels in val_loader:
       inputs, labels = inputs.to(device), labels.to(device) # move data to device
-    
-      # one_hot_labels = F.one_hot(labels, num_classes=NUM_CLASSES).to(device)
-      
+     
       outputs = model(inputs)
       _, predicted = outputs.max(dim=1) # underscore is the values
       total_val += labels.size(0)
@@ -203,8 +192,7 @@ for epoch in range(NUM_EPOCHS):
   duration = timedelta(seconds=time_taken)
   val_accuracy = val_correct / total_val
 
-  print(predicted, labels)
-  exit(1)
+
   # print('val_correct',val_accuracy)
   # print('len(val_dataset)',len(val_dataset))
 

@@ -104,7 +104,7 @@ model.to(device)
 
 # let's train it!!!
 criterion = nn.CrossEntropyLoss()
-optim = optim.AdamW(model.parameters(), lr=BATCH_SIZE)
+optim = optim.AdamW(model.parameters(), lr=LR)
 
 # Define transformations to be applied to the images
 transform = transforms.Compose([

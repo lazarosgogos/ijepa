@@ -1,0 +1,1 @@
+nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_pretrained_vith_IN.py &> cls_pretrained_vith_IN.out &

@@ -15,7 +15,7 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 150
 NUM_CLASSES = 6
-SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_pretrained_vitb_1000_lre-4'
+SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_pretrained_vitb_100'
 LR = 0.0001
 # NUM_EPOCHS = 300
 NUM_EPOCHS = 100
@@ -29,9 +29,9 @@ val_data_path = 'datasets/intel-image-classification/test'
 EMBED_DIMS=768 # for ViT-base
 
 
-load_path = 'logs/iic-train-1000eps/jepa_iic-ep1000.pth.tar'
+load_path = 'logs/iic-train-1000eps/jepa_iic-ep100.pth.tar'
 
-encoder, predictor = helper.init_model(device='cuda', 
+encoder, predictor = helper.init_model(device='cuda:0', 
                                        patch_size=15,
                                        model_name='vit_base',
                                        crop_size=IMG_CROPSIZE,
@@ -109,7 +109,7 @@ class Both(nn.Module):
 
 
 model = Both(encoder, NUM_CLASSES)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 

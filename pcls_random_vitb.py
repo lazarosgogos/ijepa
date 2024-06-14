@@ -19,7 +19,7 @@ SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_randomvitb'
 LR = 0.001
 NUM_EPOCHS = 300
 NUM_EPOCHS = 100
-BATCH_SIZE = 2**5
+BATCH_SIZE = 256
 # Define paths to datasets
 train_data_path = 'datasets/intel-image-classification/train'
 val_data_path = 'datasets/intel-image-classification/test'
@@ -30,7 +30,7 @@ EMBED_DIMS=768 # for ViT-base
 
 
 
-encoder, predictor = helper.init_model(device='cuda', 
+encoder, predictor = helper.init_model(device='cuda:0', 
                                        patch_size=15,
                                        model_name='vit_base',
                                        crop_size=IMG_CROPSIZE,
@@ -71,14 +71,24 @@ class ClassifierHead(nn.Module):
     self.fc1 = nn.Linear(input_size, hidden_size)
     self.fc2 = nn.Linear(hidden_size, hidden_size)
     self.fc3 = nn.Linear(hidden_size, num_classes)
+    self.straight = nn.Linear(input_size, num_classes)
     self.softmax = nn.Softmax(dim=1)
+    self.head_dropout = nn.Dropout(.2) # try 20% dropout 
 
   def forward(self, x):
     # print('x size before any gelu',x.size())
     x = torch.mean(x, dim=1, dtype=x.dtype) # do average pooling on patch-level reprs
-    x = F.gelu(self.fc1(x))
-    x = F.gelu(self.fc2(x)) 
-    x = self.softmax(self.fc3(x))
+    # x = F.gelu(self.fc1(x))
+    # x = F.gelu(self.fc2(x)) 
+
+    # add dropout
+    x = self.head_dropout(x)
+
+    # add layer norm
+    x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension
+                                        # but normalize over feature dim
+    
+    x = self.softmax(self.straight(x))
     return x
 
 class Both(nn.Module):
@@ -98,7 +108,7 @@ class Both(nn.Module):
 
 
 model = Both(encoder, NUM_CLASSES)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 
@@ -198,11 +208,11 @@ for epoch in range(NUM_EPOCHS):
 
   print('Epoch: %d/%d' % (epoch+1, NUM_EPOCHS),
         'Train accuracy: %e' % train_accuracy,
-        'Train correct: %d' % train_correct,
-        'Train total: %d' % len(train_dataset),
+        # 'Train correct: %d' % train_correct,
+        # 'Train total: %d' % len(train_dataset),
         'Validation accuracy: %e' % val_accuracy, 
-        'Val correct: %d' % val_correct,
-        'Val total: %d' % len(val_dataset),
+        # 'Val correct: %d' % val_correct,
+        # 'Val total: %d' % len(val_dataset),
         'Loss %e' % epoch_loss,
         'Time taken:', duration)
 

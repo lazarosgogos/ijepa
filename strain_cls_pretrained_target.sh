@@ -1,0 +1,1 @@
+nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_pretrained_target_vitb.py &> cls_pretrained_target_vitb_1000.out &

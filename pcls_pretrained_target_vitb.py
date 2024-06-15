@@ -44,9 +44,9 @@ if load_encoder: # In this file we perform a test, no loading takes place
   # Load the state dictionary from the file
   ckpt = torch.load(load_path, map_location=torch.device('cpu'))
   # state_dict = torch.load('/content/IN1K-vit.h.14-300e.pth.tar')
-  pretrained_dict = ckpt['encoder']
+  pretrained_dict = ckpt['target_encoder']
   
-  # -- loading encoder
+  # -- loading target encoder
   for k, v in pretrained_dict.items():
     encoder.state_dict()[k[len('module.'):]].copy_(v) 
 

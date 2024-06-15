@@ -13,30 +13,35 @@ from datetime import timedelta
 # Initialize the ViT-H model with the specified patch size and resolution
 # model = vit_huge(patch_size=4, num_classes=1000) # Adjust num_classes if needed
 
-IMG_CROPSIZE = 150
+IMG_CROPSIZE = 224
 NUM_CLASSES = 6
-SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_pretrained_target_vitb_1000'
+SAVE_PATH = 'classifiers/IN1K-vit.h.14-300e.pth.tar'
 LR = 0.0001
 # NUM_EPOCHS = 300
 NUM_EPOCHS = 100
-BATCH_SIZE = 256
+BATCH_SIZE = 128
 # Define paths to datasets
 train_data_path = 'datasets/intel-image-classification/train'
 val_data_path = 'datasets/intel-image-classification/test'
 
 # EMBED_DIMS=1024 # for ViT-large
-# EMBED_DIMS=1280 # for ViT-huge
-EMBED_DIMS=768 # for ViT-base
+EMBED_DIMS=1280 # for ViT-huge
+# EMBED_DIMS=768 # for ViT-base
 
 
-load_path = 'logs/iic-train-1000eps/jepa_iic-ep1000.pth.tar'
+# load_path = 'logs/iic-train-1000eps/jepa_iic-ep1000.pth.tar'
 
-encoder, predictor = helper.init_model(device='cuda:0', 
-                                       patch_size=15,
-                                       model_name='vit_base',
+load_path = 'classifiers/IN1K-vit.h.14-300e.pth.tar'
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+
+
+encoder, predictor = helper.init_model(device=device, # if device=device doesn't work, try device='cuda:1' 
+                                       patch_size=14,
+                                       model_name='vit_huge',
                                        crop_size=IMG_CROPSIZE,
                                        pred_depth=12,
                                        pred_emb_dim=384)
+
 
 
 load_encoder = True
@@ -44,8 +49,8 @@ if load_encoder: # In this file we perform a test, no loading takes place
   # Load the state dictionary from the file
   ckpt = torch.load(load_path, map_location=torch.device('cpu'))
   # state_dict = torch.load('/content/IN1K-vit.h.14-300e.pth.tar')
-  pretrained_dict = ckpt['encoder']
-  
+  pretrained_dict = ckpt['target_encoder']
+
   # -- loading encoder
   for k, v in pretrained_dict.items():
     encoder.state_dict()[k[len('module.'):]].copy_(v) 
@@ -109,7 +114,6 @@ class Both(nn.Module):
 
 
 model = Both(encoder, NUM_CLASSES)
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 

@@ -31,7 +31,7 @@ EMBED_DIMS=1280 # for ViT-huge
 
 # load_path = 'logs/iic-train-1000eps/jepa_iic-ep1000.pth.tar'
 
-load_path = 'classifiers/IN1K-vit.h.14-300e.pth.tar'
+load_path = 'pretrained_models/IN1K-vit.h.14-300e.pth.tar'
 
 
 encoder, predictor = helper.init_model(device='cuda:1', 

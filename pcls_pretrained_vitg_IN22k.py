@@ -15,7 +15,7 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 224
 NUM_CLASSES = 6
-SAVE_PATH = 'classifiers/IN1K-vit.h.14-300e.pth.tar'
+SAVE_PATH = 'classifiers/IN22K-vit.g.16-600e.pth.tar'
 LR = 0.0001
 # NUM_EPOCHS = 300
 NUM_EPOCHS = 100
@@ -25,23 +25,24 @@ train_data_path = 'datasets/intel-image-classification/train'
 val_data_path = 'datasets/intel-image-classification/test'
 
 # EMBED_DIMS=1024 # for ViT-large
-EMBED_DIMS=1280 # for ViT-huge
+# EMBED_DIMS=1280 # for ViT-huge
 # EMBED_DIMS=768 # for ViT-base
+# 'vit_giant': 1408,
+EMBED_DIMS = 1408 # for ViT-giant
 
 
 # load_path = 'logs/iic-train-1000eps/jepa_iic-ep1000.pth.tar'
 
-load_path = 'pretrained_models/IN1K-vit.h.14-300e.pth.tar'
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+load_path = 'pretrained_models/IN22K-vit.g.16-600e.pth.tar'
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-encoder, predictor = helper.init_model(device=device, # if device=device doesn't work, try device='cuda:1' 
-                                       patch_size=14,
-                                       model_name='vit_huge',
+encoder, predictor = helper.init_model(device='cuda:0', 
+                                       patch_size=16,
+                                       model_name='vit_giant',
                                        crop_size=IMG_CROPSIZE,
                                        pred_depth=12,
                                        pred_emb_dim=384)
-
 
 
 load_encoder = True
@@ -49,7 +50,7 @@ if load_encoder: # In this file we perform a test, no loading takes place
   # Load the state dictionary from the file
   ckpt = torch.load(load_path, map_location=torch.device('cpu'))
   # state_dict = torch.load('/content/IN1K-vit.h.14-300e.pth.tar')
-  pretrained_dict = ckpt['target_encoder']
+  pretrained_dict = ckpt['encoder']
 
   # -- loading encoder
   for k, v in pretrained_dict.items():

@@ -29,14 +29,14 @@ parser.add_argument(
 parser.add_argument(
     '--devices', type=str, nargs='+', default=['cuda:0'],
     help='which devices to use on local machine')
-parser.add_argument(
+"""parser.add_argument(
     '--test', type=bool, nargs=1, default=False, 
     help='Whether to test the model without any training or not',
     required=False
-)
+)"""
 
 
-def process_main(rank, fname, world_size, devices, test=False):
+def process_main(rank, fname, world_size, devices):
     import os
     os.environ['CUDA_VISIBLE_DEVICES'] = str(devices[rank].split(':')[-1])
 
@@ -60,10 +60,10 @@ def process_main(rank, fname, world_size, devices, test=False):
 
     world_size, rank = init_distributed(rank_and_world_size=(rank, world_size))
     logger.info(f'Running... (rank: {rank}/{world_size})')
-    if test:
+    """if test:
         test_app_main(args=params)
-    else:
-        app_main(args=params)
+    else:"""
+    app_main(args=params)
 
 
 if __name__ == '__main__':
@@ -71,12 +71,14 @@ if __name__ == '__main__':
 
     num_gpus = len(args.devices)
     mp.set_start_method('spawn')
-    try:
+    """try:
         test = args.test # try to read test YAML parameter
     except:
         test = False # set it to false by default
+    """
     for rank in range(num_gpus):
         mp.Process(
             target=process_main,
-            args=(rank, args.fname, num_gpus, args.devices, test)
+            # args=(rank, args.fname, num_gpus, args.devices, test)
+            args=(rank, args.fname, num_gpus, args.devices)
         ).start()

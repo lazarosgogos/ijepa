@@ -15,9 +15,9 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 150
 NUM_CLASSES = 6
-SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_pretrained_vitb_500'
-LR = 0.0001
-# NUM_EPOCHS = 300
+SAVE_PATH = 'classifiers/CNN_iic_classifier'
+LR = 0.001
+
 NUM_EPOCHS = 100
 BATCH_SIZE = 128
 # Define paths to datasets
@@ -26,92 +26,57 @@ val_data_path = 'datasets/intel-image-classification/test'
 
 # EMBED_DIMS=1024 # for ViT-large
 # EMBED_DIMS=1280 # for ViT-huge
-EMBED_DIMS=768 # for ViT-base
+# EMBED_DIMS=768 # for ViT-base
 
 
-load_path = 'logs/iic-train-1000eps/jepa_iic-ep500.pth.tar'
 
+class CNN(nn.Module):
+  def __init__(self, num_classes):
+    super(CNN, self).__init__()
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    self.conv1 = nn.Conv2d(3, 16, 3) # 150x150 -> 148x148
+    self.pool = nn.MaxPool2d(2) # 148x148 -> 74x74 (max pool 2x2)
+    self.conv2 = nn.Conv2d(16, 8, 3) # 74x74 -> 72x72 -> 36x36 (due to max pool)
+    self.conv3 = nn.Conv2d(8, 8, 3) # 36x36 -> 34x34 -> 17x17x8 (due to max pool)
 
-encoder, predictor = helper.init_model(device=device, 
-                                       patch_size=15,
-                                       model_name='vit_base',
-                                       crop_size=IMG_CROPSIZE,
-                                       pred_depth=12,
-                                       pred_emb_dim=384)
-
-
-load_encoder = True
-if load_encoder: # In this file we perform a test, no loading takes place
-  # Load the state dictionary from the file
-  ckpt = torch.load(load_path, map_location=torch.device('cpu'))
-  # state_dict = torch.load('/content/IN1K-vit.h.14-300e.pth.tar')
-  pretrained_dict = ckpt['encoder']
-  
-  # -- loading encoder
-  for k, v in pretrained_dict.items():
-    encoder.state_dict()[k[len('module.'):]].copy_(v) 
-
-# Print the layers/modules of the model for inspection
-def print_model_layers(model, prefix=''):
-  for name, module in model.named_children():
-    if isinstance(module, torch.nn.Module):
-      module_name = prefix + '.' + name if prefix else name
-      print(module_name)
-      print_model_layers(module, prefix=module_name)
-
-# print_model_layers(encoder) # alright this works :)
-# print('INFO Gogos - Printing the predictor\'s architecture.')
-# print_model_layers(predictor) # 
-# print('Done with predictor\'s architecture.')
-
-
-class ClassifierHead(nn.Module):
-  def __init__(self, input_size, num_classes):
-    super(ClassifierHead, self).__init__()
+    intermediate_size = 17 * 17 * 8
     hidden_size = 512
-    self.fc1 = nn.Linear(input_size, hidden_size)
-    self.fc2 = nn.Linear(hidden_size, hidden_size)
-    self.fc3 = nn.Linear(hidden_size, num_classes)
-    self.straight = nn.Linear(input_size, num_classes)
+    hidden_size_2 = hidden_size // 2
+    self.fc1 = nn.Linear(intermediate_size, hidden_size)
+    self.fc2 = nn.Linear(hidden_size, hidden_size_2)
+    self.fc3 = nn.Linear(hidden_size_2, num_classes)
+    # self.straight = nn.Linear(input_size, num_classes)
     self.softmax = nn.Softmax(dim=1)
     self.head_dropout = nn.Dropout(.2) # try 20% dropout 
 
   def forward(self, x):
     # print('x size before any gelu',x.size())
-    x = torch.mean(x, dim=1, dtype=x.dtype) # do average pooling on patch-level reprs (?)
+    # x = torch.mean(x, dim=1, dtype=x.dtype) # do average pooling on patch-level reprs
     # x = F.gelu(self.fc1(x))
     # x = F.gelu(self.fc2(x)) 
-    # x = self.softmax(self.fc3(x))
 
-    # add dropout
+    x = self.pool(F.gelu(self.conv1(x)))
+    x = self.pool(F.gelu(self.conv2(x)))
+    x = self.pool(F.gelu(self.conv3(x)))
+    # print('x shape: ', x.shape) # should be 17x17x8, we'll see
+
+    x = torch.flatten(x, 1)
+
+    x = F.gelu(self.fc1(x))
+    x = F.gelu(self.fc2(x))
     x = self.head_dropout(x)
+    x = self.softmax(self.fc3(x))
+    # add dropout
 
     # add layer norm
-    x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension
-                                        # but normalize over feature dim
-    x = self.softmax(self.straight(x))
+    # x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension
+    #                                     # but normalize over feature dim
+    
+    # x = self.softmax(self.straight(x))
     return x
 
-class Both(nn.Module):
-  def __init__(self, encoder, num_classes):
-    super(Both, self).__init__()
-    self.encoder = encoder
-    # Freeze encoder so that it is not trained
-    for param in self.encoder.parameters():
-      param.requires_grad = False # do ONLY linear probing
-    self.head = ClassifierHead(EMBED_DIMS, num_classes)
-    for param in self.head.parameters():
-      param.requires_grad = True # not needed. in MAE they do it this way
-
-  def forward(self, x):
-    x = self.encoder(x)
-    x = self.head(x)
-    return x
-
-
-model = Both(encoder, NUM_CLASSES)
+model = CNN(NUM_CLASSES)
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 
@@ -172,10 +137,9 @@ for epoch in range(NUM_EPOCHS):
 
     optim.zero_grad() # set grads to zero
     outputs = model(inputs) # predictions
-    # print(outputs.size())
-    # exit(1)
+    
     _, predicted = outputs.max(dim=1) # we do not care about the values (underscore)
-    # print(predicted.size(), labels.size())
+    
     train_correct += (predicted == labels).sum().item()
     total_train += labels.size(0)
 

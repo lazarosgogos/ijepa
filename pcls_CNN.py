@@ -16,7 +16,7 @@ from datetime import timedelta
 IMG_CROPSIZE = 150
 NUM_CLASSES = 6
 SAVE_PATH = 'classifiers/CNN_iic_classifier'
-LR = 0.001
+LR = 0.0001
 
 NUM_EPOCHS = 100
 BATCH_SIZE = 128

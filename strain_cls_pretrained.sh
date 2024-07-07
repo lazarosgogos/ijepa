@@ -1,1 +1,1 @@
-nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_pretrained_vitb.py &> cls_pretrained_vitb_100.out &
+nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_pretrained_vitt.py &> logs/iic-train-tiny/ocls_pretrained_vitt.out &

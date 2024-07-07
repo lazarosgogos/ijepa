@@ -1,5 +1,5 @@
 data:
-  batch_size: 512
+  batch_size: 64
   color_jitter_strength: 0.0
   crop_scale:
   - 0.3
@@ -13,8 +13,8 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs/iic-test/
-  write_tag: jepa_iic
+  folder: logs/iic-train-small/
+  write_tag: jepa_iic_small
 mask:
   allow_overlap: false
   aspect_ratio:
@@ -33,21 +33,20 @@ mask:
 meta:
   copy_data: false
   load_checkpoint: false
-  model_name: vit_base
+  model_name: vit_small
   pred_depth: 12
   pred_emb_dim: 384
   read_checkpoint: null
   use_bfloat16: false
-  test: True
 optimization:
   ema:
-  - 0.996
+  - 0.996                   # default: 0.996
   - 1.0
   epochs: 500
-  final_lr: 1.0e-06
-  final_weight_decay: 0.4
+  final_lr: 1.0e-06         # default: 1.0e-06
+  final_weight_decay: 0.4   # default: 0.4
   ipe_scale: 1.0
-  lr: 0.001
-  start_lr: 0.0002
+  lr: 0.001                 # default: 1e-3
+  start_lr: 0.0002          # default: 2e-4
   warmup: 40
-  weight_decay: 0.04
+  weight_decay: 0.04        # default: 0.04

@@ -13,11 +13,11 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs/iic-train-double/
-  write_tag: jepa_iic_double
+  folder: logs/iic-train-tiny/
+  write_tag: jepa_iic_tiny
 mask:
   allow_overlap: false
-  aspect_ratio: 
+  aspect_ratio:
   - 0.75
   - 1.5
   enc_mask_scale:
@@ -31,18 +31,18 @@ mask:
   - 0.15
   - 0.2
 meta:
-  copy_data: false          # default: false
-  load_checkpoint: true
-  model_name: vit_base
+  copy_data: false
+  load_checkpoint: false
+  model_name: vit_tiny
   pred_depth: 12
   pred_emb_dim: 384
-  read_checkpoint: jepa_iic_first-latest.pth.tar     # default: null
+  read_checkpoint: null
   use_bfloat16: false
 optimization:
   ema:
   - 0.996                   # default: 0.996
   - 1.0
-  epochs: 1000
+  epochs: 500
   final_lr: 1.0e-06         # default: 1.0e-06
   final_weight_decay: 0.4   # default: 0.4
   ipe_scale: 1.0

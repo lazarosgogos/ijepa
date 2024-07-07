@@ -31,7 +31,7 @@ EMBED_DIMS=384 # for ViT-small
 # EMBED_DIMS=192 # for ViT-tiny
 MODEL_NAME = 'vit_small'
 
-load_path = 'logs/iic-train-tiny/jepa_iic_tiny-latest.pth.tar'
+load_path = 'logs/iic-train-small/jepa_iic_small-latest.pth.tar'
 
 
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")

@@ -49,6 +49,8 @@ from src.helper import (
     init_opt)
 from src.transforms import make_transforms
 
+from src import PKT
+
 # --
 log_timings = True
 log_freq = 10
@@ -315,17 +317,34 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
-                    # loss = F.smooth_l1_loss(z, h) # initial loss
+                    loss = F.smooth_l1_loss(z, h) # initial loss
 
-
-                    # N = z.size()[-1] # this will probably not work
+                    
+                    # -- COSINE SIMILARITY 
                     # we want to get the number of batch_size
-                    y = torch.ones(z.size(1), device=device)
                     # loss = 0
                     # for i in range(z.size(0)):
                     #     loss += F.cosine_embedding_loss(z[i],h[i],y)
-                    loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
-                    # loss = F.cosine_embedding_loss(z, h, y)
+                    # y = torch.ones(z.size(1), device=device)
+                    # loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
+                    
+                    # PKT first shot
+                    first_dim = z.size(0)
+                    z = z.view(first_dim//num_pred_masks, num_pred_masks, *z.size()[1:])
+                    h = h.view(first_dim//num_pred_masks, num_pred_masks, *h.size()[1:])
+                    # suddenly, now instead of [256, 20, 768] we have [64, 4, 20, 768]
+                    for i in range(z.size(0)):
+                        z_ = z[i] # get element i which would be [4, 20, 768] in size
+                        h_ = h[i]
+                        emb_size = z.size(-1)
+                        # t = t.view(big_b_s//num_patches, num_patches, *t.size()[1:])
+                        z_ = z_.view(-1, emb_size) # flatten it, without changing anything
+                        h_ = h_.view(-1, emb_size)
+                        loss += PKT.cosine_similarity_loss(z_,h_)
+                    loss /= z.size(0) # normalize by batch size
+
+
+                    # -- Other thoughts to try out
                     # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
                     # OR [64,4,768] -> mean [64, 768]
                     # (64*4, 20, EMB_SIZE: 768) # h
@@ -339,7 +358,7 @@ def main(args, resume_preempt=False):
                         PKT([4, 20, 768] [4, 20, 768])
                         [80, 768] @ [768, 80] = [80,80]
 
-                    # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768]or [64*4, 768]
+                    # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
 
                     """
 

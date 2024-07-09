@@ -338,6 +338,9 @@ def main(args, resume_preempt=False):
                     for i in range(batch_size):
                         PKT([4, 20, 768] [4, 20, 768])
                         [80, 768] @ [768, 80] = [80,80]
+
+                    # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768]or [64*4, 768]
+
                     """
 
 

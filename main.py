@@ -20,6 +20,8 @@ import yaml
 from src.utils.distributed import init_distributed
 from src.train import main as app_main
 # from src.test import main as test_app_main
+import time
+from datetime import timedelta
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -82,3 +84,4 @@ if __name__ == '__main__':
             # args=(rank, args.fname, num_gpus, args.devices, test)
             args=(rank, args.fname, num_gpus, args.devices)
         ).start()
+    

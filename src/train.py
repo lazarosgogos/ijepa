@@ -315,7 +315,9 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
-                    # loss = F.smooth_l1_loss(z, h)
+                    # loss = F.smooth_l1_loss(z, h) # initial loss
+
+
                     # N = z.size()[-1] # this will probably not work
                     # we want to get the number of batch_size
                     y = torch.ones(z.size(1), device=device)
@@ -324,8 +326,23 @@ def main(args, resume_preempt=False):
                     #     loss += F.cosine_embedding_loss(z[i],h[i],y)
                     loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
                     # loss = F.cosine_embedding_loss(z, h, y)
+                    # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
+                    # OR [64,4,768] -> mean [64, 768]
+                    # (64*4, 20, EMB_SIZE: 768) # h
+                    # .view() 
+                    # alpha = .1 * cosine_similarity_loss
                     loss = AllReduce.apply(loss)
                     return loss
+
+                    """
+                    for i in range(batch_size):
+                        PKT([4, 20, 768] [4, 20, 768])
+                        [80, 768] @ [768, 80] = [80,80]
+                    """
+
+
+                    # [256, 100, 768] -> [256, 768]
+                    # []
 
                 # Step 1. Forward
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):

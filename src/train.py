@@ -315,11 +315,15 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
-                    loss = F.smooth_l1_loss(z, h)
-                    #N = z.size()[-1] # this will probably not work
+                    # loss = F.smooth_l1_loss(z, h)
+                    # N = z.size()[-1] # this will probably not work
                     # we want to get the number of batch_size
-                    #y = torch.ones(N)
-                    #loss = F.cosine_embedding_loss(z, h, y)
+                    y = torch.ones(z.size(1), device=device)
+                    # loss = 0
+                    # for i in range(z.size(0)):
+                    #     loss += F.cosine_embedding_loss(z[i],h[i],y)
+                    loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
+                    # loss = F.cosine_embedding_loss(z, h, y)
                     loss = AllReduce.apply(loss)
                     return loss
 

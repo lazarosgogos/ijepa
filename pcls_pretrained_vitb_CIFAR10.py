@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 import torchvision.transforms as transforms
-from torchvision.datasets import ImageFolder
+from torchvision.datasets import ImageFolder, CIFAR10
 import torch.nn.functional as F
 import time
 from datetime import timedelta
@@ -15,21 +15,33 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 150
 NUM_CLASSES = 6
-SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_pretrained_vitb_500_double'
+SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_pretrained_vitb_500_CIFAR10'
 LR = 0.0001
 # NUM_EPOCHS = 300
 NUM_EPOCHS = 100
 BATCH_SIZE = 128
 # Define paths to datasets
-train_data_path = 'datasets/intel-image-classification/train'
-val_data_path = 'datasets/intel-image-classification/test'
+# train_data_path = 'datasets/intel-image-classification/train'
+# val_data_path = 'datasets/intel-image-classification/test'
 
+
+
+
+# Define transformations to be applied to the images
+transform = transforms.Compose([
+  transforms.Resize((IMG_CROPSIZE, IMG_CROPSIZE)), # Resize images to the same size
+  transforms.ToTensor(), # Convert images to PyTorch tensors
+  transforms.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5]) # Normalize the images
+])
+
+trainset = CIFAR10(root='./datasets', train=True, download=True, transform=transform)
+testset = CIFAR10(root='./datasets', train=False, download=True, transform=transform)
 # EMBED_DIMS=1024 # for ViT-large
 # EMBED_DIMS=1280 # for ViT-huge
 EMBED_DIMS=768 # for ViT-base
 
 
-load_path = 'logs/iic-train-double/jepa_iic_double-latest.pth.tar'
+load_path = 'logs/iic-train-double/jepa_iic_first-latest.pth.tar'
 MODEL_NAME = 'vit_base'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -65,6 +77,25 @@ def print_model_layers(model, prefix=''):
 # print('INFO Gogos - Printing the predictor\'s architecture.')
 # print_model_layers(predictor) # 
 # print('Done with predictor\'s architecture.')
+
+
+# train_dataset = ImageFolder(root=train_data_path, transform=transform)
+# val_dataset = ImageFolder(root=val_data_path, transform=transform)
+
+
+# Uncomment the following lines if you want to load a subset of the dataset
+# for faster data processing, but worse accuracy ofc
+#--
+# subset_size = 64
+# total_size_tr = len(train_dataset)
+# total_size_val = len(val_dataset)
+# subset_dataset_tr, _ = random_split(train_dataset, [subset_size, total_size_tr-subset_size])
+# subset_dataset_val, _ = random_split(val_dataset, [subset_size, total_size_val-subset_size])
+# train_loader = DataLoader(subset_dataset_tr, batch_size=batch_size, shuffle=True)
+# val_loader = DataLoader(subset_dataset_val, batch_size=batch_size)
+
+train_loader = DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
+val_loader = DataLoader(testset, batch_size=BATCH_SIZE, shuffle=False, num_workers=True)
 
 
 class ClassifierHead(nn.Module):
@@ -118,31 +149,6 @@ model.to(device)
 # let's train it!!!
 criterion = nn.CrossEntropyLoss()
 optim = optim.AdamW(model.parameters(), lr=LR)
-
-# Define transformations to be applied to the images
-transform = transforms.Compose([
-  transforms.Resize((IMG_CROPSIZE, IMG_CROPSIZE)), # Resize images to the same size
-  transforms.ToTensor(), # Convert images to PyTorch tensors
-  transforms.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5]) # Normalize the images
-])
-
-train_dataset = ImageFolder(root=train_data_path, transform=transform)
-val_dataset = ImageFolder(root=val_data_path, transform=transform)
-
-
-# Uncomment the following lines if you want to load a subset of the dataset
-# for faster data processing, but worse accuracy ofc
-#--
-# subset_size = 64
-# total_size_tr = len(train_dataset)
-# total_size_val = len(val_dataset)
-# subset_dataset_tr, _ = random_split(train_dataset, [subset_size, total_size_tr-subset_size])
-# subset_dataset_val, _ = random_split(val_dataset, [subset_size, total_size_val-subset_size])
-# train_loader = DataLoader(subset_dataset_tr, batch_size=batch_size, shuffle=True)
-# val_loader = DataLoader(subset_dataset_val, batch_size=batch_size)
-
-train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE)
 
 
 def save_checkpoint(model, optim, epoch, save_path, checkpoint_freq=50):

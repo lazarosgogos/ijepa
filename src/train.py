@@ -425,7 +425,7 @@ def main(args, resume_preempt=False):
             assert not np.isnan(loss), 'loss is nan'
 
         # -- Save Checkpoint after every epoch
-        logger.info('avg. loss %.8f' % loss_meter.avg)
+        logger.info('avg. loss %.8e' % loss_meter.avg)
         save_checkpoint(epoch+1)
 
 

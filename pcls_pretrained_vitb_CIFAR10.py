@@ -15,7 +15,7 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 150
 NUM_CLASSES = 10
-SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_pretrained_vitb_500_CIFAR10'
+SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_pretrained_vitb_500_CIFAR10_onPKT'
 LR = 0.0001
 # NUM_EPOCHS = 300
 NUM_EPOCHS = 100
@@ -41,7 +41,7 @@ testset = CIFAR10(root='./datasets', train=False, download=True, transform=trans
 EMBED_DIMS=768 # for ViT-base
 
 
-load_path = 'logs/iic-train-double/jepa_iic_first-latest.pth.tar'
+load_path = 'logs/iic-train-PKT/jepa_iic_PKT-latest.pth.tar'
 MODEL_NAME = 'vit_base'
 
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")

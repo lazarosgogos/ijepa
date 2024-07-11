@@ -6,3 +6,6 @@ nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_pretrained_vitb
 
 nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_pretrained_vitb.py 
     &> logs/iic-train-double/ocls_pretrained_vitb_first.out &
+
+nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_pretrained_vitb_CIFAR10.py 
+    &> logs/iic-train-PKT/ocls_pretrained_vitb_withPKT_onIIC_CIFAR10.out& 

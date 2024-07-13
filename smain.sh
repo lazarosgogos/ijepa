@@ -24,4 +24,4 @@ nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python main.py
 nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python main.py 
     --fname configs/iic-train.yaml 
     --devices cuda:0 cuda:1 
-    &> logs/iic-train-PKT/oiic-train-PKT.out &
+    &> logs/iic-train-PKT/oiic-train-L2_PKT.out &

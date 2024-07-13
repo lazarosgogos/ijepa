@@ -317,7 +317,7 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
-                    loss = F.smooth_l1_loss(z, h) # initial loss
+                    loss_l2 = F.smooth_l1_loss(z, h) # initial loss
 
                     
                     # -- COSINE SIMILARITY 
@@ -329,6 +329,7 @@ def main(args, resume_preempt=False):
                     # loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
                     
                     # PKT first shot
+                    loss_pkt = 0
                     first_dim = z.size(0)
                     z = z.view(first_dim//num_pred_masks, num_pred_masks, *z.size()[1:])
                     h = h.view(first_dim//num_pred_masks, num_pred_masks, *h.size()[1:])
@@ -340,8 +341,8 @@ def main(args, resume_preempt=False):
                         # t = t.view(big_b_s//num_patches, num_patches, *t.size()[1:])
                         z_ = z_.view(-1, emb_size) # flatten it, without changing anything
                         h_ = h_.view(-1, emb_size)
-                        loss += PKT.cosine_similarity_loss(z_,h_)
-                    loss /= z.size(0) # normalize by batch size
+                        loss_pkt += PKT.cosine_similarity_loss(z_,h_)
+                    loss_pkt /= z.size(0) # normalize by batch size
 
 
                     # -- Other thoughts to try out
@@ -350,13 +351,13 @@ def main(args, resume_preempt=False):
                     # (64*4, 20, EMB_SIZE: 768) # h
                     # .view() 
                     # alpha = .1 * cosine_similarity_loss
-                    loss = AllReduce.apply(loss)
+                    loss = AllReduce.apply(loss_l2 + loss_pkt)
                     return loss
 
                     """
                     for i in range(batch_size):
                         PKT([4, 20, 768] [4, 20, 768])
-                        [80, 768] @ [768, 80] = [80,80]
+                        [80, 768] @ [768, 80] = [80,80] # diagonal = 1
 
                     # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
 

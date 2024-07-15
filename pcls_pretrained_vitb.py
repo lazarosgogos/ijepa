@@ -86,7 +86,7 @@ class ClassifierHead(nn.Module):
     # x = self.softmax(self.fc3(x))
 
     # add dropout
-    x = self.head_dropout(x)
+    # x = self.head_dropout(x)
 
     # add layer norm
     x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension

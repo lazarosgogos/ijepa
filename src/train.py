@@ -54,7 +54,7 @@ from src import PKT
 # --
 log_timings = True
 log_freq = 10
-checkpoint_freq = 50
+checkpoint_freq = 200
 # --
 
 _GLOBAL_SEED = 0
@@ -318,6 +318,8 @@ def main(args, resume_preempt=False):
 
                 def loss_fn(z, h):
                     loss_l2 = F.smooth_l1_loss(z, h) # initial loss
+                    loss = AllReduce.apply(loss_l2)
+                    return loss
 
                     
                     # -- COSINE SIMILARITY 

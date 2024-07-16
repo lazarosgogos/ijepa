@@ -1,4 +1,3 @@
-from src.models.vision_transformer import vit_huge
 from src import helper
 import torch
 import torch.nn as nn
@@ -62,11 +61,6 @@ def print_model_layers(model, prefix=''):
       module_name = prefix + '.' + name if prefix else name
       print(module_name)
       print_model_layers(module, prefix=module_name)
-
-# print_model_layers(encoder) # alright this works :)
-# print('INFO Gogos - Printing the predictor\'s architecture.')
-# print_model_layers(predictor) # 
-# print('Done with predictor\'s architecture.')
 
 
 class LinearClassifier(nn.Module):

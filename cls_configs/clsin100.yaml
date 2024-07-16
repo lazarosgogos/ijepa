@@ -1,0 +1,19 @@
+data:
+  crop_size: 224
+  num_classes: 100
+  train_dataset_path: datasets/imagenet100/train
+  val_dataset_path: datasets/imagenet100/val
+  model_name: vit_small
+  batch_size: 60
+  patch_size: 16
+logging:
+  log_dir: logs/in100
+  pretrained_model_path: jepa_in100-latest.pth.tar
+  save_path: classifiers/jepa-in100-classifier-pretrained-vits
+  checkpoint_freq: 1000
+  log_file: in100stats
+optimization:
+  lr: 1e-4
+  epochs: 200
+  use_last_n_blocks: 1 # not yet supported
+  

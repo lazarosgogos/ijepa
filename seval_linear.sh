@@ -21,4 +21,9 @@ nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python main.py
     --devices cuda:0 cuda:1 
     &> logs/iic-train-cosine/oiic-train-cosine.out &
 
-nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python peval_linear.py --fname clsconfigs/in100.yaml --devices cuda:0 &> logs/in100/oin100-peval_linear.out &
+nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python peval_linear.py 
+  --fname cls_configs/clsin100.yaml 
+  &> logs/in100/oin100-peval_linear.out &
+
+
+nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python peval_linear.py --fname cls_configs/clsin100.yaml &> logs/in100/oin100-peval_linear.out &

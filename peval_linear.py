@@ -47,7 +47,7 @@ class LinearClassifier(nn.Module):
         self.input_size = input_size
         self.linear = nn.Linear(input_size, num_classes)
         self.linear.weight.data.normal_(mean=0.0, std=0.1)
-        self.linear.biad.data.zero_()
+        self.linear.bias.data.zero_()
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
@@ -73,7 +73,7 @@ class Both(nn.Module):
         return x
 
 class LinearProbe():
-    def __init__(self, logger):
+    def __init__(self, args, logger):
         # init LinClassifier
         # init complete model (pretrained+head)
         # init criterion for loss
@@ -108,12 +108,16 @@ class LinearProbe():
         self.epochs = args['optimization']['epochs']
         self.embed_dims = VIT_EMBED_DIMS[self.model_name] # get dims based on model
 
-        self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        # -- META
+        self.device_name = args['meta']['device']
+
+        self.device = torch.device(self.device_name if torch.cuda.is_available() else 'cpu')
 
         self.encoder = helper.init_encoder(device=self.device, 
                                         patch_size=self.patch_size,
                                         model_name=self.model_name,
                                         crop_size=self.crop_size,)
+
 
         ckpt = torch.load(self.pretrained_model_path, map_location=torch.device('cpu'))
         pretrained_dict = ckpt['encoder']
@@ -122,7 +126,7 @@ class LinearProbe():
         for k, v in pretrained_dict.items():
             self.encoder.state_dict()[k[len('module.'):]].copy_(v) 
 
-        self.model = Both(self.encoder, self.num_classes)
+        self.model = Both(self.encoder, self.embed_dims, self.num_classes)
         self.model.to(self.device)
         
         self.criterion = nn.CrossEntropyLoss()
@@ -152,7 +156,7 @@ class LinearProbe():
         Every `checkpoint_freq` epochs save the model in a different file as well for post-use'''
         save_dict = {
             'model': self.model.state_dict(),
-            'opt': optim.state_dict(),
+            'opt': self.optim.state_dict(),
             'epoch': epoch,
         }
         save_path = self.save_path
@@ -164,7 +168,7 @@ class LinearProbe():
 
         
     # create function for saving model
-    def eval_linear(self, args):
+    def eval_linear(self):
         """ The main function in which linear probing is implemented"""
         start_time = time.perf_counter()
         for epoch in range(self.epochs):
@@ -186,7 +190,7 @@ class LinearProbe():
 
                 loss = self.criterion(outputs, labels)
                 loss.backward()
-                optim.step()
+                self.optim.step()
                 running_loss += loss.item()
             
             train_accuracy = train_correct / total_train
@@ -205,18 +209,29 @@ class LinearProbe():
                     total_val += labels.size(0)
                     val_correct += (predicted == labels).sum().item()
             time_taken = time.perf_counter() - epoch_start_time
-            duration = timedelta(seconds=time_taken)
+            # duration = timedelta(seconds=time_taken)
+            duration = time_taken
             val_accuracy = val_correct / total_val
 
-            self.logger.info('Epoch: %d/%d' % (epoch+1, self.epochs),
-                            'Train accuracy: %e' % train_accuracy,
+            """self.logger.info('Epoch: %d/%d' % (epoch+1, self.epochs) 
+                            'Train accuracy: %.5e' % train_accuracy 
                             # 'Train correct: %d' % train_correct,
                             # 'Train total: %d' % len(train_dataset),
-                            'Validation accuracy: %e' % val_accuracy, 
+                            'Validation accuracy: %.5e' % val_accuracy 
                             # 'Val correct: %d' % val_correct,
                             # 'Val total: %d' % len(val_dataset),
-                            'Loss %e' % epoch_loss,
-                            'Time taken:', duration)
+                            'Loss %.5e' % epoch_loss 
+                            'Time taken:', duration)"""
+            self.logger.info('Epoch: %d/%d '
+                            'Train accuracy: %.5e ' 
+                            'Validation accuracy: %.5e '
+                            'Loss %.5e '
+                            'Time taken: %d seconds'
+                             % (epoch+1, self.epochs,
+                                train_accuracy,
+                                val_accuracy,
+                                epoch_loss,
+                                int(duration)) )
             self.csvlogger.log(epoch+1, 
                                train_accuracy, 
                                val_accuracy, 
@@ -228,7 +243,7 @@ class LinearProbe():
         # report on time after all epochs are complete
         end_time = time.perf_counter()
         total_duration = timedelta(seconds=end_time-start_time)
-        self.logger.info('Total time taken', total_duration)
+        self.logger.info('Total time taken %s' % str(total_duration))
         self.logger.info('Done')
 
     
@@ -249,13 +264,14 @@ def process_main(fname, devices=['cuda:0']):
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(params)
     
-    linear_prober = LinearProbe(logger)
+    
+    linear_prober = LinearProbe(params, logger)
 
-    linear_prober.eval_linear(args=params)
+    linear_prober.eval_linear()
 
 
 if __name__ == '__main__':
     """ No support for distributed training as of yet.
     Start linear probing based on config"""
     args = parser.parse_args() # get arguments from cmdline
-    process_main() 
+    process_main(args.fname) 

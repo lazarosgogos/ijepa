@@ -275,7 +275,7 @@ def main(args, resume_preempt=False):
     # -- TRAINING LOOP
     for epoch in range(start_epoch, num_epochs):
         logger.info('Epoch %d' % (epoch + 1))
-
+        log_freq = ipe / 5 # report every X := 5 intermediate steps
         # -- update distributed-data-loader epoch
         unsupervised_sampler.set_epoch(epoch)
 

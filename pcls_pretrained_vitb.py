@@ -15,10 +15,10 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 150
 NUM_CLASSES = 6
-SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_pretrained_vitb_L2-PKT'
+SAVE_PATH = 'classifiers/jepa_iic_clsfier_vitb-proper500'
 LR = 0.0001
 # NUM_EPOCHS = 300
-NUM_EPOCHS = 100
+NUM_EPOCHS = 200
 BATCH_SIZE = 128
 # Define paths to datasets
 train_data_path = 'datasets/intel-image-classification/train'
@@ -29,10 +29,11 @@ val_data_path = 'datasets/intel-image-classification/test'
 EMBED_DIMS=768 # for ViT-base
 
 
-load_path = 'logs/iic-train-PKT/jepa_iic_L2_PKT-latest.pth.tar'
+load_path = 'logs/iic-train-proper-500/jepa_iic_proper_500-latest.pth.tar'
+CLS_CHECKPOINT_LOAD_PATH = SAVE_PATH + '-latest.pth.tar'
 MODEL_NAME = 'vit_base'
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 encoder, predictor = helper.init_model(device=device, 
                                        patch_size=15,
@@ -53,6 +54,25 @@ if load_encoder: # In this file we perform a test, no loading takes place
   for k, v in pretrained_dict.items():
     encoder.state_dict()[k[len('module.'):]].copy_(v) 
 
+LOAD_CHECKPOINT = False
+def load_checkpoint(model, optimizer, load_path):
+  checkpoint = torch.load(load_path, map_location=torch.device('cpu'))
+  epoch = checkpoint['epoch']
+
+  # -- loading encoder
+  pretrained_dict = checkpoint['model']
+  msg = model.load_state_dict(pretrained_dict)
+  print(f'loaded pretrained classifier from epoch {epoch} with msg: {msg}')
+
+  # -- loading optimizer
+  optimizer.load_state_dict(checkpoint['optimizer'])
+  print(f'loaded optimizers from epoch {epoch}')
+  # logger.info(f'read-path: {r_path}')
+  del checkpoint
+  return epoch
+
+    
+
 # Print the layers/modules of the model for inspection
 def print_model_layers(model, prefix=''):
   for name, module in model.named_children():
@@ -65,6 +85,14 @@ def print_model_layers(model, prefix=''):
 # print('INFO Gogos - Printing the predictor\'s architecture.')
 # print_model_layers(predictor) # 
 # print('Done with predictor\'s architecture.')
+
+def save_checkpoint(model, optimizer, epoch, save_path): 
+  save_dict = {
+    'model': model,
+    'optimizer': optimizer,
+    'epoch': epoch,
+  }
+  torch.save(save_dict, save_path)
 
 
 class ClassifierHead(nn.Module):
@@ -118,6 +146,10 @@ model.to(device)
 # let's train it!!!
 criterion = nn.CrossEntropyLoss()
 optim = optim.AdamW(model.parameters(), lr=LR)
+
+if LOAD_CHECKPOINT:
+  epoch = load_checkpoint(model, optim, CLS_CHECKPOINT_LOAD_PATH)
+
 
 # Define transformations to be applied to the images
 transform = transforms.Compose([

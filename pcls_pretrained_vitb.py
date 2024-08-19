@@ -15,7 +15,7 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 150
 NUM_CLASSES = 6
-SAVE_PATH = 'classifiers/jepa_iic_clsfier_vitb-proper500'
+SAVE_PATH = 'classifiers/jepa-iic-clsfier-500-pred12'
 LR = 0.0001
 # NUM_EPOCHS = 300
 NUM_EPOCHS = 200
@@ -29,10 +29,12 @@ val_data_path = 'datasets/intel-image-classification/test'
 EMBED_DIMS=768 # for ViT-base
 
 
-load_path = 'logs/iic-train-proper-500/jepa_iic_proper_500-latest.pth.tar'
-CLS_CHECKPOINT_LOAD_PATH = SAVE_PATH + '-latest.pth.tar'
+encoder_load_path = 'logs/iic-train-double/jepa_iic_first-latest.pth.tar'
+CLS_CHECKPOINT_LOAD_PATH = SAVE_PATH + '-latest.pth.tar' # change this suffix if you don't want 
+                                                         #to evaluate the latest model
 MODEL_NAME = 'vit_base'
 
+LOAD_CHECKPOINT = False
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 encoder, predictor = helper.init_model(device=device, 
@@ -46,7 +48,7 @@ encoder, predictor = helper.init_model(device=device,
 load_encoder = True
 if load_encoder: # In this file we perform a test, no loading takes place
   # Load the state dictionary from the file
-  ckpt = torch.load(load_path, map_location=torch.device('cpu'))
+  ckpt = torch.load(encoder_load_path, map_location=torch.device('cpu'))
   # state_dict = torch.load('/content/IN1K-vit.h.14-300e.pth.tar')
   pretrained_dict = ckpt['encoder']
   
@@ -54,7 +56,6 @@ if load_encoder: # In this file we perform a test, no loading takes place
   for k, v in pretrained_dict.items():
     encoder.state_dict()[k[len('module.'):]].copy_(v) 
 
-LOAD_CHECKPOINT = False
 def load_checkpoint(model, optimizer, load_path):
   checkpoint = torch.load(load_path, map_location=torch.device('cpu'))
   epoch = checkpoint['epoch']
@@ -65,7 +66,7 @@ def load_checkpoint(model, optimizer, load_path):
   print(f'loaded pretrained classifier from epoch {epoch} with msg: {msg}')
 
   # -- loading optimizer
-  optimizer.load_state_dict(checkpoint['optimizer'])
+  optimizer.load_state_dict(checkpoint['opt'])
   print(f'loaded optimizers from epoch {epoch}')
   # logger.info(f'read-path: {r_path}')
   del checkpoint
@@ -86,13 +87,13 @@ def print_model_layers(model, prefix=''):
 # print_model_layers(predictor) # 
 # print('Done with predictor\'s architecture.')
 
-def save_checkpoint(model, optimizer, epoch, save_path): 
-  save_dict = {
-    'model': model,
-    'optimizer': optimizer,
-    'epoch': epoch,
-  }
-  torch.save(save_dict, save_path)
+# def save_checkpoint(model, optimizer, epoch, save_path): 
+#   save_dict = {
+#     'model': model,
+#     'optimizer': optimizer,
+#     'epoch': epoch,
+#   }
+#   torch.save(save_dict, save_path)
 
 
 class ClassifierHead(nn.Module):
@@ -145,10 +146,11 @@ model.to(device)
 
 # let's train it!!!
 criterion = nn.CrossEntropyLoss()
-optim = optim.AdamW(model.parameters(), lr=LR)
+optimizer = optim.AdamW(model.parameters(), lr=LR)
 
+START_EPOCH = 0
 if LOAD_CHECKPOINT:
-  epoch = load_checkpoint(model, optim, CLS_CHECKPOINT_LOAD_PATH)
+  START_EPOCH = load_checkpoint(model, optimizer, CLS_CHECKPOINT_LOAD_PATH)
 
 
 # Define transformations to be applied to the images
@@ -177,12 +179,12 @@ train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE)
 
 
-def save_checkpoint(model, optim, epoch, save_path, checkpoint_freq=50):
+def save_checkpoint(model, optimizer, epoch, save_path, checkpoint_freq=50):
   '''Save a checkpoint of a given model & an optimizer. 
   Every `checkpoint_freq` epochs save the model in a different file as well for post-use'''
   save_dict = {
       'model': model.state_dict(),
-      'opt': optim.state_dict(),
+      'opt': optimizer.state_dict(),
       'epoch': epoch,
   }
   ep = epoch + 1 # temp epoch to avoid alchemy with string formats :)
@@ -192,7 +194,7 @@ def save_checkpoint(model, optim, epoch, save_path, checkpoint_freq=50):
       torch.save(save_dict, save_path)
 
 start_time = time.perf_counter() # 
-for epoch in range(NUM_EPOCHS):
+for epoch in range(START_EPOCH, NUM_EPOCHS):
   epoch_start_time = time.perf_counter()
   model.train() # set the model to training mode
   running_loss = 0.0
@@ -202,7 +204,7 @@ for epoch in range(NUM_EPOCHS):
     # send data to appropriate device
     inputs, labels = inputs.to(device), labels.to(device)
 
-    optim.zero_grad() # set grads to zero
+    optimizer.zero_grad() # set grads to zero
     outputs = model(inputs) # predictions
     # print(outputs.size())
     # exit(1)
@@ -213,7 +215,7 @@ for epoch in range(NUM_EPOCHS):
 
     loss = criterion(outputs, labels) # compute the loss
     loss.backward() # backward pass
-    optim.step() # update weights
+    optimizer.step() # update weights
     running_loss += loss.item()
 
   train_accuracy = train_correct / total_train
@@ -255,7 +257,7 @@ for epoch in range(NUM_EPOCHS):
   # print(f'Epoch {epoch+1}/{NUM_EPOCHS}, \nLoss: {epoch_loss}, \
   #       \nValidation accuracy: {val_accuracy}')
   # save model to disk 
-  save_checkpoint(model, optim, epoch, SAVE_PATH, checkpoint_freq=1000)
+  save_checkpoint(model, optimizer, epoch, SAVE_PATH, checkpoint_freq=1000)
 
 end_time = time.perf_counter()
 total_duration=timedelta(seconds=end_time-start_time)

@@ -24,4 +24,4 @@ nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python main.py
 nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python main.py 
     --fname configs/iic-train-proper.yaml 
     --devices cuda:0 cuda:1 
-    &> logs/iic-train-proper/oiic-train-proper.out &
+    &> logs/iic-train-cosine/oiic-train-cosine.out &

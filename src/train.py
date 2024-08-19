@@ -275,7 +275,7 @@ def main(args, resume_preempt=False):
     # -- TRAINING LOOP
     for epoch in range(start_epoch, num_epochs):
         logger.info('Epoch %d' % (epoch + 1))
-        log_freq = ipe / 5 # report every X := 5 intermediate steps
+        log_freq = ipe // 5 # report every X := 5 intermediate steps
         # -- update distributed-data-loader epoch
         unsupervised_sampler.set_epoch(epoch)
 
@@ -317,7 +317,7 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
-                    loss_l2 = F.smooth_l1_loss(z, h) # initial loss
+                    # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
 
                     
                     # -- COSINE SIMILARITY 
@@ -325,9 +325,11 @@ def main(args, resume_preempt=False):
                     # loss = 0
                     # for i in range(z.size(0)):
                     #     loss += F.cosine_embedding_loss(z[i],h[i],y)
-                    # y = torch.ones(z.size(1), device=device)
-                    # loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
-                    
+                    y = torch.ones(z.size(1), device=device)
+                    loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
+                    loss = AllReduce.apply(loss)
+                    return loss
+                
                     # PKT first shot
                     loss_pkt = 0
                     first_dim = z.size(0)
@@ -351,7 +353,7 @@ def main(args, resume_preempt=False):
                     # (64*4, 20, EMB_SIZE: 768) # h
                     # .view() 
                     # alpha = .1 * cosine_similarity_loss
-                    loss = AllReduce.apply(loss_l2 + loss_pkt)
+                    loss = AllReduce.apply(loss_l2)
                     return loss
 
                     """

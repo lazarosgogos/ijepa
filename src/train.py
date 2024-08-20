@@ -317,18 +317,18 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
-                    # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
+                    loss_l2 = F.smooth_l1_loss(z, h) # initial loss
 
                     
-                    # -- COSINE SIMILARITY 
-                    # we want to get the number of batch_size
-                    # loss = 0
-                    # for i in range(z.size(0)):
-                    #     loss += F.cosine_embedding_loss(z[i],h[i],y)
-                    y = torch.ones(z.size(1), device=device)
-                    loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
-                    loss = AllReduce.apply(loss)
-                    return loss
+                    # # -- COSINE SIMILARITY 
+                    # # we want to get the number of batch_size
+                    # # loss = 0
+                    # # for i in range(z.size(0)):
+                    # #     loss += F.cosine_embedding_loss(z[i],h[i],y)
+                    # y = torch.ones(z.size(1), device=device)
+                    # loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
+                    # loss = AllReduce.apply(loss)
+                    # return loss
                 
                     # PKT first shot
                     loss_pkt = 0
@@ -345,7 +345,7 @@ def main(args, resume_preempt=False):
                         h_ = h_.view(-1, emb_size)
                         loss_pkt += PKT.cosine_similarity_loss(z_,h_)
                     loss_pkt /= z.size(0) # normalize by batch size
-
+                    loss_pkt *= 100 # scale PKT to match l2 loss and equalize the effect
 
                     # -- Other thoughts to try out
                     # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
@@ -353,7 +353,7 @@ def main(args, resume_preempt=False):
                     # (64*4, 20, EMB_SIZE: 768) # h
                     # .view() 
                     # alpha = .1 * cosine_similarity_loss
-                    loss = AllReduce.apply(loss_l2)
+                    loss = AllReduce.apply(loss_l2 + loss_pkt) 
                     return loss
 
                     """

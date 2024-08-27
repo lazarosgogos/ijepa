@@ -15,10 +15,10 @@ from datetime import timedelta
 
 IMG_CROPSIZE = 150
 NUM_CLASSES = 6
-SAVE_PATH = 'classifiers/jepa-iic-clsfier-500-pred12'
+SAVE_PATH = 'classifiers/jepa-iic-clsfier-cosine'
 LR = 0.0001
 # NUM_EPOCHS = 300
-NUM_EPOCHS = 200
+NUM_EPOCHS = 100
 BATCH_SIZE = 128
 # Define paths to datasets
 train_data_path = 'datasets/intel-image-classification/train'
@@ -29,13 +29,13 @@ val_data_path = 'datasets/intel-image-classification/test'
 EMBED_DIMS=768 # for ViT-base
 
 
-encoder_load_path = 'logs/iic-train-double/jepa_iic_first-latest.pth.tar'
+encoder_load_path = 'logs/iic-train-cosine/jepa_iic-cosine-latest.pth.tar'
 CLS_CHECKPOINT_LOAD_PATH = SAVE_PATH + '-latest.pth.tar' # change this suffix if you don't want 
                                                          #to evaluate the latest model
 MODEL_NAME = 'vit_base'
 
 LOAD_CHECKPOINT = False
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 encoder, predictor = helper.init_model(device=device, 
                                        patch_size=15,
@@ -43,7 +43,7 @@ encoder, predictor = helper.init_model(device=device,
                                        crop_size=IMG_CROPSIZE,
                                        pred_depth=12,
                                        pred_emb_dim=384)
-
+del predictor
 
 load_encoder = True
 if load_encoder: # In this file we perform a test, no loading takes place
@@ -115,7 +115,7 @@ class ClassifierHead(nn.Module):
     # x = self.softmax(self.fc3(x))
 
     # add dropout
-    # x = self.head_dropout(x)
+    x = self.head_dropout(x) # sadly we have to add this for now so that comparisons can be made
 
     # add layer norm
     x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension

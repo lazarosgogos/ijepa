@@ -51,6 +51,8 @@ from src.transforms import make_transforms
 
 from src import PKT
 
+import time
+import datetime
 # --
 log_timings = True
 log_freq = 10
@@ -59,7 +61,7 @@ checkpoint_freq = 200
 
 _GLOBAL_SEED = 0
 np.random.seed(_GLOBAL_SEED)
-torch.manual_seed(_GLOBAL_SEED)
+# torch.manual_seed(_GLOBAL_SEED)
 torch.backends.cudnn.benchmark = True
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -133,7 +135,7 @@ def main(args, resume_preempt=False):
     # -- LOGGING
     folder = args['logging']['folder']
     tag = args['logging']['write_tag']
-    force_cudnn_initialization()
+    # force_cudnn_initialization()
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:
         yaml.dump(args, f)
@@ -273,7 +275,9 @@ def main(args, resume_preempt=False):
                 torch.save(save_dict, save_path.format(epoch=f'{epoch + 1}'))
 
     # -- TRAINING LOOP
+    start_time = time.perf_counter() # get starting time
     for epoch in range(start_epoch, num_epochs):
+        start_time_epoch = time.perf_counter()
         logger.info('Epoch %d' % (epoch + 1))
         log_freq = ipe // 5 # report every X := 5 intermediate steps
         # -- update distributed-data-loader epoch
@@ -432,6 +436,10 @@ def main(args, resume_preempt=False):
         # -- Save Checkpoint after every epoch
         logger.info('avg. loss %.8e' % loss_meter.avg)
         save_checkpoint(epoch+1)
+        time_epoch = time.perf_counter() - start_time_epoch
+        logger.info('time taken for epoch %s' % str(datetime.timedelta(seconds=time_epoch)))
+    total_time = time.perf_counter() - start_time
+    logger.info('Total pretraining time %s' % str(datetime.timedelta(seconds = total_time)))
 
 
 if __name__ == "__main__":

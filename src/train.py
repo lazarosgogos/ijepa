@@ -59,9 +59,9 @@ log_freq = 10
 checkpoint_freq = 200
 # --
 
-_GLOBAL_SEED = 0
+_GLOBAL_SEED = np.random.seed()
 np.random.seed(_GLOBAL_SEED)
-# torch.manual_seed(_GLOBAL_SEED)
+torch.manual_seed(_GLOBAL_SEED)
 torch.backends.cudnn.benchmark = True
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)

@@ -135,6 +135,11 @@ def main(args, resume_preempt=False):
     # -- LOGGING
     folder = args['logging']['folder']
     tag = args['logging']['write_tag']
+    try: 
+        checkpoint_freq = args['logging']['checkpoint_freq'] if not None else 100
+    except:
+        logger.error('Could not grab checkpoint frequency. Defaulting to 100')
+        checkpoint_freq = 100
     # force_cudnn_initialization()
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:

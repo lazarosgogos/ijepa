@@ -60,7 +60,9 @@ log_freq = 10
 checkpoint_freq = 200
 # --
 
-_GLOBAL_SEED = np.random.seed()
+# rng = np.random.Generator(np.random.PCG64()) 
+
+_GLOBAL_SEED = 1
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
 torch.backends.cudnn.benchmark = True
@@ -328,7 +330,7 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
-                    final_loss = which_loss.__dict__(loss_function)(z,h)
+                    final_loss = which_loss.__dict__[loss_function](z,h)
                     # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
                     loss = AllReduce.apply(final_loss)
                     return loss

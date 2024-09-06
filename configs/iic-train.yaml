@@ -13,8 +13,9 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs/iic-train-PKT/
-  write_tag: jepa_iic_L2_PKT-scaled
+  folder: logs_PKT/iic-train-PKT/
+  write_tag: jepa_iic_PKT
+  checkpoint_freq: 100 # new addition
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -50,3 +51,4 @@ optimization:
   start_lr: 0.0002          # default: 2e-4
   warmup: 40
   weight_decay: 0.04        # default: 0.04
+  loss_function: L2

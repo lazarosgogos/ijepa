@@ -50,6 +50,7 @@ from src.helper import (
 from src.transforms import make_transforms
 
 from src import PKT
+from src import which_loss
 
 import time
 import datetime
@@ -131,6 +132,7 @@ def main(args, resume_preempt=False):
     start_lr = args['optimization']['start_lr']
     lr = args['optimization']['lr']
     final_lr = args['optimization']['final_lr']
+    loss_function = args['optimization']['loss_function'] if not None else 'L2'
 
     # -- LOGGING
     folder = args['logging']['folder']
@@ -326,9 +328,10 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
-                    loss_l2 = F.smooth_l1_loss(z, h) # initial loss
-                    loss = AllReduce.apply(loss_l2)
-                    # return loss
+                    final_loss = which_loss.__dict__(loss_function)(z,h)
+                    # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
+                    loss = AllReduce.apply(final_loss)
+                    return loss
 
                     
                     # # -- COSINE SIMILARITY 

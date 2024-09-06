@@ -319,7 +319,7 @@ def main(args, resume_preempt=False):
                 def loss_fn(z, h):
                     loss_l2 = F.smooth_l1_loss(z, h) # initial loss
                     loss = AllReduce.apply(loss_l2)
-                    return loss
+                    # return loss
 
                     
                     # # -- COSINE SIMILARITY 

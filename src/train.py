@@ -144,6 +144,8 @@ def main(args, resume_preempt=False):
     except:
         logger.error('Could not grab checkpoint frequency. Defaulting to 100')
         checkpoint_freq = 100
+    logging_frequency = args['logging']['logging_frequency'] if not None else 5
+
     # force_cudnn_initialization()
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:
@@ -288,7 +290,7 @@ def main(args, resume_preempt=False):
     for epoch in range(start_epoch, num_epochs):
         start_time_epoch = time.perf_counter()
         logger.info('Epoch %d' % (epoch + 1))
-        log_freq = ipe // 5 # report every X := 5 intermediate steps
+        log_freq = ipe // logging_frequency # report every X := `logging_frequency` intermediate steps
         # -- update distributed-data-loader epoch
         unsupervised_sampler.set_epoch(epoch)
 

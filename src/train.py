@@ -134,17 +134,14 @@ def main(args, resume_preempt=False):
     start_lr = args['optimization']['start_lr']
     lr = args['optimization']['lr']
     final_lr = args['optimization']['final_lr']
-    loss_function = args['optimization']['loss_function'] if not None else 'L2'
+    loss_function = args['optimization'].get('loss_function', 'L2') # get the loss function, use L2 if no loss fn definition was found in the config file
+
 
     # -- LOGGING
     folder = args['logging']['folder']
     tag = args['logging']['write_tag']
-    try: 
-        checkpoint_freq = args['logging']['checkpoint_freq'] if not None else 100
-    except:
-        logger.error('Could not grab checkpoint frequency. Defaulting to 100')
-        checkpoint_freq = 100
-    logging_frequency = args['logging']['logging_frequency'] if not None else 5
+    checkpoint_freq = args['logging'].get('checkpoint_freq', 100) # get default frequency, default to 100 otherwise
+    logging_frequency = args['logging'].get('logging_frequency', 3) # default to 3
 
     # force_cudnn_initialization()
     dump = os.path.join(folder, 'params-ijepa.yaml')

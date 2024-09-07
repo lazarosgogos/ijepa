@@ -1,0 +1,994 @@
+nohup: ignoring input
+INFO:root:called-params configs/iic-train.yaml
+INFO:root:loaded params...
+{   'data': {   'batch_size': 64,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 150,
+                'image_folder': 'intel-image-classification/',
+                'num_workers': 10,
+                'pin_mem': True,
+                'root_path': 'datasets',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 100,
+                   'folder': 'logs_PKT/iic-train-PKT/',
+                   'logging_frequency': 2,
+                   'write_tag': 'jepa_iic_PKT'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 1,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 15,
+                'pred_mask_scale': [0.15, 0.2]},
+    'meta': {   'copy_data': False,
+                'load_checkpoint': False,
+                'model_name': 'vit_base',
+                'pred_depth': 12,
+                'pred_emb_dim': 384,
+                'read_checkpoint': None,
+                'use_bfloat16': False},
+    'optimization': {   'ema': [0.996, 1.0],
+                        'epochs': 500,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'PKT',
+                        'lr': 0.001,
+                        'start_lr': 0.0002,
+                        'warmup': 40,
+                        'weight_decay': 0.04}}
+INFO:root:Running... (rank: 0/2)
+INFO:root:Initialized (rank/world-size) 0/2
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/intel-image-classification/train/
+INFO:root:Initialized ImageNet
+INFO:root:ImageNet dataset created
+INFO:root:ImageNet unsupervised data loader created
+INFO:root:Using AdamW
+INFO:root:Epoch 1
+{   'data': {   'batch_size': 64,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 150,
+                'image_folder': 'intel-image-classification/',
+                'num_workers': 10,
+                'pin_mem': True,
+                'root_path': 'datasets',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 100,
+                   'folder': 'logs_PKT/iic-train-PKT/',
+                   'logging_frequency': 2,
+                   'write_tag': 'jepa_iic_PKT'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 1,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 15,
+                'pred_mask_scale': [0.15, 0.2]},
+    'meta': {   'copy_data': False,
+                'load_checkpoint': False,
+                'model_name': 'vit_base',
+                'pred_depth': 12,
+                'pred_emb_dim': 384,
+                'read_checkpoint': None,
+                'use_bfloat16': False},
+    'optimization': {   'ema': [0.996, 1.0],
+                        'epochs': 500,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'PKT',
+                        'lr': 0.001,
+                        'start_lr': 0.0002,
+                        'warmup': 40,
+                        'weight_decay': 0.04}}
+INFO:root:[1,     0] loss: 1.231848e-04 masks: 14.0 20.0 [wd: 4.00e-02] [lr: 2.00e-04] [mem: 4.82e+03] (1272.9 ms)
+INFO:root:[1,     0] grad_stats: [2.43e-05 1.30e-05] (1.26e-05, 6.30e-05)
+INFO:root:[1,    54] loss: 1.029685e-04 masks: 21.6 17.4 [wd: 4.00e-02] [lr: 2.10e-04] [mem: 7.59e+03] (502.0 ms)
+INFO:root:[1,    54] grad_stats: [2.38e-09 1.74e-09] (1.71e-09, 5.79e-09)
+INFO:root:[1,   108] loss: 5.502840e-05 masks: 21.8 17.4 [wd: 4.00e-02] [lr: 2.20e-04] [mem: 7.59e+03] (496.5 ms)
+INFO:root:[1,   108] grad_stats: [7.44e-10 4.64e-10] (4.64e-10, 2.04e-09)
+INFO:root:avg. loss 5.50284006e-05
+INFO:root:time taken for epoch 0:01:11.265147
+INFO:root:Epoch 2
+INFO:root:[2,     0] loss: 2.882548e-06 masks: 19.0 20.0 [wd: 4.00e-02] [lr: 2.20e-04] [mem: 7.59e+03] (504.4 ms)
+INFO:root:[2,     0] grad_stats: [8.96e-10 6.06e-10] (6.01e-10, 2.28e-09)
+INFO:root:[2,    54] loss: 3.054822e-06 masks: 21.2 17.5 [wd: 4.00e-02] [lr: 2.30e-04] [mem: 7.70e+03] (493.8 ms)
+INFO:root:[2,    54] grad_stats: [1.16e-09 7.76e-10] (7.76e-10, 3.38e-09)
+INFO:root:[2,   108] loss: 2.600180e-06 masks: 21.5 17.2 [wd: 4.00e-02] [lr: 2.40e-04] [mem: 7.70e+03] (492.1 ms)
+INFO:root:[2,   108] grad_stats: [1.40e-09 7.19e-10] (7.19e-10, 3.73e-09)
+INFO:root:avg. loss 2.60017974e-06
+INFO:root:time taken for epoch 0:01:25.130443
+INFO:root:Epoch 3
+INFO:root:[3,     0] loss: 1.877812e-06 masks: 17.0 16.0 [wd: 4.00e-02] [lr: 2.40e-04] [mem: 7.70e+03] (479.1 ms)
+INFO:root:[3,     0] grad_stats: [1.03e-09 5.46e-10] (5.46e-10, 2.98e-09)
+INFO:root:[3,    54] loss: 1.664111e-06 masks: 21.6 17.3 [wd: 4.00e-02] [lr: 2.50e-04] [mem: 7.70e+03] (496.8 ms)
+INFO:root:[3,    54] grad_stats: [1.21e-09 7.50e-10] (7.49e-10, 3.39e-09)
+INFO:root:[3,   108] loss: 1.523858e-06 masks: 21.7 17.4 [wd: 4.00e-02] [lr: 2.60e-04] [mem: 7.70e+03] (497.0 ms)
+INFO:root:[3,   108] grad_stats: [6.98e-10 2.93e-10] (2.93e-10, 1.87e-09)
+INFO:root:avg. loss 1.52385752e-06
+INFO:root:time taken for epoch 0:01:25.812684
+INFO:root:Epoch 4
+INFO:root:[4,     0] loss: 1.152466e-06 masks: 17.0 20.0 [wd: 4.00e-02] [lr: 2.60e-04] [mem: 7.70e+03] (497.4 ms)
+INFO:root:[4,     0] grad_stats: [7.21e-10 3.69e-10] (3.69e-10, 2.12e-09)
+INFO:root:[4,    54] loss: 1.273608e-06 masks: 22.2 17.5 [wd: 4.00e-02] [lr: 2.70e-04] [mem: 7.70e+03] (497.0 ms)
+INFO:root:[4,    54] grad_stats: [8.78e-10 2.80e-10] (2.80e-10, 2.58e-09)
+INFO:root:[4,   108] loss: 1.248794e-06 masks: 22.5 17.2 [wd: 4.01e-02] [lr: 2.80e-04] [mem: 7.70e+03] (499.3 ms)
+INFO:root:[4,   108] grad_stats: [5.66e-10 1.65e-10] (1.65e-10, 1.43e-09)
+INFO:root:avg. loss 1.24879430e-06
+INFO:root:time taken for epoch 0:01:24.492810
+INFO:root:Epoch 5
+INFO:root:[5,     0] loss: 1.420997e-06 masks: 14.0 20.0 [wd: 4.01e-02] [lr: 2.80e-04] [mem: 7.70e+03] (495.3 ms)
+INFO:root:[5,     0] grad_stats: [2.04e-09 6.75e-10] (6.75e-10, 5.97e-09)
+INFO:root:[5,    54] loss: 1.114269e-06 masks: 22.1 17.1 [wd: 4.01e-02] [lr: 2.90e-04] [mem: 7.83e+03] (494.5 ms)
+INFO:root:[5,    54] grad_stats: [1.95e-09 7.95e-10] (7.95e-10, 5.87e-09)
+INFO:root:[5,   108] loss: 1.080000e-06 masks: 22.0 17.2 [wd: 4.01e-02] [lr: 3.00e-04] [mem: 7.83e+03] (496.1 ms)
+INFO:root:[5,   108] grad_stats: [1.03e-09 3.04e-10] (3.04e-10, 3.12e-09)
+INFO:root:avg. loss 1.08000008e-06
+INFO:root:time taken for epoch 0:01:24.504491
+INFO:root:Epoch 6
+INFO:root:[6,     0] loss: 9.255295e-07 masks: 23.0 16.0 [wd: 4.01e-02] [lr: 3.00e-04] [mem: 7.83e+03] (508.2 ms)
+INFO:root:[6,     0] grad_stats: [1.69e-09 5.49e-10] (5.49e-10, 5.17e-09)
+INFO:root:[6,    54] loss: 1.040744e-06 masks: 21.9 16.9 [wd: 4.01e-02] [lr: 3.10e-04] [mem: 7.83e+03] (493.2 ms)
+INFO:root:[6,    54] grad_stats: [9.57e-10 2.89e-10] (2.89e-10, 3.01e-09)
+INFO:root:[6,   108] loss: 1.013807e-06 masks: 21.6 17.1 [wd: 4.01e-02] [lr: 3.20e-04] [mem: 7.83e+03] (495.1 ms)
+INFO:root:[6,   108] grad_stats: [4.68e-10 1.17e-10] (1.17e-10, 1.26e-09)
+INFO:root:avg. loss 1.01380717e-06
+INFO:root:time taken for epoch 0:01:24.613878
+INFO:root:Epoch 7
+INFO:root:[7,     0] loss: 1.148077e-06 masks: 36.0 12.0 [wd: 4.01e-02] [lr: 3.20e-04] [mem: 7.83e+03] (577.8 ms)
+INFO:root:[7,     0] grad_stats: [2.21e-09 7.71e-10] (7.71e-10, 6.05e-09)
+INFO:root:[7,    54] loss: 9.883795e-07 masks: 22.9 16.9 [wd: 4.02e-02] [lr: 3.30e-04] [mem: 7.83e+03] (500.2 ms)
+INFO:root:[7,    54] grad_stats: [1.02e-09 2.43e-10] (2.43e-10, 2.96e-09)
+INFO:root:[7,   108] loss: 9.648309e-07 masks: 22.2 17.1 [wd: 4.02e-02] [lr: 3.40e-04] [mem: 7.83e+03] (497.8 ms)
+INFO:root:[7,   108] grad_stats: [1.57e-09 5.15e-10] (5.15e-10, 4.76e-09)
+INFO:root:avg. loss 9.64830874e-07
+INFO:root:time taken for epoch 0:01:25.309538
+INFO:root:Epoch 8
+INFO:root:[8,     0] loss: 8.774194e-07 masks: 21.0 16.0 [wd: 4.02e-02] [lr: 3.40e-04] [mem: 7.83e+03] (493.2 ms)
+INFO:root:[8,     0] grad_stats: [1.76e-09 4.72e-10] (4.72e-10, 5.78e-09)
+INFO:root:[8,    54] loss: 9.689104e-07 masks: 21.8 17.2 [wd: 4.02e-02] [lr: 3.50e-04] [mem: 7.83e+03] (498.6 ms)
+INFO:root:[8,    54] grad_stats: [2.79e-09 8.26e-10] (8.26e-10, 8.57e-09)
+INFO:root:[8,   108] loss: 9.608605e-07 masks: 21.3 17.4 [wd: 4.02e-02] [lr: 3.60e-04] [mem: 7.83e+03] (495.1 ms)
+INFO:root:[8,   108] grad_stats: [3.48e-09 9.15e-10] (9.15e-10, 1.08e-08)
+INFO:root:avg. loss 9.60860465e-07
+INFO:root:time taken for epoch 0:01:25.666423
+INFO:root:Epoch 9
+INFO:root:[9,     0] loss: 8.402785e-07 masks: 17.0 16.0 [wd: 4.02e-02] [lr: 3.60e-04] [mem: 7.83e+03] (474.5 ms)
+INFO:root:[9,     0] grad_stats: [2.11e-09 5.04e-10] (5.04e-10, 5.95e-09)
+INFO:root:[9,    54] loss: 9.509615e-07 masks: 21.6 17.3 [wd: 4.03e-02] [lr: 3.70e-04] [mem: 7.83e+03] (494.4 ms)
+INFO:root:[9,    54] grad_stats: [1.63e-09 4.28e-10] (4.28e-10, 5.03e-09)
+INFO:root:[9,   108] loss: 9.463176e-07 masks: 21.9 17.2 [wd: 4.03e-02] [lr: 3.80e-04] [mem: 7.83e+03] (496.3 ms)
+INFO:root:[9,   108] grad_stats: [3.72e-09 9.52e-10] (9.52e-10, 1.10e-08)
+INFO:root:avg. loss 9.46317634e-07
+INFO:root:time taken for epoch 0:01:25.845496
+INFO:root:Epoch 10
+INFO:root:[10,     0] loss: 1.090956e-06 masks: 19.0 20.0 [wd: 4.03e-02] [lr: 3.80e-04] [mem: 7.83e+03] (498.7 ms)
+INFO:root:[10,     0] grad_stats: [3.06e-09 8.02e-10] (8.02e-10, 9.04e-09)
+INFO:root:[10,    54] loss: 9.616896e-07 masks: 22.0 17.2 [wd: 4.03e-02] [lr: 3.90e-04] [mem: 7.83e+03] (498.0 ms)
+INFO:root:[10,    54] grad_stats: [1.82e-09 3.85e-10] (3.85e-10, 4.96e-09)
+INFO:root:[10,   108] loss: 9.723944e-07 masks: 21.7 17.4 [wd: 4.04e-02] [lr: 4.00e-04] [mem: 7.83e+03] (496.8 ms)
+INFO:root:[10,   108] grad_stats: [2.65e-09 6.25e-10] (6.25e-10, 7.90e-09)
+INFO:root:avg. loss 9.72394436e-07
+INFO:root:time taken for epoch 0:01:25.495166
+INFO:root:Epoch 11
+INFO:root:[11,     0] loss: 9.632446e-07 masks: 17.0 20.0 [wd: 4.04e-02] [lr: 4.00e-04] [mem: 7.83e+03] (515.5 ms)
+INFO:root:[11,     0] grad_stats: [2.24e-09 6.67e-10] (6.67e-10, 7.41e-09)
+INFO:root:[11,    54] loss: 1.017672e-06 masks: 23.5 16.4 [wd: 4.04e-02] [lr: 4.10e-04] [mem: 7.83e+03] (502.4 ms)
+INFO:root:[11,    54] grad_stats: [3.83e-09 1.05e-09] (1.05e-09, 1.09e-08)
+INFO:root:[11,   108] loss: 1.019800e-06 masks: 22.8 16.8 [wd: 4.04e-02] [lr: 4.20e-04] [mem: 7.83e+03] (500.2 ms)
+INFO:root:[11,   108] grad_stats: [1.60e-09 3.76e-10] (3.75e-10, 4.72e-09)
+INFO:root:avg. loss 1.01979968e-06
+INFO:root:time taken for epoch 0:01:24.922271
+INFO:root:Epoch 12
+INFO:root:[12,     0] loss: 1.478533e-06 masks: 20.0 16.0 [wd: 4.04e-02] [lr: 4.20e-04] [mem: 7.83e+03] (530.7 ms)
+INFO:root:[12,     0] grad_stats: [5.73e-09 1.16e-09] (1.16e-09, 1.59e-08)
+INFO:root:[12,    54] loss: 1.100063e-06 masks: 22.7 16.8 [wd: 4.05e-02] [lr: 4.30e-04] [mem: 7.83e+03] (501.4 ms)
+INFO:root:[12,    54] grad_stats: [2.24e-09 5.10e-10] (5.09e-10, 6.51e-09)
+INFO:root:[12,   108] loss: 1.097928e-06 masks: 21.8 17.2 [wd: 4.05e-02] [lr: 4.40e-04] [mem: 7.83e+03] (498.1 ms)
+INFO:root:[12,   108] grad_stats: [4.83e-09 1.18e-09] (1.16e-09, 1.40e-08)
+INFO:root:avg. loss 1.09792839e-06
+INFO:root:time taken for epoch 0:01:24.701735
+INFO:root:Epoch 13
+INFO:root:[13,     0] loss: 9.626719e-07 masks: 17.0 20.0 [wd: 4.05e-02] [lr: 4.40e-04] [mem: 7.83e+03] (495.5 ms)
+INFO:root:[13,     0] grad_stats: [3.96e-09 8.79e-10] (8.53e-10, 1.18e-08)
+INFO:root:[13,    54] loss: 1.166034e-06 masks: 21.7 17.4 [wd: 4.06e-02] [lr: 4.50e-04] [mem: 7.83e+03] (494.1 ms)
+INFO:root:[13,    54] grad_stats: [4.32e-09 9.83e-10] (9.51e-10, 1.15e-08)
+INFO:root:[13,   108] loss: 1.208566e-06 masks: 21.5 17.6 [wd: 4.06e-02] [lr: 4.60e-04] [mem: 7.83e+03] (495.0 ms)
+INFO:root:[13,   108] grad_stats: [1.30e-08 2.98e-09] (2.84e-09, 3.30e-08)
+INFO:root:avg. loss 1.20856646e-06
+INFO:root:time taken for epoch 0:01:25.515054
+INFO:root:Epoch 14
+INFO:root:[14,     0] loss: 1.028035e-06 masks: 25.0 16.0 [wd: 4.06e-02] [lr: 4.60e-04] [mem: 7.83e+03] (539.5 ms)
+INFO:root:[14,     0] grad_stats: [3.92e-09 1.04e-09] (9.93e-10, 1.15e-08)
+INFO:root:[14,    54] loss: 1.395029e-06 masks: 21.4 17.7 [wd: 4.06e-02] [lr: 4.70e-04] [mem: 7.96e+03] (496.2 ms)
+INFO:root:[14,    54] grad_stats: [7.24e-09 1.64e-09] (1.54e-09, 2.04e-08)
+INFO:root:[14,   108] loss: 1.528553e-06 masks: 21.9 17.4 [wd: 4.07e-02] [lr: 4.80e-04] [mem: 7.96e+03] (497.1 ms)
+INFO:root:[14,   108] grad_stats: [1.53e-08 3.64e-09] (3.38e-09, 4.01e-08)
+INFO:root:avg. loss 1.52855339e-06
+INFO:root:time taken for epoch 0:01:25.769728
+INFO:root:Epoch 15
+INFO:root:[15,     0] loss: 1.615559e-06 masks: 19.0 20.0 [wd: 4.07e-02] [lr: 4.80e-04] [mem: 7.96e+03] (500.3 ms)
+INFO:root:[15,     0] grad_stats: [2.34e-08 5.92e-09] (5.50e-09, 6.75e-08)
+INFO:root:[15,    54] loss: 1.922868e-06 masks: 20.9 17.6 [wd: 4.07e-02] [lr: 4.90e-04] [mem: 7.96e+03] (492.6 ms)
+INFO:root:[15,    54] grad_stats: [7.35e-08 1.75e-08] (1.59e-08, 1.59e-07)
+INFO:root:[15,   108] loss: 2.399898e-06 masks: 21.0 17.6 [wd: 4.08e-02] [lr: 5.00e-04] [mem: 7.96e+03] (493.9 ms)
+INFO:root:[15,   108] grad_stats: [2.07e-07 6.31e-08] (5.74e-08, 4.25e-07)
+INFO:root:avg. loss 2.39989824e-06
+INFO:root:time taken for epoch 0:01:25.879233
+INFO:root:Epoch 16
+INFO:root:[16,     0] loss: 3.338963e-06 masks: 23.0 16.0 [wd: 4.08e-02] [lr: 5.00e-04] [mem: 7.96e+03] (518.6 ms)
+INFO:root:[16,     0] grad_stats: [9.55e-08 2.67e-08] (2.44e-08, 1.84e-07)
+INFO:root:[16,    54] loss: 5.098958e-06 masks: 22.5 17.1 [wd: 4.09e-02] [lr: 5.10e-04] [mem: 7.96e+03] (500.2 ms)
+INFO:root:[16,    54] grad_stats: [4.77e-07 1.28e-07] (1.16e-07, 1.02e-06)
+INFO:root:[16,   108] loss: 5.983894e-06 masks: 22.3 17.1 [wd: 4.09e-02] [lr: 5.20e-04] [mem: 8.10e+03] (500.1 ms)
+INFO:root:[16,   108] grad_stats: [6.02e-07 1.14e-07] (1.02e-07, 1.15e-06)
+INFO:root:avg. loss 5.98389408e-06
+INFO:root:time taken for epoch 0:01:25.633205
+INFO:root:Epoch 17
+INFO:root:[17,     0] loss: 9.329475e-06 masks: 17.0 20.0 [wd: 4.09e-02] [lr: 5.20e-04] [mem: 8.10e+03] (516.7 ms)
+INFO:root:[17,     0] grad_stats: [8.61e-07 1.89e-07] (1.69e-07, 1.72e-06)
+INFO:root:[17,    54] loss: 8.487376e-06 masks: 21.1 17.6 [wd: 4.10e-02] [lr: 5.30e-04] [mem: 8.10e+03] (492.0 ms)
+INFO:root:[17,    54] grad_stats: [1.10e-06 1.85e-07] (1.67e-07, 1.99e-06)
+INFO:root:[17,   108] loss: 9.712358e-06 masks: 21.9 17.3 [wd: 4.10e-02] [lr: 5.40e-04] [mem: 8.10e+03] (496.2 ms)
+INFO:root:[17,   108] grad_stats: [1.07e-06 1.47e-07] (1.34e-07, 2.21e-06)
+INFO:root:avg. loss 9.71235797e-06
+INFO:root:time taken for epoch 0:01:25.441157
+INFO:root:Epoch 18
+INFO:root:[18,     0] loss: 1.324480e-05 masks: 25.0 16.0 [wd: 4.10e-02] [lr: 5.40e-04] [mem: 8.10e+03] (524.4 ms)
+INFO:root:[18,     0] grad_stats: [1.44e-06 1.35e-07] (1.26e-07, 1.73e-06)
+INFO:root:[18,    54] loss: 1.235716e-05 masks: 23.1 16.7 [wd: 4.11e-02] [lr: 5.50e-04] [mem: 8.10e+03] (498.9 ms)
+INFO:root:[18,    54] grad_stats: [1.19e-06 1.99e-07] (1.85e-07, 2.32e-06)
+INFO:root:[18,   108] loss: 1.261545e-05 masks: 22.8 16.8 [wd: 4.11e-02] [lr: 5.60e-04] [mem: 8.10e+03] (499.7 ms)
+INFO:root:[18,   108] grad_stats: [1.64e-06 2.65e-07] (2.37e-07, 3.85e-06)
+INFO:root:avg. loss 1.26154470e-05
+INFO:root:time taken for epoch 0:01:25.287690
+INFO:root:Epoch 19
+INFO:root:[19,     0] loss: 1.337342e-05 masks: 22.0 20.0 [wd: 4.12e-02] [lr: 5.60e-04] [mem: 8.10e+03] (535.6 ms)
+INFO:root:[19,     0] grad_stats: [4.33e-06 6.01e-07] (5.46e-07, 7.78e-06)
+INFO:root:[19,    54] loss: 1.370063e-05 masks: 22.3 17.2 [wd: 4.12e-02] [lr: 5.70e-04] [mem: 8.10e+03] (498.3 ms)
+INFO:root:[19,    54] grad_stats: [7.93e-07 8.09e-08] (7.49e-08, 1.70e-06)
+INFO:root:[19,   108] loss: 1.261569e-05 masks: 22.4 17.1 [wd: 4.13e-02] [lr: 5.80e-04] [mem: 8.10e+03] (498.7 ms)
+INFO:root:[19,   108] grad_stats: [2.22e-06 3.52e-07] (3.28e-07, 4.56e-06)
+INFO:root:avg. loss 1.26156939e-05
+INFO:root:time taken for epoch 0:01:25.011590
+INFO:root:Epoch 20
+INFO:root:[20,     0] loss: 8.188313e-06 masks: 18.0 20.0 [wd: 4.13e-02] [lr: 5.80e-04] [mem: 8.10e+03] (510.5 ms)
+INFO:root:[20,     0] grad_stats: [1.09e-06 1.97e-07] (1.84e-07, 2.66e-06)
+INFO:root:[20,    54] loss: 8.440967e-06 masks: 22.1 17.2 [wd: 4.13e-02] [lr: 5.90e-04] [mem: 8.10e+03] (497.6 ms)
+INFO:root:[20,    54] grad_stats: [3.75e-06 7.09e-07] (6.55e-07, 8.18e-06)
+INFO:root:[20,   108] loss: 6.737595e-06 masks: 21.8 17.4 [wd: 4.14e-02] [lr: 6.00e-04] [mem: 8.10e+03] (496.7 ms)
+INFO:root:[20,   108] grad_stats: [1.55e-06 2.30e-07] (2.15e-07, 4.14e-06)
+INFO:root:avg. loss 6.73759464e-06
+INFO:root:time taken for epoch 0:01:24.975535
+INFO:root:Epoch 21
+INFO:root:[21,     0] loss: 4.569841e-06 masks: 24.0 16.0 [wd: 4.14e-02] [lr: 6.00e-04] [mem: 8.10e+03] (522.1 ms)
+INFO:root:[21,     0] grad_stats: [3.62e-07 4.22e-08] (4.00e-08, 8.48e-07)
+INFO:root:[21,    54] loss: 3.297344e-06 masks: 21.2 17.4 [wd: 4.15e-02] [lr: 6.10e-04] [mem: 8.10e+03] (493.2 ms)
+INFO:root:[21,    54] grad_stats: [7.94e-07 7.36e-08] (7.02e-08, 1.19e-06)
+INFO:root:[21,   108] loss: 2.810328e-06 masks: 21.9 17.1 [wd: 4.16e-02] [lr: 6.20e-04] [mem: 8.10e+03] (497.3 ms)
+INFO:root:[21,   108] grad_stats: [6.65e-07 1.30e-07] (1.23e-07, 2.16e-06)
+INFO:root:avg. loss 2.81032771e-06
+INFO:root:time taken for epoch 0:01:25.960134
+INFO:root:Epoch 22
+INFO:root:[22,     0] loss: 1.739546e-06 masks: 24.0 16.0 [wd: 4.16e-02] [lr: 6.20e-04] [mem: 8.10e+03] (513.5 ms)
+INFO:root:[22,     0] grad_stats: [2.43e-07 1.71e-08] (1.68e-08, 4.71e-07)
+INFO:root:[22,    54] loss: 1.656517e-06 masks: 21.2 17.6 [wd: 4.16e-02] [lr: 6.30e-04] [mem: 8.10e+03] (495.7 ms)
+INFO:root:[22,    54] grad_stats: [2.83e-07 2.89e-08] (2.89e-08, 4.38e-07)
+INFO:root:[22,   108] loss: 1.440530e-06 masks: 21.3 17.5 [wd: 4.17e-02] [lr: 6.40e-04] [mem: 8.10e+03] (495.1 ms)
+INFO:root:[22,   108] grad_stats: [1.41e-07 2.21e-08] (2.09e-08, 3.08e-07)
+INFO:root:avg. loss 1.44053035e-06
+INFO:root:time taken for epoch 0:01:25.799957
+INFO:root:Epoch 23
+INFO:root:[23,     0] loss: 1.022930e-06 masks: 18.0 20.0 [wd: 4.17e-02] [lr: 6.40e-04] [mem: 8.10e+03] (504.2 ms)
+INFO:root:[23,     0] grad_stats: [2.99e-07 4.33e-08] (4.01e-08, 7.78e-07)
+INFO:root:[23,    54] loss: 9.768888e-07 masks: 21.9 17.1 [wd: 4.18e-02] [lr: 6.50e-04] [mem: 8.10e+03] (494.1 ms)
+INFO:root:[23,    54] grad_stats: [2.34e-07 2.30e-08] (2.19e-08, 5.07e-07)
+INFO:root:[23,   108] loss: 8.748467e-07 masks: 22.0 17.1 [wd: 4.19e-02] [lr: 6.60e-04] [mem: 8.10e+03] (496.1 ms)
+INFO:root:[23,   108] grad_stats: [1.52e-07 1.87e-08] (1.78e-08, 2.80e-07)
+INFO:root:avg. loss 8.74846690e-07
+INFO:root:time taken for epoch 0:01:25.100075
+INFO:root:Epoch 24
+INFO:root:[24,     0] loss: 7.360916e-07 masks: 17.0 16.0 [wd: 4.19e-02] [lr: 6.60e-04] [mem: 8.10e+03] (471.3 ms)
+INFO:root:[24,     0] grad_stats: [7.24e-08 5.47e-09] (5.27e-09, 9.23e-08)
+INFO:root:[24,    54] loss: 6.164375e-07 masks: 21.3 17.7 [wd: 4.20e-02] [lr: 6.70e-04] [mem: 8.10e+03] (492.4 ms)
+INFO:root:[24,    54] grad_stats: [6.14e-08 7.02e-09] (6.89e-09, 1.26e-07)
+INFO:root:[24,   108] loss: 5.863250e-07 masks: 22.0 17.5 [wd: 4.20e-02] [lr: 6.80e-04] [mem: 8.10e+03] (496.1 ms)
+INFO:root:[24,   108] grad_stats: [1.24e-07 2.17e-08] (2.11e-08, 2.02e-07)
+INFO:root:avg. loss 5.86325044e-07
+INFO:root:time taken for epoch 0:01:25.122572
+INFO:root:Epoch 25
+INFO:root:[25,     0] loss: 4.583505e-07 masks: 25.0 16.0 [wd: 4.20e-02] [lr: 6.80e-04] [mem: 8.10e+03] (516.5 ms)
+INFO:root:[25,     0] grad_stats: [7.13e-08 4.44e-09] (4.36e-09, 1.31e-07)
+INFO:root:[25,    54] loss: 4.562899e-07 masks: 22.1 17.5 [wd: 4.21e-02] [lr: 6.90e-04] [mem: 8.10e+03] (496.3 ms)
+INFO:root:[25,    54] grad_stats: [3.59e-08 2.58e-09] (2.58e-09, 7.71e-08)
+INFO:root:[25,   108] loss: 4.351987e-07 masks: 22.0 17.2 [wd: 4.22e-02] [lr: 7.00e-04] [mem: 8.10e+03] (496.1 ms)
+INFO:root:[25,   108] grad_stats: [7.14e-08 6.04e-09] (5.49e-09, 1.27e-07)
+INFO:root:avg. loss 4.35198678e-07
+INFO:root:time taken for epoch 0:01:25.907508
+INFO:root:Epoch 26
+INFO:root:[26,     0] loss: 3.899187e-07 masks: 22.0 16.0 [wd: 4.22e-02] [lr: 7.00e-04] [mem: 8.10e+03] (507.0 ms)
+INFO:root:[26,     0] grad_stats: [1.58e-07 1.87e-08] (1.73e-08, 3.21e-07)
+INFO:root:[26,    54] loss: 3.573833e-07 masks: 20.6 17.7 [wd: 4.23e-02] [lr: 7.10e-04] [mem: 8.10e+03] (491.2 ms)
+INFO:root:[26,    54] grad_stats: [4.68e-08 5.22e-09] (4.89e-09, 7.77e-08)
+INFO:root:[26,   108] loss: 3.470174e-07 masks: 21.7 17.2 [wd: 4.24e-02] [lr: 7.20e-04] [mem: 8.10e+03] (496.8 ms)
+INFO:root:[26,   108] grad_stats: [2.75e-08 2.05e-09] (1.97e-09, 4.86e-08)
+INFO:root:avg. loss 3.47017431e-07
+INFO:root:time taken for epoch 0:01:24.871305
+INFO:root:Epoch 27
+INFO:root:[27,     0] loss: 3.898642e-07 masks: 21.0 16.0 [wd: 4.24e-02] [lr: 7.20e-04] [mem: 8.10e+03] (504.6 ms)
+INFO:root:[27,     0] grad_stats: [1.27e-07 8.01e-09] (8.01e-09, 2.26e-07)
+INFO:root:[27,    54] loss: 2.963848e-07 masks: 21.3 17.7 [wd: 4.25e-02] [lr: 7.30e-04] [mem: 8.10e+03] (494.0 ms)
+INFO:root:[27,    54] grad_stats: [1.55e-07 2.00e-08] (1.90e-08, 3.66e-07)
+INFO:root:[27,   108] loss: 2.789757e-07 masks: 21.3 17.7 [wd: 4.26e-02] [lr: 7.40e-04] [mem: 8.10e+03] (494.0 ms)
+INFO:root:[27,   108] grad_stats: [9.58e-08 8.75e-09] (8.15e-09, 1.89e-07)
+INFO:root:avg. loss 2.78975667e-07
+INFO:root:time taken for epoch 0:01:25.799594
+INFO:root:Epoch 28
+INFO:root:[28,     0] loss: 2.134484e-07 masks: 21.0 20.0 [wd: 4.26e-02] [lr: 7.40e-04] [mem: 8.10e+03] (533.5 ms)
+INFO:root:[28,     0] grad_stats: [3.39e-08 4.44e-09] (4.06e-09, 6.75e-08)
+INFO:root:[28,    54] loss: 2.563600e-07 masks: 21.5 17.5 [wd: 4.27e-02] [lr: 7.50e-04] [mem: 8.10e+03] (495.7 ms)
+INFO:root:[28,    54] grad_stats: [7.22e-08 4.80e-09] (4.80e-09, 1.26e-07)
+INFO:root:[28,   108] loss: 2.528364e-07 masks: 21.7 17.4 [wd: 4.28e-02] [lr: 7.60e-04] [mem: 8.10e+03] (496.1 ms)
+INFO:root:[28,   108] grad_stats: [2.99e-08 3.94e-09] (3.83e-09, 9.79e-08)
+INFO:root:avg. loss 2.52836379e-07
+INFO:root:time taken for epoch 0:01:25.180996
+INFO:root:Epoch 29
+INFO:root:[29,     0] loss: 2.543993e-07 masks: 20.0 16.0 [wd: 4.28e-02] [lr: 7.60e-04] [mem: 8.10e+03] (495.3 ms)
+INFO:root:[29,     0] grad_stats: [8.00e-08 8.15e-09] (7.32e-09, 1.41e-07)
+INFO:root:[29,    54] loss: 2.418787e-07 masks: 22.2 17.0 [wd: 4.29e-02] [lr: 7.70e-04] [mem: 8.10e+03] (499.2 ms)
+INFO:root:[29,    54] grad_stats: [2.40e-07 1.73e-08] (1.69e-08, 4.70e-07)
+INFO:root:[29,   108] loss: 2.381058e-07 masks: 22.1 17.0 [wd: 4.30e-02] [lr: 7.80e-04] [mem: 8.10e+03] (499.2 ms)
+INFO:root:[29,   108] grad_stats: [2.57e-08 8.00e-09] (7.13e-09, 6.72e-08)
+INFO:root:avg. loss 2.38105757e-07
+INFO:root:time taken for epoch 0:01:25.008331
+INFO:root:Epoch 30
+INFO:root:[30,     0] loss: 2.124691e-07 masks: 21.0 16.0 [wd: 4.30e-02] [lr: 7.80e-04] [mem: 8.10e+03] (500.6 ms)
+INFO:root:[30,     0] grad_stats: [4.55e-08 4.16e-09] (4.00e-09, 1.03e-07)
+INFO:root:[30,    54] loss: 2.189293e-07 masks: 20.8 17.4 [wd: 4.31e-02] [lr: 7.90e-04] [mem: 8.10e+03] (492.3 ms)
+INFO:root:[30,    54] grad_stats: [5.77e-08 9.38e-09] (8.43e-09, 1.21e-07)
+INFO:root:[30,   108] loss: 2.146621e-07 masks: 21.2 17.3 [wd: 4.32e-02] [lr: 8.00e-04] [mem: 8.10e+03] (495.2 ms)
+INFO:root:[30,   108] grad_stats: [4.87e-08 5.72e-09] (5.72e-09, 1.44e-07)
+INFO:root:avg. loss 2.14662091e-07
+INFO:root:time taken for epoch 0:01:25.794164
+INFO:root:Epoch 31
+INFO:root:[31,     0] loss: 2.112538e-07 masks: 12.0 20.0 [wd: 4.32e-02] [lr: 8.00e-04] [mem: 8.10e+03] (492.6 ms)
+INFO:root:[31,     0] grad_stats: [2.21e-08 6.23e-09] (5.83e-09, 2.72e-08)
+INFO:root:[31,    54] loss: 2.132900e-07 masks: 21.2 17.4 [wd: 4.33e-02] [lr: 8.10e-04] [mem: 8.10e+03] (495.3 ms)
+INFO:root:[31,    54] grad_stats: [3.30e-08 3.41e-09] (3.24e-09, 8.51e-08)
+INFO:root:[31,   108] loss: 2.064915e-07 masks: 22.1 17.0 [wd: 4.34e-02] [lr: 8.20e-04] [mem: 8.10e+03] (499.5 ms)
+INFO:root:[31,   108] grad_stats: [6.40e-08 7.99e-09] (7.38e-09, 1.63e-07)
+INFO:root:avg. loss 2.06491468e-07
+INFO:root:time taken for epoch 0:01:25.264640
+INFO:root:Epoch 32
+INFO:root:[32,     0] loss: 1.880403e-07 masks: 24.0 16.0 [wd: 4.34e-02] [lr: 8.20e-04] [mem: 8.10e+03] (528.9 ms)
+INFO:root:[32,     0] grad_stats: [4.44e-08 7.15e-09] (6.38e-09, 1.03e-07)
+INFO:root:[32,    54] loss: 1.939461e-07 masks: 20.0 17.8 [wd: 4.35e-02] [lr: 8.30e-04] [mem: 8.10e+03] (489.2 ms)
+INFO:root:[32,    54] grad_stats: [5.40e-08 7.10e-09] (6.55e-09, 1.17e-07)
+INFO:root:[32,   108] loss: 1.914469e-07 masks: 20.9 17.6 [wd: 4.36e-02] [lr: 8.40e-04] [mem: 8.10e+03] (493.4 ms)
+INFO:root:[32,   108] grad_stats: [2.87e-08 9.88e-10] (9.81e-10, 3.40e-08)
+INFO:root:avg. loss 1.91446908e-07
+INFO:root:time taken for epoch 0:01:24.813530
+INFO:root:Epoch 33
+INFO:root:[33,     0] loss: 1.709872e-07 masks: 13.0 20.0 [wd: 4.36e-02] [lr: 8.40e-04] [mem: 8.10e+03] (470.1 ms)
+INFO:root:[33,     0] grad_stats: [3.33e-08 1.28e-09] (1.28e-09, 5.26e-08)
+INFO:root:[33,    54] loss: 1.791901e-07 masks: 22.9 17.0 [wd: 4.37e-02] [lr: 8.50e-04] [mem: 8.10e+03] (501.6 ms)
+INFO:root:[33,    54] grad_stats: [3.72e-08 3.74e-09] (3.68e-09, 7.50e-08)
+INFO:root:[33,   108] loss: 1.820879e-07 masks: 22.4 17.1 [wd: 4.39e-02] [lr: 8.60e-04] [mem: 8.10e+03] (499.9 ms)
+INFO:root:[33,   108] grad_stats: [2.28e-08 3.14e-09] (2.85e-09, 3.62e-08)
+INFO:root:avg. loss 1.82087894e-07
+INFO:root:time taken for epoch 0:01:26.173097
+INFO:root:Epoch 34
+INFO:root:[34,     0] loss: 1.722395e-07 masks: 16.0 20.0 [wd: 4.39e-02] [lr: 8.60e-04] [mem: 8.10e+03] (491.2 ms)
+INFO:root:[34,     0] grad_stats: [3.34e-08 5.47e-09] (5.35e-09, 1.02e-07)
+INFO:root:[34,    54] loss: 1.739074e-07 masks: 21.6 17.5 [wd: 4.40e-02] [lr: 8.70e-04] [mem: 8.10e+03] (494.7 ms)
+INFO:root:[34,    54] grad_stats: [2.59e-08 2.34e-09] (2.34e-09, 4.47e-08)
+INFO:root:[34,   108] loss: 1.735624e-07 masks: 21.2 17.6 [wd: 4.41e-02] [lr: 8.80e-04] [mem: 8.10e+03] (495.1 ms)
+INFO:root:[34,   108] grad_stats: [4.34e-08 7.03e-09] (6.96e-09, 1.10e-07)
+INFO:root:avg. loss 1.73562384e-07
+INFO:root:time taken for epoch 0:01:24.975347
+INFO:root:Epoch 35
+INFO:root:[35,     0] loss: 2.054433e-07 masks: 24.0 16.0 [wd: 4.41e-02] [lr: 8.80e-04] [mem: 8.10e+03] (514.1 ms)
+INFO:root:[35,     0] grad_stats: [5.34e-08 3.63e-09] (3.46e-09, 9.70e-08)
+INFO:root:[35,    54] loss: 1.738474e-07 masks: 22.0 17.0 [wd: 4.42e-02] [lr: 8.90e-04] [mem: 8.10e+03] (495.6 ms)
+INFO:root:[35,    54] grad_stats: [4.52e-08 5.78e-09] (5.60e-09, 7.64e-08)
+INFO:root:[35,   108] loss: 1.683978e-07 masks: 21.7 17.4 [wd: 4.43e-02] [lr: 9.00e-04] [mem: 8.10e+03] (496.1 ms)
+INFO:root:[35,   108] grad_stats: [4.59e-08 4.67e-09] (4.29e-09, 1.01e-07)
+INFO:root:avg. loss 1.68397816e-07
+INFO:root:time taken for epoch 0:01:25.623333
+INFO:root:Epoch 36
+INFO:root:[36,     0] loss: 1.730480e-07 masks: 26.0 16.0 [wd: 4.43e-02] [lr: 9.00e-04] [mem: 8.10e+03] (531.4 ms)
+INFO:root:[36,     0] grad_stats: [4.85e-08 3.99e-09] (3.92e-09, 7.46e-08)
+INFO:root:[36,    54] loss: 1.628589e-07 masks: 22.2 17.3 [wd: 4.45e-02] [lr: 9.10e-04] [mem: 8.10e+03] (499.5 ms)
+INFO:root:[36,    54] grad_stats: [2.44e-08 3.23e-09] (3.11e-09, 3.28e-08)
+INFO:root:[36,   108] loss: 1.702506e-07 masks: 22.2 17.1 [wd: 4.46e-02] [lr: 9.20e-04] [mem: 8.10e+03] (498.7 ms)
+INFO:root:[36,   108] grad_stats: [2.70e-08 2.99e-09] (2.81e-09, 6.73e-08)
+INFO:root:avg. loss 1.70250610e-07
+INFO:root:time taken for epoch 0:01:25.274827
+INFO:root:Epoch 37
+INFO:root:[37,     0] loss: 1.381316e-07 masks: 23.0 20.0 [wd: 4.46e-02] [lr: 9.20e-04] [mem: 8.10e+03] (554.0 ms)
+INFO:root:[37,     0] grad_stats: [2.51e-08 4.64e-09] (4.20e-09, 8.37e-08)
+INFO:root:[37,    54] loss: 1.510426e-07 masks: 22.3 17.2 [wd: 4.47e-02] [lr: 9.30e-04] [mem: 8.10e+03] (498.0 ms)
+INFO:root:[37,    54] grad_stats: [7.16e-08 4.52e-09] (4.52e-09, 1.20e-07)
+INFO:root:[37,   108] loss: 1.567387e-07 masks: 22.1 17.0 [wd: 4.48e-02] [lr: 9.40e-04] [mem: 8.10e+03] (497.7 ms)
+INFO:root:[37,   108] grad_stats: [7.64e-08 4.74e-09] (4.74e-09, 1.54e-07)
+INFO:root:avg. loss 1.56738738e-07
+INFO:root:time taken for epoch 0:01:25.771815
+INFO:root:Epoch 38
+INFO:root:[38,     0] loss: 1.200143e-07 masks: 23.0 16.0 [wd: 4.48e-02] [lr: 9.40e-04] [mem: 8.10e+03] (511.9 ms)
+INFO:root:[38,     0] grad_stats: [1.39e-08 3.28e-09] (3.08e-09, 4.32e-08)
+INFO:root:[38,    54] loss: 4.312169e-07 masks: 22.9 17.0 [wd: 4.50e-02] [lr: 9.50e-04] [mem: 8.10e+03] (500.3 ms)
+INFO:root:[38,    54] grad_stats: [1.97e-08 7.02e-09] (6.38e-09, 4.42e-08)
+INFO:root:[38,   108] loss: 2.959947e-07 masks: 22.8 16.9 [wd: 4.51e-02] [lr: 9.60e-04] [mem: 8.10e+03] (502.0 ms)
+INFO:root:[38,   108] grad_stats: [2.68e-08 1.62e-09] (1.62e-09, 5.54e-08)
+INFO:root:avg. loss 2.95994664e-07
+INFO:root:time taken for epoch 0:01:25.622534
+INFO:root:Epoch 39
+INFO:root:[39,     0] loss: 1.872253e-07 masks: 23.0 16.0 [wd: 4.51e-02] [lr: 9.60e-04] [mem: 8.10e+03] (511.3 ms)
+INFO:root:[39,     0] grad_stats: [3.82e-08 5.40e-09] (5.02e-09, 1.33e-07)
+INFO:root:[39,    54] loss: 1.461915e-07 masks: 21.6 17.6 [wd: 4.52e-02] [lr: 9.70e-04] [mem: 8.10e+03] (496.3 ms)
+INFO:root:[39,    54] grad_stats: [1.92e-08 1.01e-09] (9.44e-10, 2.72e-08)
+INFO:root:[39,   108] loss: 1.464718e-07 masks: 21.1 17.7 [wd: 4.54e-02] [lr: 9.80e-04] [mem: 8.10e+03] (495.5 ms)
+INFO:root:[39,   108] grad_stats: [4.13e-08 2.56e-09] (2.50e-09, 5.79e-08)
+INFO:root:avg. loss 1.46471769e-07
+INFO:root:time taken for epoch 0:01:25.555244
+INFO:root:Epoch 40
+INFO:root:[40,     0] loss: 1.549228e-07 masks: 18.0 20.0 [wd: 4.54e-02] [lr: 9.80e-04] [mem: 8.10e+03] (492.0 ms)
+INFO:root:[40,     0] grad_stats: [1.89e-08 1.11e-09] (1.11e-09, 2.94e-08)
+INFO:root:[40,    54] loss: 1.544421e-07 masks: 22.0 17.4 [wd: 4.55e-02] [lr: 9.90e-04] [mem: 8.10e+03] (497.1 ms)
+INFO:root:[40,    54] grad_stats: [2.56e-08 2.24e-09] (2.24e-09, 3.64e-08)
+INFO:root:[40,   108] loss: 1.541906e-07 masks: 22.0 17.3 [wd: 4.57e-02] [lr: 1.00e-03] [mem: 8.10e+03] (496.8 ms)
+INFO:root:[40,   108] grad_stats: [2.68e-08 3.43e-09] (3.18e-09, 7.07e-08)
+INFO:root:avg. loss 1.54190648e-07
+INFO:root:time taken for epoch 0:01:26.023041
+INFO:root:Epoch 41
+INFO:root:[41,     0] loss: 1.554243e-07 masks: 15.0 20.0 [wd: 4.57e-02] [lr: 1.00e-03] [mem: 8.10e+03] (484.3 ms)
+INFO:root:[41,     0] grad_stats: [2.16e-08 3.05e-09] (2.84e-09, 6.47e-08)
+INFO:root:[41,    54] loss: 1.688960e-07 masks: 22.2 17.3 [wd: 4.58e-02] [lr: 1.00e-03] [mem: 8.10e+03] (497.9 ms)
+INFO:root:[41,    54] grad_stats: [2.40e-08 2.33e-09] (2.33e-09, 6.39e-08)
+INFO:root:[41,   108] loss: 1.659949e-07 masks: 22.6 17.1 [wd: 4.59e-02] [lr: 1.00e-03] [mem: 8.10e+03] (499.8 ms)
+INFO:root:[41,   108] grad_stats: [3.80e-08 2.69e-09] (2.69e-09, 7.81e-08)
+INFO:root:avg. loss 1.65994859e-07
+INFO:root:time taken for epoch 0:01:25.193366
+INFO:root:Epoch 42
+INFO:root:[42,     0] loss: 1.288898e-07 masks: 18.0 20.0 [wd: 4.59e-02] [lr: 1.00e-03] [mem: 8.10e+03] (502.3 ms)
+INFO:root:[42,     0] grad_stats: [4.95e-08 6.68e-09] (6.68e-09, 8.77e-08)
+INFO:root:[42,    54] loss: 3.062831e-07 masks: 21.3 17.3 [wd: 4.61e-02] [lr: 1.00e-03] [mem: 8.10e+03] (495.8 ms)
+INFO:root:[42,    54] grad_stats: [6.32e-08 9.81e-09] (9.36e-09, 2.26e-07)
+INFO:root:[42,   108] loss: 2.294836e-07 masks: 21.7 17.2 [wd: 4.62e-02] [lr: 1.00e-03] [mem: 8.10e+03] (497.2 ms)
+INFO:root:[42,   108] grad_stats: [1.93e-08 2.84e-09] (2.60e-09, 6.63e-08)
+INFO:root:avg. loss 2.29483559e-07
+INFO:root:time taken for epoch 0:01:25.219153
+INFO:root:Epoch 43
+INFO:root:[43,     0] loss: 1.139687e-07 masks: 23.0 16.0 [wd: 4.62e-02] [lr: 1.00e-03] [mem: 8.10e+03] (508.0 ms)
+INFO:root:[43,     0] grad_stats: [2.10e-08 3.35e-09] (3.08e-09, 8.84e-08)
+INFO:root:[43,    54] loss: 1.486576e-07 masks: 20.5 17.8 [wd: 4.64e-02] [lr: 1.00e-03] [mem: 8.10e+03] (492.1 ms)
+INFO:root:[43,    54] grad_stats: [3.78e-08 6.77e-09] (6.54e-09, 1.60e-07)
+INFO:root:[43,   108] loss: 1.340830e-06 masks: 21.4 17.3 [wd: 4.65e-02] [lr: 1.00e-03] [mem: 8.10e+03] (494.2 ms)
+INFO:root:[43,   108] grad_stats: [4.91e-08 7.89e-09] (7.31e-09, 1.63e-07)
+INFO:root:avg. loss 1.34082999e-06
+INFO:root:time taken for epoch 0:01:25.529121
+INFO:root:Epoch 44
+INFO:root:[44,     0] loss: 1.246117e-07 masks: 14.0 20.0 [wd: 4.65e-02] [lr: 1.00e-03] [mem: 8.10e+03] (487.5 ms)
+INFO:root:[44,     0] grad_stats: [2.32e-08 4.02e-09] (4.00e-09, 7.53e-08)
+INFO:root:[44,    54] loss: 1.415611e-07 masks: 21.6 17.2 [wd: 4.67e-02] [lr: 1.00e-03] [mem: 8.10e+03] (495.5 ms)
+INFO:root:[44,    54] grad_stats: [3.25e-08 2.67e-09] (2.54e-09, 7.08e-08)
+INFO:root:[44,   108] loss: 1.814052e-06 masks: 21.9 17.2 [wd: 4.68e-02] [lr: 1.00e-03] [mem: 8.10e+03] (497.4 ms)
+INFO:root:[44,   108] grad_stats: [1.39e-08 3.00e-09] (2.89e-09, 5.67e-08)
+INFO:root:avg. loss 1.81405161e-06
+INFO:root:time taken for epoch 0:01:25.139946
+INFO:root:Epoch 45
+INFO:root:[45,     0] loss: 2.520013e-07 masks: 20.0 16.0 [wd: 4.68e-02] [lr: 1.00e-03] [mem: 8.10e+03] (511.8 ms)
+INFO:root:[45,     0] grad_stats: [2.11e-08 4.03e-09] (3.92e-09, 8.66e-08)
+INFO:root:[45,    54] loss: 1.216214e-06 masks: 21.7 17.3 [wd: 4.70e-02] [lr: 1.00e-03] [mem: 8.10e+03] (494.7 ms)
+INFO:root:[45,    54] grad_stats: [5.67e-12 1.19e-12] (1.16e-12, 7.14e-12)
+INFO:root:[45,   108] loss: 6.620856e-07 masks: 22.3 17.1 [wd: 4.71e-02] [lr: 1.00e-03] [mem: 8.10e+03] (498.3 ms)
+INFO:root:[45,   108] grad_stats: [2.96e-12 1.11e-12] (1.08e-12, 3.70e-12)
+INFO:root:avg. loss 6.62085592e-07
+INFO:root:time taken for epoch 0:01:25.969767
+INFO:root:Epoch 46
+INFO:root:[46,     0] loss: 2.069275e-08 masks: 25.0 16.0 [wd: 4.72e-02] [lr: 1.00e-03] [mem: 8.10e+03] (518.2 ms)
+INFO:root:[46,     0] grad_stats: [2.79e-12 7.46e-13] (7.21e-13, 4.92e-12)
+INFO:root:[46,    54] loss: 4.128811e-05 masks: 21.7 17.7 [wd: 4.73e-02] [lr: 1.00e-03] [mem: 8.10e+03] (497.3 ms)
+INFO:root:[46,    54] grad_stats: [2.11e-09 9.65e-11] (9.34e-11, 2.23e-09)
+INFO:root:[46,   108] loss: 1.456351e-04 masks: 21.8 17.4 [wd: 4.75e-02] [lr: 1.00e-03] [mem: 8.10e+03] (497.3 ms)
+INFO:root:[46,   108] grad_stats: [1.40e-09 1.12e-10] (1.12e-10, 1.78e-09)
+INFO:root:avg. loss 1.45635074e-04
+INFO:root:time taken for epoch 0:01:25.526912
+INFO:root:Epoch 47
+INFO:root:[47,     0] loss: 7.252080e-04 masks: 17.0 20.0 [wd: 4.75e-02] [lr: 1.00e-03] [mem: 8.10e+03] (497.9 ms)
+INFO:root:[47,     0] grad_stats: [2.82e-10 1.27e-10] (1.24e-10, 3.33e-10)
+INFO:root:[47,    54] loss: 3.967200e-04 masks: 22.0 17.5 [wd: 4.76e-02] [lr: 1.00e-03] [mem: 8.10e+03] (497.7 ms)
+INFO:root:[47,    54] grad_stats: [1.11e-09 2.22e-10] (2.20e-10, 1.11e-09)
+INFO:root:[47,   108] loss: 6.051540e-04 masks: 22.2 17.4 [wd: 4.78e-02] [lr: 9.99e-04] [mem: 8.10e+03] (499.3 ms)
+INFO:root:[47,   108] grad_stats: [4.77e-10 2.01e-10] (1.66e-10, 8.92e-10)
+INFO:root:avg. loss 6.05153991e-04
+INFO:root:time taken for epoch 0:01:25.623482
+INFO:root:Epoch 48
+INFO:root:[48,     0] loss: 8.431266e-04 masks: 36.0 12.0 [wd: 4.78e-02] [lr: 9.99e-04] [mem: 8.10e+03] (572.9 ms)
+INFO:root:[48,     0] grad_stats: [8.04e-10 2.62e-10] (2.27e-10, 8.04e-10)
+INFO:root:[48,    54] loss: 1.108936e-03 masks: 22.3 17.4 [wd: 4.80e-02] [lr: 9.99e-04] [mem: 8.10e+03] (499.0 ms)
+INFO:root:[48,    54] grad_stats: [7.37e-10 3.61e-10] (2.89e-10, 7.63e-10)
+INFO:root:[48,   108] loss: 1.349247e-03 masks: 22.7 17.0 [wd: 4.81e-02] [lr: 9.99e-04] [mem: 8.10e+03] (500.1 ms)
+INFO:root:[48,   108] grad_stats: [1.08e-08 2.14e-09] (1.75e-09, 1.15e-08)
+INFO:root:avg. loss 1.34924701e-03
+INFO:root:time taken for epoch 0:01:26.233991
+INFO:root:Epoch 49
+INFO:root:[49,     0] loss: 2.009840e-03 masks: 21.0 16.0 [wd: 4.81e-02] [lr: 9.99e-04] [mem: 8.10e+03] (501.7 ms)
+INFO:root:[49,     0] grad_stats: [3.62e-09 1.63e-09] (1.58e-09, 4.21e-09)
+INFO:root:[49,    54] loss: 1.794165e-03 masks: 21.2 17.7 [wd: 4.83e-02] [lr: 9.99e-04] [mem: 8.10e+03] (493.8 ms)
+INFO:root:[49,    54] grad_stats: [5.58e-07 1.79e-07] (1.75e-07, 7.15e-07)
+INFO:root:[49,   108] loss: 1.383228e-03 masks: 21.7 17.5 [wd: 4.85e-02] [lr: 9.99e-04] [mem: 8.10e+03] (495.8 ms)
+INFO:root:[49,   108] grad_stats: [1.04e-10 4.82e-12] (1.77e-12, 1.20e-10)
+INFO:root:avg. loss 1.38322774e-03
+INFO:root:time taken for epoch 0:01:24.615864
+INFO:root:Epoch 50
+INFO:root:[50,     0] loss: 4.826567e-05 masks: 20.0 20.0 [wd: 4.85e-02] [lr: 9.99e-04] [mem: 8.10e+03] (500.8 ms)
+INFO:root:[50,     0] grad_stats: [7.87e-10 1.56e-10] (7.33e-12, 1.93e-09)
+INFO:root:[50,    54] loss: 2.977019e-05 masks: 21.9 17.7 [wd: 4.86e-02] [lr: 9.99e-04] [mem: 8.10e+03] (495.6 ms)
+INFO:root:[50,    54] grad_stats: [8.51e-10 4.48e-11] (4.20e-12, 8.51e-10)
+INFO:root:[50,   108] loss: 7.153171e-05 masks: 22.0 17.3 [wd: 4.88e-02] [lr: 9.99e-04] [mem: 8.10e+03] (496.4 ms)
+INFO:root:[50,   108] grad_stats: [8.30e-11 1.26e-11] (4.38e-12, 9.96e-11)
+INFO:root:avg. loss 7.15317097e-05
+INFO:root:time taken for epoch 0:01:26.013825
+INFO:root:Epoch 51
+INFO:root:[51,     0] loss: 2.236122e-04 masks: 28.0 16.0 [wd: 4.88e-02] [lr: 9.99e-04] [mem: 8.10e+03] (539.8 ms)
+INFO:root:[51,     0] grad_stats: [3.79e-09 4.39e-11] (7.90e-12, 3.79e-09)
+INFO:root:[51,    54] loss: 2.835243e-04 masks: 23.3 17.1 [wd: 4.90e-02] [lr: 9.99e-04] [mem: 8.10e+03] (504.7 ms)
+INFO:root:[51,    54] grad_stats: [2.11e-10 9.54e-12] (5.68e-12, 3.26e-10)
+INFO:root:[51,   108] loss: 2.194279e-04 masks: 22.5 17.2 [wd: 4.92e-02] [lr: 9.99e-04] [mem: 8.10e+03] (501.3 ms)
+INFO:root:[51,   108] grad_stats: [1.64e-10 3.71e-11] (3.98e-12, 4.22e-10)
+INFO:root:avg. loss 2.19427912e-04
+INFO:root:time taken for epoch 0:01:25.708771
+INFO:root:Epoch 52
+INFO:root:[52,     0] loss: 1.187852e-04 masks: 20.0 20.0 [wd: 4.92e-02] [lr: 9.99e-04] [mem: 8.10e+03] (502.9 ms)
+INFO:root:[52,     0] grad_stats: [5.06e-08 1.13e-08] (2.53e-09, 5.06e-08)
+INFO:root:[52,    54] loss: 7.850239e-05 masks: 21.9 17.1 [wd: 4.93e-02] [lr: 9.98e-04] [mem: 8.10e+03] (495.2 ms)
+INFO:root:[52,    54] grad_stats: [4.08e-10 5.70e-11] (3.66e-12, 4.08e-10)
+INFO:root:[52,   108] loss: 6.309932e-05 masks: 22.1 17.1 [wd: 4.95e-02] [lr: 9.98e-04] [mem: 8.10e+03] (496.9 ms)
+INFO:root:[52,   108] grad_stats: [8.06e-10 4.76e-10] (7.52e-12, 3.86e-09)
+INFO:root:avg. loss 6.30993249e-05
+INFO:root:time taken for epoch 0:01:25.544202
+INFO:root:Epoch 53
+INFO:root:[53,     0] loss: 5.702983e-05 masks: 22.0 20.0 [wd: 4.95e-02] [lr: 9.98e-04] [mem: 8.10e+03] (527.1 ms)
+INFO:root:[53,     0] grad_stats: [2.52e-07 1.90e-09] (1.80e-10, 4.43e-07)
+INFO:root:[53,    54] loss: 3.872777e-05 masks: 20.8 17.9 [wd: 4.97e-02] [lr: 9.98e-04] [mem: 8.10e+03] (489.3 ms)
+INFO:root:[53,    54] grad_stats: [2.13e-08 3.19e-09] (7.03e-10, 3.22e-08)
+INFO:root:[53,   108] loss: 3.535297e-05 masks: 20.9 17.8 [wd: 4.99e-02] [lr: 9.98e-04] [mem: 8.10e+03] (492.6 ms)
+INFO:root:[53,   108] grad_stats: [1.41e-09 6.64e-12] (1.38e-12, 1.41e-09)
+INFO:root:avg. loss 3.53529696e-05
+INFO:root:time taken for epoch 0:01:25.167727
+INFO:root:Epoch 54
+INFO:root:[54,     0] loss: 2.839355e-05 masks: 26.0 16.0 [wd: 4.99e-02] [lr: 9.98e-04] [mem: 8.10e+03] (531.9 ms)
+INFO:root:[54,     0] grad_stats: [2.43e-09 1.62e-11] (3.53e-12, 2.43e-09)
+INFO:root:[54,    54] loss: 2.746097e-05 masks: 21.9 17.4 [wd: 5.01e-02] [lr: 9.98e-04] [mem: 8.10e+03] (498.9 ms)
+INFO:root:[54,    54] grad_stats: [4.80e-10 6.71e-10] (1.67e-11, 2.51e-09)
+INFO:root:[54,   108] loss: 2.604997e-05 masks: 21.8 17.4 [wd: 5.03e-02] [lr: 9.98e-04] [mem: 8.10e+03] (497.1 ms)
+INFO:root:[54,   108] grad_stats: [5.46e-09 1.24e-10] (6.95e-12, 5.46e-09)
+INFO:root:avg. loss 2.60499741e-05
+INFO:root:time taken for epoch 0:01:24.755953
+INFO:root:Epoch 55
+INFO:root:[55,     0] loss: 1.071383e-05 masks: 15.0 20.0 [wd: 5.03e-02] [lr: 9.98e-04] [mem: 8.10e+03] (483.7 ms)
+INFO:root:[55,     0] grad_stats: [4.32e-09 2.01e-10] (5.25e-11, 1.48e-08)
+INFO:root:[55,    54] loss: 1.992059e-05 masks: 20.8 17.5 [wd: 5.05e-02] [lr: 9.98e-04] [mem: 8.10e+03] (489.8 ms)
+INFO:root:[55,    54] grad_stats: [7.41e-11 6.30e-12] (1.05e-12, 7.41e-11)
+INFO:root:[55,   108] loss: 1.884215e-05 masks: 20.8 17.6 [wd: 5.06e-02] [lr: 9.97e-04] [mem: 8.10e+03] (491.8 ms)
+INFO:root:[55,   108] grad_stats: [3.03e-09 1.18e-09] (2.77e-10, 4.04e-09)
+INFO:root:avg. loss 1.88421538e-05
+INFO:root:time taken for epoch 0:01:25.119194
+INFO:root:Epoch 56
+INFO:root:[56,     0] loss: 2.027859e-05 masks: 11.0 20.0 [wd: 5.06e-02] [lr: 9.97e-04] [mem: 8.10e+03] (473.7 ms)
+INFO:root:[56,     0] grad_stats: [4.03e-10 2.66e-11] (4.93e-12, 9.25e-10)
+INFO:root:[56,    54] loss: 2.117750e-05 masks: 20.8 17.7 [wd: 5.08e-02] [lr: 9.97e-04] [mem: 8.10e+03] (490.2 ms)
+INFO:root:[56,    54] grad_stats: [3.26e-08 1.43e-09] (3.04e-10, 1.12e-07)
+INFO:root:[56,   108] loss: 2.040389e-05 masks: 21.6 17.5 [wd: 5.10e-02] [lr: 9.97e-04] [mem: 8.10e+03] (494.6 ms)
+INFO:root:[56,   108] grad_stats: [4.67e-08 1.75e-09] (3.44e-10, 4.67e-08)
+INFO:root:avg. loss 2.04038859e-05
+INFO:root:time taken for epoch 0:01:25.483568
+INFO:root:Epoch 57
+INFO:root:[57,     0] loss: 3.794289e-05 masks: 15.0 20.0 [wd: 5.10e-02] [lr: 9.97e-04] [mem: 8.10e+03] (489.9 ms)
+INFO:root:[57,     0] grad_stats: [2.44e-10 4.23e-11] (3.99e-12, 5.54e-10)
+INFO:root:[57,    54] loss: 2.276784e-05 masks: 20.7 17.7 [wd: 5.12e-02] [lr: 9.97e-04] [mem: 8.10e+03] (494.2 ms)
+INFO:root:[57,    54] grad_stats: [1.37e-10 4.13e-12] (1.72e-12, 1.37e-10)
+INFO:root:[57,   108] loss: 2.377758e-05 masks: 20.6 17.7 [wd: 5.14e-02] [lr: 9.97e-04] [mem: 8.10e+03] (494.9 ms)
+INFO:root:[57,   108] grad_stats: [1.21e-10 5.00e-11] (1.17e-12, 3.06e-10)
+INFO:root:avg. loss 2.37775764e-05
+INFO:root:time taken for epoch 0:01:24.746150
+INFO:root:Epoch 58
+INFO:root:[58,     0] loss: 1.608897e-05 masks: 33.0 12.0 [wd: 5.14e-02] [lr: 9.97e-04] [mem: 8.10e+03] (542.4 ms)
+INFO:root:[58,     0] grad_stats: [4.82e-08 1.17e-09] (7.62e-11, 4.82e-08)
+INFO:root:[58,    54] loss: 2.011758e-05 masks: 22.6 16.9 [wd: 5.16e-02] [lr: 9.96e-04] [mem: 8.10e+03] (500.2 ms)
+INFO:root:[58,    54] grad_stats: [3.97e-11 1.43e-12] (6.42e-13, 1.24e-10)
+INFO:root:[58,   108] loss: 1.983236e-05 masks: 22.7 16.9 [wd: 5.18e-02] [lr: 9.96e-04] [mem: 8.10e+03] (500.6 ms)
+INFO:root:[58,   108] grad_stats: [6.76e-09 1.70e-10] (1.12e-11, 7.38e-09)
+INFO:root:avg. loss 1.98323575e-05
+INFO:root:time taken for epoch 0:01:26.082167
+INFO:root:Epoch 59
+INFO:root:[59,     0] loss: 6.579505e-06 masks: 22.0 16.0 [wd: 5.18e-02] [lr: 9.96e-04] [mem: 8.10e+03] (506.9 ms)
+INFO:root:[59,     0] grad_stats: [6.14e-05 3.97e-08] (8.07e-09, 6.14e-05)
+INFO:root:[59,    54] loss: 1.745028e-05 masks: 21.8 17.3 [wd: 5.20e-02] [lr: 9.96e-04] [mem: 8.10e+03] (495.9 ms)
+INFO:root:[59,    54] grad_stats: [4.08e-06 1.35e-07] (3.59e-08, 4.08e-06)
+INFO:root:[59,   108] loss: 1.673493e-05 masks: 21.6 17.3 [wd: 5.22e-02] [lr: 9.96e-04] [mem: 8.10e+03] (494.8 ms)
+INFO:root:[59,   108] grad_stats: [1.41e-10 3.41e-12] (2.54e-13, 1.41e-10)
+INFO:root:avg. loss 1.67349266e-05
+INFO:root:time taken for epoch 0:01:24.596267
+INFO:root:Epoch 60
+INFO:root:[60,     0] loss: 6.480108e-06 masks: 27.0 16.0 [wd: 5.22e-02] [lr: 9.96e-04] [mem: 8.10e+03] (526.7 ms)
+INFO:root:[60,     0] grad_stats: [1.19e-10 8.30e-13] (3.85e-13, 1.19e-10)
+INFO:root:[60,    54] loss: 1.157276e-05 masks: 20.5 18.1 [wd: 5.24e-02] [lr: 9.96e-04] [mem: 8.10e+03] (490.5 ms)
+INFO:root:[60,    54] grad_stats: [2.16e-08 3.73e-09] (6.12e-11, 4.72e-08)
+INFO:root:[60,   108] loss: 1.530624e-05 masks: 21.4 17.8 [wd: 5.26e-02] [lr: 9.95e-04] [mem: 8.10e+03] (495.5 ms)
+INFO:root:[60,   108] grad_stats: [1.33e-08 2.65e-10] (6.65e-11, 2.09e-08)
+INFO:root:avg. loss 1.53062351e-05
+INFO:root:time taken for epoch 0:01:25.482016
+INFO:root:Epoch 61
+INFO:root:[61,     0] loss: 2.618941e-06 masks: 12.0 20.0 [wd: 5.26e-02] [lr: 9.95e-04] [mem: 8.10e+03] (485.6 ms)
+INFO:root:[61,     0] grad_stats: [8.57e-08 2.65e-10] (5.50e-11, 8.57e-08)
+INFO:root:[61,    54] loss: 2.027048e-05 masks: 22.5 16.9 [wd: 5.29e-02] [lr: 9.95e-04] [mem: 8.10e+03] (500.4 ms)
+INFO:root:[61,    54] grad_stats: [6.48e-11 3.75e-13] (2.56e-13, 1.89e-10)
+INFO:root:[61,   108] loss: 1.976646e-05 masks: 22.1 17.0 [wd: 5.31e-02] [lr: 9.95e-04] [mem: 8.10e+03] (499.1 ms)
+INFO:root:[61,   108] grad_stats: [3.11e-10 1.83e-11] (3.66e-12, 3.11e-10)
+INFO:root:avg. loss 1.97664552e-05
+INFO:root:time taken for epoch 0:01:25.681079
+INFO:root:Epoch 62
+INFO:root:[62,     0] loss: 4.302818e-05 masks: 21.0 16.0 [wd: 5.31e-02] [lr: 9.95e-04] [mem: 8.10e+03] (500.8 ms)
+INFO:root:[62,     0] grad_stats: [1.02e-09 5.06e-10] (1.38e-11, 2.57e-09)
+INFO:root:[62,    54] loss: 2.057100e-05 masks: 22.2 16.9 [wd: 5.33e-02] [lr: 9.95e-04] [mem: 8.10e+03] (499.9 ms)
+INFO:root:[62,    54] grad_stats: [2.15e-11 2.10e-13] (8.72e-14, 2.15e-11)
+INFO:root:[62,   108] loss: 1.505799e-05 masks: 22.5 16.9 [wd: 5.35e-02] [lr: 9.94e-04] [mem: 8.10e+03] (500.6 ms)
+INFO:root:[62,   108] grad_stats: [2.63e-12 2.22e-13] (1.10e-13, 2.63e-12)
+INFO:root:avg. loss 1.50579902e-05
+INFO:root:time taken for epoch 0:01:26.109201
+INFO:root:Epoch 63
+INFO:root:[63,     0] loss: 1.324294e-06 masks: 26.0 16.0 [wd: 5.35e-02] [lr: 9.94e-04] [mem: 8.10e+03] (521.6 ms)
+INFO:root:[63,     0] grad_stats: [1.37e-12 2.06e-13] (9.34e-14, 1.71e-12)
+INFO:root:[63,    54] loss: 3.545248e-06 masks: 22.6 16.7 [wd: 5.37e-02] [lr: 9.94e-04] [mem: 8.10e+03] (494.8 ms)
+INFO:root:[63,    54] grad_stats: [4.62e-12 1.88e-13] (5.64e-14, 4.62e-12)
+INFO:root:[63,   108] loss: 2.943662e-06 masks: 21.5 17.2 [wd: 5.39e-02] [lr: 9.94e-04] [mem: 8.10e+03] (492.4 ms)
+INFO:root:[63,   108] grad_stats: [5.83e-12 7.64e-14] (1.91e-14, 6.07e-12)
+INFO:root:avg. loss 2.94366160e-06
+INFO:root:time taken for epoch 0:01:25.160739
+INFO:root:Epoch 64
+INFO:root:[64,     0] loss: 1.986841e-06 masks: 28.0 16.0 [wd: 5.39e-02] [lr: 9.94e-04] [mem: 8.10e+03] (539.4 ms)
+INFO:root:[64,     0] grad_stats: [2.48e-11 5.84e-13] (1.94e-13, 5.77e-11)
+INFO:root:[64,    54] loss: 1.144641e-06 masks: 22.9 16.8 [wd: 5.41e-02] [lr: 9.94e-04] [mem: 8.10e+03] (498.3 ms)
+INFO:root:[64,    54] grad_stats: [2.25e-12 1.62e-13] (5.74e-14, 3.59e-12)
+INFO:root:[64,   108] loss: 9.683565e-07 masks: 22.2 17.2 [wd: 5.44e-02] [lr: 9.93e-04] [mem: 8.10e+03] (498.0 ms)
+INFO:root:[64,   108] grad_stats: [4.05e-12 2.57e-13] (7.67e-14, 4.20e-12)
+INFO:root:avg. loss 9.68356545e-07
+INFO:root:time taken for epoch 0:01:25.044520
+INFO:root:Epoch 65
+INFO:root:[65,     0] loss: 9.864099e-07 masks: 22.0 16.0 [wd: 5.44e-02] [lr: 9.93e-04] [mem: 8.10e+03] (498.0 ms)
+INFO:root:[65,     0] grad_stats: [8.81e-12 4.69e-13] (1.48e-13, 8.81e-12)
+INFO:root:[65,    54] loss: 5.942364e-07 masks: 20.9 17.5 [wd: 5.46e-02] [lr: 9.93e-04] [mem: 8.10e+03] (490.1 ms)
+INFO:root:[65,    54] grad_stats: [1.68e-11 8.04e-13] (1.63e-13, 2.74e-11)
+INFO:root:[65,   108] loss: 5.494752e-07 masks: 21.6 17.3 [wd: 5.48e-02] [lr: 9.93e-04] [mem: 8.10e+03] (494.4 ms)
+INFO:root:[65,   108] grad_stats: [7.03e-13 6.80e-14] (3.11e-14, 1.76e-12)
+INFO:root:avg. loss 5.49475162e-07
+INFO:root:time taken for epoch 0:01:25.677918
+INFO:root:Epoch 66
+INFO:root:[66,     0] loss: 5.082227e-07 masks: 21.0 16.0 [wd: 5.48e-02] [lr: 9.93e-04] [mem: 8.10e+03] (501.4 ms)
+INFO:root:[66,     0] grad_stats: [4.50e-12 2.56e-13] (2.32e-13, 8.72e-12)
+INFO:root:[66,    54] loss: 8.229294e-07 masks: 21.3 17.4 [wd: 5.50e-02] [lr: 9.92e-04] [mem: 8.10e+03] (489.7 ms)
+INFO:root:[66,    54] grad_stats: [2.94e-12 3.67e-13] (1.54e-13, 2.94e-12)
+INFO:root:[66,   108] loss: 6.524005e-07 masks: 22.0 16.9 [wd: 5.53e-02] [lr: 9.92e-04] [mem: 8.10e+03] (493.8 ms)
+INFO:root:[66,   108] grad_stats: [6.20e-12 3.92e-13] (1.33e-13, 6.20e-12)
+INFO:root:avg. loss 6.52400453e-07
+INFO:root:time taken for epoch 0:01:24.993309
+INFO:root:Epoch 67
+INFO:root:[67,     0] loss: 4.998925e-07 masks: 17.0 20.0 [wd: 5.53e-02] [lr: 9.92e-04] [mem: 8.10e+03] (501.9 ms)
+INFO:root:[67,     0] grad_stats: [3.97e-11 1.05e-12] (2.47e-13, 3.97e-11)
+INFO:root:[67,    54] loss: 4.316556e-07 masks: 21.7 17.2 [wd: 5.55e-02] [lr: 9.92e-04] [mem: 8.10e+03] (494.3 ms)
+INFO:root:[67,    54] grad_stats: [1.63e-12 1.22e-13] (7.12e-14, 2.12e-12)
+INFO:root:[67,   108] loss: 4.398927e-07 masks: 21.9 17.1 [wd: 5.57e-02] [lr: 9.92e-04] [mem: 8.10e+03] (494.8 ms)
+INFO:root:[67,   108] grad_stats: [1.48e-12 8.38e-14] (3.13e-14, 1.48e-12)
+INFO:root:avg. loss 4.39892723e-07
+INFO:root:time taken for epoch 0:01:24.225154
+INFO:root:Epoch 68
+INFO:root:[68,     0] loss: 4.101333e-07 masks: 12.0 20.0 [wd: 5.57e-02] [lr: 9.92e-04] [mem: 8.10e+03] (480.0 ms)
+INFO:root:[68,     0] grad_stats: [7.84e-13 1.50e-13] (6.35e-14, 1.20e-12)
+INFO:root:[68,    54] loss: 4.239463e-07 masks: 21.1 17.5 [wd: 5.59e-02] [lr: 9.91e-04] [mem: 8.10e+03] (489.8 ms)
+INFO:root:[68,    54] grad_stats: [2.27e-12 1.56e-13] (4.78e-14, 2.27e-12)
+INFO:root:[68,   108] loss: 4.210931e-07 masks: 21.9 17.3 [wd: 5.62e-02] [lr: 9.91e-04] [mem: 8.10e+03] (495.8 ms)
+INFO:root:[68,   108] grad_stats: [2.55e-11 5.07e-13] (1.77e-13, 2.55e-11)
+INFO:root:avg. loss 4.21093105e-07
+INFO:root:time taken for epoch 0:01:26.131884
+INFO:root:Epoch 69
+INFO:root:[69,     0] loss: 3.592357e-07 masks: 21.0 20.0 [wd: 5.62e-02] [lr: 9.91e-04] [mem: 8.10e+03] (518.8 ms)
+INFO:root:[69,     0] grad_stats: [9.28e-13 1.46e-13] (7.03e-14, 3.33e-12)
+INFO:root:[69,    54] loss: 4.283099e-07 masks: 22.5 16.8 [wd: 5.64e-02] [lr: 9.91e-04] [mem: 8.10e+03] (498.2 ms)
+INFO:root:[69,    54] grad_stats: [1.71e-11 1.09e-13] (5.03e-14, 2.08e-11)
+INFO:root:[69,   108] loss: 4.230485e-07 masks: 22.2 17.0 [wd: 5.67e-02] [lr: 9.90e-04] [mem: 8.10e+03] (498.6 ms)
+INFO:root:[69,   108] grad_stats: [1.33e-12 1.14e-13] (4.06e-14, 2.84e-12)
+INFO:root:avg. loss 4.23048458e-07
+INFO:root:time taken for epoch 0:01:25.638526
+INFO:root:Epoch 70
+INFO:root:[70,     0] loss: 4.758938e-07 masks: 18.0 20.0 [wd: 5.67e-02] [lr: 9.90e-04] [mem: 8.10e+03] (526.0 ms)
+INFO:root:[70,     0] grad_stats: [2.65e-12 1.60e-13] (4.75e-14, 4.68e-12)
+INFO:root:[70,    54] loss: 4.377315e-07 masks: 21.5 17.4 [wd: 5.69e-02] [lr: 9.90e-04] [mem: 8.10e+03] (492.2 ms)
+INFO:root:[70,    54] grad_stats: [9.00e-13 1.10e-13] (6.43e-14, 1.03e-12)
+INFO:root:[70,   108] loss: 4.222294e-07 masks: 21.6 17.4 [wd: 5.71e-02] [lr: 9.90e-04] [mem: 8.10e+03] (494.7 ms)
+INFO:root:[70,   108] grad_stats: [4.18e-12 1.42e-13] (4.86e-14, 4.93e-12)
+INFO:root:avg. loss 4.22229417e-07
+INFO:root:time taken for epoch 0:01:25.505051
+INFO:root:Epoch 71
+INFO:root:[71,     0] loss: 5.409500e-07 masks: 35.0 12.0 [wd: 5.71e-02] [lr: 9.90e-04] [mem: 8.10e+03] (575.4 ms)
+INFO:root:[71,     0] grad_stats: [8.02e-12 2.72e-13] (1.39e-13, 1.05e-11)
+INFO:root:[71,    54] loss: 4.255632e-07 masks: 22.1 17.0 [wd: 5.74e-02] [lr: 9.89e-04] [mem: 8.10e+03] (494.8 ms)
+INFO:root:[71,    54] grad_stats: [9.14e-13 4.36e-14] (2.62e-14, 2.19e-12)
+INFO:root:[71,   108] loss: 5.181481e-07 masks: 21.4 17.3 [wd: 5.76e-02] [lr: 9.89e-04] [mem: 8.10e+03] (494.7 ms)
+INFO:root:[71,   108] grad_stats: [2.28e-12 3.42e-13] (9.44e-14, 2.34e-12)
+INFO:root:avg. loss 5.18148141e-07
+INFO:root:time taken for epoch 0:01:25.450393
+INFO:root:Epoch 72
+INFO:root:[72,     0] loss: 3.578946e-07 masks: 18.0 20.0 [wd: 5.76e-02] [lr: 9.89e-04] [mem: 8.10e+03] (503.6 ms)
+INFO:root:[72,     0] grad_stats: [2.18e-12 2.44e-13] (7.41e-14, 2.18e-12)
+INFO:root:[72,    54] loss: 4.086897e-07 masks: 21.0 17.5 [wd: 5.79e-02] [lr: 9.88e-04] [mem: 8.10e+03] (490.7 ms)
+INFO:root:[72,    54] grad_stats: [7.35e-12 1.51e-13] (7.05e-14, 9.71e-12)
+INFO:root:[72,   108] loss: 4.145577e-07 masks: 21.8 17.2 [wd: 5.81e-02] [lr: 9.88e-04] [mem: 8.10e+03] (495.0 ms)
+INFO:root:[72,   108] grad_stats: [5.76e-12 7.13e-14] (3.13e-14, 5.76e-12)
+INFO:root:avg. loss 4.14557652e-07
+INFO:root:time taken for epoch 0:01:24.836322
+INFO:root:Epoch 73
+INFO:root:[73,     0] loss: 3.872146e-07 masks: 24.0 16.0 [wd: 5.81e-02] [lr: 9.88e-04] [mem: 8.10e+03] (521.2 ms)
+INFO:root:[73,     0] grad_stats: [1.54e-12 2.49e-13] (5.45e-14, 1.54e-12)
+INFO:root:[73,    54] loss: 4.268327e-07 masks: 21.6 17.5 [wd: 5.84e-02] [lr: 9.88e-04] [mem: 8.10e+03] (494.8 ms)
+INFO:root:[73,    54] grad_stats: [1.23e-12 6.50e-14] (4.62e-14, 5.79e-12)
+INFO:root:[73,   108] loss: 5.511704e-07 masks: 22.1 17.4 [wd: 5.86e-02] [lr: 9.87e-04] [mem: 8.10e+03] (497.2 ms)
+INFO:root:[73,   108] grad_stats: [4.01e-12 2.38e-13] (1.16e-13, 1.73e-11)
+INFO:root:avg. loss 5.51170411e-07
+INFO:root:time taken for epoch 0:01:26.039322
+INFO:root:Epoch 74
+INFO:root:[74,     0] loss: 3.992584e-07 masks: 17.0 20.0 [wd: 5.86e-02] [lr: 9.87e-04] [mem: 8.10e+03] (503.7 ms)
+INFO:root:[74,     0] grad_stats: [1.09e-11 1.19e-13] (5.38e-14, 1.09e-11)
+INFO:root:[74,    54] loss: 4.178383e-07 masks: 21.9 17.2 [wd: 5.89e-02] [lr: 9.87e-04] [mem: 8.10e+03] (495.8 ms)
+INFO:root:[74,    54] grad_stats: [4.67e-12 5.92e-14] (4.27e-14, 9.37e-12)
+INFO:root:[74,   108] loss: 4.345546e-07 masks: 21.7 17.5 [wd: 5.91e-02] [lr: 9.87e-04] [mem: 8.10e+03] (496.3 ms)
+INFO:root:[74,   108] grad_stats: [1.93e-11 4.08e-13] (1.74e-13, 4.53e-11)
+INFO:root:avg. loss 4.34554576e-07
+INFO:root:time taken for epoch 0:01:24.830562
+INFO:root:Epoch 75
+INFO:root:[75,     0] loss: 3.392914e-07 masks: 21.0 20.0 [wd: 5.91e-02] [lr: 9.87e-04] [mem: 8.10e+03] (512.9 ms)
+INFO:root:[75,     0] grad_stats: [2.54e-12 2.07e-13] (8.10e-14, 2.61e-12)
+INFO:root:[75,    54] loss: 4.089424e-07 masks: 21.0 17.4 [wd: 5.94e-02] [lr: 9.86e-04] [mem: 8.10e+03] (493.8 ms)
+INFO:root:[75,    54] grad_stats: [8.56e-11 4.70e-13] (1.87e-13, 8.56e-11)
+INFO:root:[75,   108] loss: 4.148610e-07 masks: 22.2 17.1 [wd: 5.96e-02] [lr: 9.86e-04] [mem: 8.10e+03] (499.6 ms)
+INFO:root:[75,   108] grad_stats: [3.33e-12 1.15e-13] (7.80e-14, 3.39e-12)
+INFO:root:avg. loss 4.14860969e-07
+INFO:root:time taken for epoch 0:01:26.086962
+INFO:root:Epoch 76
+INFO:root:[76,     0] loss: 3.577278e-07 masks: 19.0 20.0 [wd: 5.96e-02] [lr: 9.86e-04] [mem: 8.10e+03] (513.0 ms)
+INFO:root:[76,     0] grad_stats: [3.82e-12 2.52e-13] (7.11e-14, 3.82e-12)
+INFO:root:[76,    54] loss: 4.173488e-07 masks: 22.4 17.2 [wd: 5.99e-02] [lr: 9.85e-04] [mem: 8.10e+03] (500.0 ms)
+INFO:root:[76,    54] grad_stats: [1.69e-12 8.18e-14] (5.50e-14, 3.25e-12)
+INFO:root:[76,   108] loss: 4.152901e-07 masks: 22.5 17.1 [wd: 6.01e-02] [lr: 9.85e-04] [mem: 8.10e+03] (499.9 ms)
+INFO:root:[76,   108] grad_stats: [1.40e-09 2.55e-12] (9.93e-13, 1.40e-09)
+INFO:root:avg. loss 4.15290084e-07
+INFO:root:time taken for epoch 0:01:25.712769
+INFO:root:Epoch 77
+INFO:root:[77,     0] loss: 4.070798e-07 masks: 20.0 16.0 [wd: 6.01e-02] [lr: 9.85e-04] [mem: 8.10e+03] (511.9 ms)
+INFO:root:[77,     0] grad_stats: [2.81e-12 9.52e-14] (6.36e-14, 4.01e-12)
+INFO:root:[77,    54] loss: 4.161829e-07 masks: 22.1 17.3 [wd: 6.04e-02] [lr: 9.85e-04] [mem: 8.10e+03] (500.4 ms)
+INFO:root:[77,    54] grad_stats: [1.92e-11 1.08e-13] (7.53e-14, 1.92e-11)
+INFO:root:[77,   108] loss: 4.253811e-07 masks: 21.9 17.4 [wd: 6.07e-02] [lr: 9.84e-04] [mem: 8.10e+03] (499.1 ms)
+INFO:root:[77,   108] grad_stats: [1.06e-12 8.65e-14] (4.83e-14, 1.23e-12)
+INFO:root:avg. loss 4.25381143e-07
+INFO:root:time taken for epoch 0:01:25.612067
+INFO:root:Epoch 78
+INFO:root:[78,     0] loss: 4.110867e-07 masks: 25.0 16.0 [wd: 6.07e-02] [lr: 9.84e-04] [mem: 8.10e+03] (530.7 ms)
+INFO:root:[78,     0] grad_stats: [9.37e-13 1.04e-13] (2.04e-14, 1.32e-12)
+INFO:root:[78,    54] loss: 4.181182e-07 masks: 22.5 17.1 [wd: 6.09e-02] [lr: 9.84e-04] [mem: 8.10e+03] (499.3 ms)
+INFO:root:[78,    54] grad_stats: [1.54e-12 2.53e-13] (1.05e-13, 1.54e-12)
+INFO:root:[78,   108] loss: 4.164937e-07 masks: 22.4 17.2 [wd: 6.12e-02] [lr: 9.83e-04] [mem: 8.10e+03] (499.0 ms)
+INFO:root:[78,   108] grad_stats: [1.13e-12 3.69e-13] (1.13e-13, 1.13e-12)
+INFO:root:avg. loss 4.16493722e-07
+INFO:root:time taken for epoch 0:01:26.224779
+INFO:root:Epoch 79
+INFO:root:[79,     0] loss: 4.209977e-07 masks: 21.0 16.0 [wd: 6.12e-02] [lr: 9.83e-04] [mem: 8.10e+03] (491.7 ms)
+INFO:root:[79,     0] grad_stats: [6.88e-12 1.36e-13] (8.21e-14, 6.88e-12)
+INFO:root:[79,    54] loss: 4.122484e-07 masks: 21.3 17.3 [wd: 6.15e-02] [lr: 9.83e-04] [mem: 8.10e+03] (494.4 ms)
+INFO:root:[79,    54] grad_stats: [4.81e-11 1.79e-13] (6.61e-14, 4.81e-11)
+INFO:root:[79,   108] loss: 4.198714e-07 masks: 22.1 16.9 [wd: 6.17e-02] [lr: 9.82e-04] [mem: 8.10e+03] (496.9 ms)
+INFO:root:[79,   108] grad_stats: [1.76e-11 2.17e-13] (1.29e-13, 2.27e-11)
+INFO:root:avg. loss 4.19871383e-07
+INFO:root:time taken for epoch 0:01:24.491888
+INFO:root:Epoch 80
+INFO:root:[80,     0] loss: 4.917368e-07 masks: 26.0 16.0 [wd: 6.17e-02] [lr: 9.82e-04] [mem: 8.10e+03] (528.7 ms)
+INFO:root:[80,     0] grad_stats: [1.64e-10 9.00e-14] (2.69e-14, 1.78e-10)
+INFO:root:[80,    54] loss: 4.266208e-07 masks: 20.8 17.7 [wd: 6.20e-02] [lr: 9.82e-04] [mem: 8.10e+03] (493.9 ms)
+INFO:root:[80,    54] grad_stats: [2.52e-12 2.28e-13] (1.03e-13, 2.52e-12)
+INFO:root:[80,   108] loss: 4.214928e-07 masks: 21.4 17.5 [wd: 6.23e-02] [lr: 9.81e-04] [mem: 8.10e+03] (495.9 ms)
+INFO:root:[80,   108] grad_stats: [6.99e-12 1.10e-13] (3.05e-14, 8.33e-12)
+INFO:root:avg. loss 4.21492768e-07
+INFO:root:time taken for epoch 0:01:25.206063
+INFO:root:Epoch 81
+INFO:root:[81,     0] loss: 4.111084e-07 masks: 22.0 16.0 [wd: 6.23e-02] [lr: 9.81e-04] [mem: 8.10e+03] (501.0 ms)
+INFO:root:[81,     0] grad_stats: [3.61e-11 1.28e-13] (6.83e-14, 3.61e-11)
+INFO:root:[81,    54] loss: 3.938250e-07 masks: 20.1 18.0 [wd: 6.25e-02] [lr: 9.81e-04] [mem: 8.10e+03] (488.7 ms)
+INFO:root:[81,    54] grad_stats: [2.58e-12 1.34e-13] (3.91e-14, 2.99e-12)
+INFO:root:[81,   108] loss: 4.015289e-07 masks: 20.9 17.7 [wd: 6.28e-02] [lr: 9.81e-04] [mem: 8.10e+03] (492.5 ms)
+INFO:root:[81,   108] grad_stats: [9.22e-12 1.03e-13] (3.59e-14, 2.29e-11)
+INFO:root:avg. loss 4.01528939e-07
+INFO:root:time taken for epoch 0:01:25.335380
+INFO:root:Epoch 82
+INFO:root:[82,     0] loss: 3.747367e-07 masks: 16.0 20.0 [wd: 6.28e-02] [lr: 9.81e-04] [mem: 8.10e+03] (500.3 ms)
+INFO:root:[82,     0] grad_stats: [1.24e-11 3.29e-13] (1.54e-13, 2.29e-11)
+INFO:root:[82,    54] loss: 4.167472e-07 masks: 21.2 17.3 [wd: 6.31e-02] [lr: 9.80e-04] [mem: 8.10e+03] (493.7 ms)
+INFO:root:[82,    54] grad_stats: [3.15e-12 8.75e-14] (3.54e-14, 7.99e-12)
+INFO:root:[82,   108] loss: 4.155128e-07 masks: 21.4 17.5 [wd: 6.34e-02] [lr: 9.80e-04] [mem: 8.10e+03] (495.4 ms)
+INFO:root:[82,   108] grad_stats: [3.26e-12 1.85e-13] (7.23e-14, 3.37e-12)
+INFO:root:avg. loss 4.15512801e-07
+INFO:root:time taken for epoch 0:01:24.790630
+INFO:root:Epoch 83
+INFO:root:[83,     0] loss: 3.400456e-07 masks: 16.0 20.0 [wd: 6.34e-02] [lr: 9.80e-04] [mem: 8.10e+03] (486.0 ms)
+INFO:root:[83,     0] grad_stats: [4.54e-13 1.78e-13] (9.37e-14, 1.43e-12)
+INFO:root:[83,    54] loss: 4.131267e-07 masks: 21.7 17.5 [wd: 6.36e-02] [lr: 9.79e-04] [mem: 8.10e+03] (496.7 ms)
+INFO:root:[83,    54] grad_stats: [7.21e-12 2.36e-13] (4.62e-14, 7.21e-12)
+INFO:root:[83,   108] loss: 4.159030e-07 masks: 21.6 17.5 [wd: 6.39e-02] [lr: 9.79e-04] [mem: 8.10e+03] (495.9 ms)
+INFO:root:[83,   108] grad_stats: [8.37e-12 1.50e-13] (6.27e-14, 1.23e-11)
+INFO:root:avg. loss 4.15902991e-07
+INFO:root:time taken for epoch 0:01:25.888722
+INFO:root:Epoch 84
+INFO:root:[84,     0] loss: 4.078475e-07 masks: 26.0 16.0 [wd: 6.39e-02] [lr: 9.79e-04] [mem: 8.10e+03] (530.7 ms)
+INFO:root:[84,     0] grad_stats: [2.28e-12 9.94e-14] (3.61e-14, 2.28e-12)
+INFO:root:[84,    54] loss: 4.153301e-07 masks: 21.7 17.0 [wd: 6.42e-02] [lr: 9.78e-04] [mem: 8.10e+03] (495.7 ms)
+INFO:root:[84,    54] grad_stats: [2.96e-12 1.77e-13] (6.45e-14, 2.96e-12)
+INFO:root:[84,   108] loss: 4.212517e-07 masks: 22.0 16.9 [wd: 6.45e-02] [lr: 9.78e-04] [mem: 8.10e+03] (496.3 ms)
+INFO:root:[84,   108] grad_stats: [7.64e-11 2.07e-13] (9.43e-14, 1.14e-10)
+INFO:root:avg. loss 4.21251683e-07
+INFO:root:time taken for epoch 0:01:25.190999
+INFO:root:Epoch 85
+INFO:root:[85,     0] loss: 3.991345e-07 masks: 24.0 16.0 [wd: 6.45e-02] [lr: 9.78e-04] [mem: 8.10e+03] (518.7 ms)
+INFO:root:[85,     0] grad_stats: [1.24e-11 1.40e-13] (6.43e-14, 1.24e-11)
+INFO:root:[85,    54] loss: 4.114987e-07 masks: 22.3 17.2 [wd: 6.48e-02] [lr: 9.77e-04] [mem: 8.10e+03] (496.1 ms)
+INFO:root:[85,    54] grad_stats: [9.76e-12 1.24e-13] (7.37e-14, 9.76e-12)
+INFO:root:[85,   108] loss: 4.088349e-07 masks: 21.8 17.4 [wd: 6.51e-02] [lr: 9.77e-04] [mem: 8.10e+03] (495.4 ms)
+INFO:root:[85,   108] grad_stats: [2.44e-12 4.50e-14] (2.20e-14, 2.44e-12)
+INFO:root:avg. loss 4.08834866e-07
+INFO:root:time taken for epoch 0:01:25.224738
+INFO:root:Epoch 86
+INFO:root:[86,     0] loss: 3.702053e-07 masks: 27.0 16.0 [wd: 6.51e-02] [lr: 9.77e-04] [mem: 8.10e+03] (529.5 ms)
+INFO:root:[86,     0] grad_stats: [1.07e-11 1.40e-13] (4.73e-14, 5.58e-11)
+INFO:root:[86,    54] loss: 6.915321e-07 masks: 20.0 17.7 [wd: 6.54e-02] [lr: 9.76e-04] [mem: 8.10e+03] (484.3 ms)
+INFO:root:[86,    54] grad_stats: [1.04e-11 2.12e-13] (1.37e-13, 1.04e-11)
+INFO:root:[86,   108] loss: 5.712682e-07 masks: 21.5 17.3 [wd: 6.56e-02] [lr: 9.76e-04] [mem: 8.10e+03] (492.4 ms)
+INFO:root:[86,   108] grad_stats: [1.98e-12 1.81e-13] (5.48e-14, 1.98e-12)
+INFO:root:avg. loss 5.71268153e-07
+INFO:root:time taken for epoch 0:01:24.528375
+INFO:root:Epoch 87
+INFO:root:[87,     0] loss: 3.969723e-07 masks: 16.0 20.0 [wd: 6.57e-02] [lr: 9.76e-04] [mem: 8.10e+03] (483.0 ms)
+INFO:root:[87,     0] grad_stats: [2.88e-12 9.43e-14] (3.44e-14, 5.28e-12)
+INFO:root:[87,    54] loss: 6.439822e-07 masks: 23.5 16.9 [wd: 6.59e-02] [lr: 9.75e-04] [mem: 8.10e+03] (502.5 ms)
+INFO:root:[87,    54] grad_stats: [1.93e-11 1.23e-13] (4.87e-14, 1.93e-11)
+INFO:root:[87,   108] loss: 5.407354e-07 masks: 22.2 17.2 [wd: 6.62e-02] [lr: 9.74e-04] [mem: 8.10e+03] (497.4 ms)
+INFO:root:[87,   108] grad_stats: [2.01e-12 1.73e-13] (1.62e-13, 2.47e-12)
+INFO:root:avg. loss 5.40735420e-07
+INFO:root:time taken for epoch 0:01:25.505288
+INFO:root:Epoch 88
+INFO:root:[88,     0] loss: 1.567376e-06 masks: 25.0 16.0 [wd: 6.62e-02] [lr: 9.74e-04] [mem: 8.10e+03] (525.8 ms)
+INFO:root:[88,     0] grad_stats: [1.70e-11 4.02e-13] (1.90e-13, 2.39e-11)
+INFO:root:[88,    54] loss: 4.349122e-07 masks: 22.0 17.2 [wd: 6.65e-02] [lr: 9.74e-04] [mem: 8.10e+03] (495.1 ms)
+INFO:root:[88,    54] grad_stats: [1.12e-11 3.35e-13] (1.21e-13, 1.71e-11)
+INFO:root:[88,   108] loss: 5.803732e-07 masks: 22.0 17.1 [wd: 6.68e-02] [lr: 9.73e-04] [mem: 8.10e+03] (495.3 ms)
+INFO:root:[88,   108] grad_stats: [1.43e-09 3.71e-12] (2.19e-12, 3.14e-09)
+INFO:root:avg. loss 5.80373219e-07
+INFO:root:time taken for epoch 0:01:25.596577
+INFO:root:Epoch 89
+INFO:root:[89,     0] loss: 4.433058e-07 masks: 23.0 16.0 [wd: 6.68e-02] [lr: 9.73e-04] [mem: 8.10e+03] (515.7 ms)
+INFO:root:[89,     0] grad_stats: [3.67e-11 2.84e-13] (1.35e-13, 3.67e-11)
+INFO:root:[89,    54] loss: 4.061078e-07 masks: 21.2 17.6 [wd: 6.71e-02] [lr: 9.73e-04] [mem: 8.10e+03] (492.6 ms)
+INFO:root:[89,    54] grad_stats: [4.00e-12 7.07e-14] (4.49e-14, 5.00e-12)
+INFO:root:[89,   108] loss: 4.085055e-07 masks: 21.5 17.5 [wd: 6.74e-02] [lr: 9.72e-04] [mem: 8.10e+03] (494.3 ms)
+INFO:root:[89,   108] grad_stats: [8.61e-12 3.47e-14] (2.42e-14, 1.11e-11)
+INFO:root:avg. loss 4.08505477e-07
+INFO:root:time taken for epoch 0:01:24.507347
+INFO:root:Epoch 90
+INFO:root:[90,     0] loss: 3.738120e-07 masks: 15.0 20.0 [wd: 6.74e-02] [lr: 9.72e-04] [mem: 8.10e+03] (480.1 ms)
+INFO:root:[90,     0] grad_stats: [7.06e-12 9.91e-14] (9.53e-14, 7.06e-12)
+INFO:root:[90,    54] loss: 4.046590e-07 masks: 20.7 17.8 [wd: 6.77e-02] [lr: 9.72e-04] [mem: 8.10e+03] (490.3 ms)
+INFO:root:[90,    54] grad_stats: [3.54e-11 1.92e-13] (1.51e-13, 3.54e-11)
+INFO:root:[90,   108] loss: 4.119307e-07 masks: 21.5 17.4 [wd: 6.80e-02] [lr: 9.71e-04] [mem: 8.10e+03] (493.7 ms)
+INFO:root:[90,   108] grad_stats: [2.82e-11 1.27e-13] (7.78e-14, 6.45e-11)
+INFO:root:avg. loss 4.11930744e-07
+INFO:root:time taken for epoch 0:01:25.762197
+INFO:root:Epoch 91
+INFO:root:[91,     0] loss: 5.122960e-07 masks: 23.0 16.0 [wd: 6.80e-02] [lr: 9.71e-04] [mem: 8.10e+03] (516.5 ms)
+INFO:root:[91,     0] grad_stats: [1.13e-11 1.19e-13] (1.19e-13, 1.13e-11)
+INFO:root:[91,    54] loss: 4.149274e-07 masks: 21.8 17.3 [wd: 6.83e-02] [lr: 9.71e-04] [mem: 8.10e+03] (495.0 ms)
+INFO:root:[91,    54] grad_stats: [1.05e-12 4.68e-13] (1.49e-13, 1.26e-12)
+INFO:root:[91,   108] loss: 4.306325e-07 masks: 22.1 17.2 [wd: 6.86e-02] [lr: 9.70e-04] [mem: 8.10e+03] (496.7 ms)
+INFO:root:[91,   108] grad_stats: [1.23e-12 1.19e-13] (6.87e-14, 1.23e-12)
+INFO:root:avg. loss 4.30632517e-07
+INFO:root:time taken for epoch 0:01:24.846707
+INFO:root:Epoch 92
+INFO:root:[92,     0] loss: 4.901186e-07 masks: 22.0 20.0 [wd: 6.86e-02] [lr: 9.70e-04] [mem: 8.10e+03] (534.8 ms)
+INFO:root:[92,     0] grad_stats: [5.31e-11 3.77e-13] (9.14e-14, 5.31e-11)
+INFO:root:[92,    54] loss: 4.093263e-07 masks: 21.7 17.6 [wd: 6.89e-02] [lr: 9.69e-04] [mem: 8.10e+03] (494.3 ms)
+INFO:root:[92,    54] grad_stats: [1.20e-11 3.39e-13] (1.36e-13, 2.67e-11)
+INFO:root:[92,   108] loss: 4.075302e-07 masks: 21.7 17.5 [wd: 6.92e-02] [lr: 9.69e-04] [mem: 8.10e+03] (494.9 ms)
+INFO:root:[92,   108] grad_stats: [7.86e-12 1.38e-13] (3.80e-14, 7.86e-12)
+INFO:root:avg. loss 4.07530211e-07
+INFO:root:time taken for epoch 0:01:24.548474
+INFO:root:Epoch 93
+INFO:root:[93,     0] loss: 5.142024e-07 masks: 33.0 12.0 [wd: 6.93e-02] [lr: 9.69e-04] [mem: 8.10e+03] (553.5 ms)
+INFO:root:[93,     0] grad_stats: [7.04e-12 2.64e-13] (1.58e-13, 7.04e-12)
+INFO:root:[93,    54] loss: 4.056179e-07 masks: 21.6 17.5 [wd: 6.96e-02] [lr: 9.68e-04] [mem: 8.10e+03] (495.3 ms)
+INFO:root:[93,    54] grad_stats: [1.56e-12 1.60e-13] (5.36e-14, 4.79e-12)
+INFO:root:[93,   108] loss: 6.205584e-07 masks: 21.7 17.5 [wd: 6.99e-02] [lr: 9.68e-04] [mem: 8.10e+03] (496.1 ms)
+INFO:root:[93,   108] grad_stats: [9.65e-13 1.73e-13] (9.76e-14, 9.65e-13)
+INFO:root:avg. loss 6.20558392e-07
+INFO:root:time taken for epoch 0:01:26.001779
+INFO:root:Epoch 94
+INFO:root:[94,     0] loss: 4.878901e-07 masks: 23.0 16.0 [wd: 6.99e-02] [lr: 9.68e-04] [mem: 8.10e+03] (513.3 ms)
+INFO:root:[94,     0] grad_stats: [1.66e-12 1.33e-13] (5.03e-14, 1.68e-12)
+INFO:root:[94,    54] loss: 4.165822e-07 masks: 22.2 17.1 [wd: 7.02e-02] [lr: 9.67e-04] [mem: 8.10e+03] (497.9 ms)
+INFO:root:[94,    54] grad_stats: [1.12e-12 5.85e-14] (5.74e-14, 1.12e-12)
+INFO:root:[94,   108] loss: 4.184359e-07 masks: 22.2 17.1 [wd: 7.05e-02] [lr: 9.66e-04] [mem: 8.10e+03] (499.0 ms)
+INFO:root:[94,   108] grad_stats: [3.77e-12 1.18e-13] (1.18e-13, 3.77e-12)
+INFO:root:avg. loss 4.18435913e-07
+INFO:root:time taken for epoch 0:01:26.353910
+INFO:root:Epoch 95
+INFO:root:[95,     0] loss: 3.397375e-07 masks: 20.0 20.0 [wd: 7.05e-02] [lr: 9.66e-04] [mem: 8.10e+03] (514.3 ms)
+INFO:root:[95,     0] grad_stats: [1.49e-12 8.49e-14] (5.79e-14, 2.42e-12)
+INFO:root:[95,    54] loss: 4.569087e-07 masks: 21.8 17.1 [wd: 7.08e-02] [lr: 9.66e-04] [mem: 8.10e+03] (496.1 ms)
+INFO:root:[95,    54] grad_stats: [5.33e-11 3.26e-13] (2.12e-13, 4.23e-10)
+INFO:root:[95,   108] loss: 4.307325e-07 masks: 21.0 17.6 [wd: 7.11e-02] [lr: 9.65e-04] [mem: 8.10e+03] (493.1 ms)
+INFO:root:[95,   108] grad_stats: [7.07e-12 1.23e-13] (7.96e-14, 1.24e-11)
+INFO:root:avg. loss 4.30732509e-07
+INFO:root:time taken for epoch 0:01:25.253313
+INFO:root:Epoch 96
+INFO:root:[96,     0] loss: 3.837037e-07 masks: 17.0 16.0 [wd: 7.11e-02] [lr: 9.65e-04] [mem: 8.10e+03] (492.2 ms)
+INFO:root:[96,     0] grad_stats: [4.28e-12 1.44e-13] (8.64e-14, 9.80e-12)
+INFO:root:[96,    54] loss: 4.246457e-07 masks: 21.9 16.6 [wd: 7.14e-02] [lr: 9.65e-04] [mem: 8.10e+03] (496.3 ms)
+INFO:root:[96,    54] grad_stats: [2.96e-12 9.98e-14] (9.98e-14, 2.96e-12)
+INFO:root:[96,   108] loss: 4.244738e-07 masks: 22.0 16.8 [wd: 7.18e-02] [lr: 9.64e-04] [mem: 8.10e+03] (497.2 ms)
+INFO:root:[96,   108] grad_stats: [3.20e-11 1.15e-13] (4.14e-14, 3.20e-11)
+INFO:root:avg. loss 4.24473847e-07
+INFO:root:time taken for epoch 0:01:25.155234
+INFO:root:Epoch 97
+INFO:root:[97,     0] loss: 3.814648e-07 masks: 25.0 16.0 [wd: 7.18e-02] [lr: 9.64e-04] [mem: 8.10e+03] (522.1 ms)
+INFO:root:[97,     0] grad_stats: [5.62e-11 6.09e-14] (6.09e-14, 7.02e-11)
+INFO:root:[97,    54] loss: 4.279590e-07 masks: 22.7 16.7 [wd: 7.21e-02] [lr: 9.63e-04] [mem: 8.10e+03] (498.7 ms)
+INFO:root:[97,    54] grad_stats: [5.51e-11 2.62e-13] (1.16e-13, 5.85e-11)
+INFO:root:[97,   108] loss: 4.231954e-07 masks: 22.5 16.8 [wd: 7.24e-02] [lr: 9.63e-04] [mem: 8.10e+03] (500.2 ms)
+INFO:root:[97,   108] grad_stats: [1.75e-12 2.44e-13] (6.28e-14, 6.69e-12)
+INFO:root:avg. loss 4.23195447e-07
+INFO:root:time taken for epoch 0:01:26.883014
+INFO:root:Epoch 98
+INFO:root:[98,     0] loss: 4.005390e-07 masks: 22.0 16.0 [wd: 7.24e-02] [lr: 9.63e-04] [mem: 8.10e+03] (519.7 ms)
+INFO:root:[98,     0] grad_stats: [4.58e-12 2.04e-13] (7.95e-14, 4.58e-12)
+INFO:root:[98,    54] loss: 4.133755e-07 masks: 22.6 17.0 [wd: 7.27e-02] [lr: 9.62e-04] [mem: 8.10e+03] (497.7 ms)
+INFO:root:[98,    54] grad_stats: [5.23e-12 1.50e-13] (7.65e-14, 7.67e-12)

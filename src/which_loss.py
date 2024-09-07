@@ -36,7 +36,7 @@ def PKT(z,h, num_pred_masks=4):
       h_ = h_.view(-1, emb_size)
       loss_pkt += PKTClass.cosine_similarity_loss(z_,h_)
   loss_pkt /= z.size(0) # normalize by batch size
-  loss_pkt *= 100 # scale PKT to match l2 loss and equalize the effect
+  # loss_pkt *= 100 # scale PKT to match l2 loss and equalize the effect
 
   # -- Other thoughts to try out
   # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]

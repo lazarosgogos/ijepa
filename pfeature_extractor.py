@@ -3,6 +3,7 @@
 #
 # Linear probing on pretrained models based on the I-JEPA architecture
 
+import torch.utils
 from src import helper
 from src.utils.logging import CSVLogger
 
@@ -42,7 +43,7 @@ VIT_EMBED_DIMS = {
 }
 
 
-
+"""
 class FeatureExtractor(nn.Module):
     def __init__(self, encoder):
         super(Both, self).__init__()
@@ -56,7 +57,7 @@ class FeatureExtractor(nn.Module):
     def forward(self, x):
         x = self.encoder(x)
         return x
-
+"""
 class LinearClassifier(nn.Module):
     """ Create a single fully connected layer for classification"""
     def __init__(self, input_size, num_classes):
@@ -90,6 +91,19 @@ class Both(nn.Module):
         x = self.head(x)
         return x
 
+class FeaturesDataset(torch.utils.data.Dataset):
+    def __init__(self, feature_file_path):
+        data = torch.load(feature_file_path)
+        self.features = data['features']
+        self.labels = data['labels']
+
+    def __len__(self):
+        return len(self.features)
+
+    def __getitem__(self, idx):
+        return self.features[idx], self.labels[idx]
+
+
 class LinearProbe():
     def __init__(self, args, logger):
         # init LinClassifier
@@ -119,7 +133,8 @@ class LinearProbe():
         self.pretrained_model_path = os.path.join(self.log_dir, self.pretrained_model_path)
         self.save_path = os.path.join(self.log_dir, self.save_path)
         self.log_file = os.path.join(self.log_dir, f'{self.log_file}.csv')
-
+        self.train_features_file_path = os.path.join(self.log_dir, 'train_features_and_labels.pt')
+        self.val_features_file_path = os.path.join(self.log_dir, 'val_features_and_labels.pt')
 
         # -- OPTIMIZATION
         self.lr = args['optimization']['lr']
@@ -156,25 +171,24 @@ class LinearProbe():
             transforms.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5])
         ])
 
-        self.train_dataset = ImageFolder(root=self.train_dataset_path, transform=self.transform)
-        self.val_dataset = ImageFolder(root=self.val_dataset_path, transform=self.transform)
+        self.train_dataset_images = ImageFolder(root=self.train_dataset_path, transform=self.transform)
+        self.val_dataset_images = ImageFolder(root=self.val_dataset_path, transform=self.transform)
         
         # run feature extractor here
-        feature_extractor = FeatureExtractor(self.encoder)
+        # feature_extractor = FeatureExtractor(self.encoder)
         logger.info('Extracting features and saving them locally..')
-        self.train_loader = DataLoader(self.train_dataset, batch_size=self.batch_size)
-        self.val_loader = DataLoader(self.val_dataset, batch_size=self.batch_size)
-        for inputs, labels in self.train_loader:
-            pass
-
-        self.train_features_path = ''
-        self.val_features_path = ''
+        self.train_loader_images = DataLoader(self.train_dataset_images, batch_size=self.batch_size)
+        self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size)
         
-        self.train_dataset = torchvision.datasets.DatasetFolder(root=self.train_features_path)
-        self.val_dataset = torchvision.datasets.DatasetFolder(root=self.val_features_path)
 
-        self.train_loader = DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
-        self.val_loader = DataLoader(self.val_dataset, batch_size=self.batch_size)
+        self.save_features(self.encoder, self.train_loader_images, self.train_features_file_path)
+        self.save_features(self.encoder, self.val_loader_images, self.val_features_file_path)
+        
+        self.train_dataset_features = FeaturesDataset(self.features_file_path)
+        self.val_dataset_features = FeaturesDataset(self.features_file_path)
+
+        self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True)
+        self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size)
         self.logger = logger
         self.csvlogger = CSVLogger(self.log_file, 
                                    ('%d', 'epoch'),
@@ -182,6 +196,8 @@ class LinearProbe():
                                    ('%.5e', 'val_accuracy'),
                                    ('%.5e', 'loss'),
                                    ('%s', 'time'))
+
+    
 
     def save_checkpoint(self, epoch):
         '''Save a checkpoint of a given model & an optimizer. 
@@ -198,7 +214,28 @@ class LinearProbe():
         if (ep) % self.checkpoint_freq == 0:
             torch.save(save_dict, save_path)
 
+    def save_features(self, encoder, _loader, features_file_path):
+        all_features = []
+        all_labels = []
+        with torch.no_grad():
+            encoder.eval()
+            for inputs, labels in _loader:
+                output = encoder(inputs)
+
+                # append to prior list
+                all_features.append(output.cpu()) # shape: [batch_size, embedding shape]
+                all_labels.append(labels.cpu()) # shape: [batch_size, 1]
         
+        all_features = torch.cat(all_features, dim=0) # from a list of [batch_size, embedding_shape] to [total_images, embedding shape]
+        all_labels = torch.cat(all_labels, dim=0) # [total_images, ]
+
+
+        # save these features to disk in a compact file
+        torch.save({
+            'features': all_features,
+            'labels' : all_labels
+        }, features_file_path)
+
     # create function for saving model
     def eval_linear(self):
         """ The main function in which linear probing is implemented"""
@@ -209,7 +246,7 @@ class LinearProbe():
             running_loss = 0.0
             train_correct = 0
             total_train = 0
-            for inputs, labels in self.train_loader:
+            for inputs, labels in self.train_loader_features:
                 # send data to appropriate device
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
                 
@@ -233,7 +270,7 @@ class LinearProbe():
             val_correct = 0
             total_val = 0
             with torch.no_grad():
-                for inputs, labels in self.val_loader:
+                for inputs, labels in self.val_loader_features:
                     inputs, labels = inputs.to(self.device),\
                                         labels.to(self.device)
                     outputs = self.model(inputs)

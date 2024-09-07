@@ -1,7 +1,9 @@
 import torch
 import torch.nn.functional as F
 
-def L2(z,h):
+from src import PKT as PKTClass
+
+def L2(z,h, num_pred_masks=4):
   """ Calculate the L2 loss between z and h, then return it.
   :param z: the representation of the patches after being passed through 
    the Context Encoder and the Predictor
@@ -10,11 +12,46 @@ def L2(z,h):
   loss_l2 = F.smooth_l1_loss(z,h)
   return loss_l2
 
-def PKT(z,h):
+def PKT(z,h, num_pred_masks=4):
   """ Calculate the PKT loss. WIP
    
   :param z: the representation of the patches after being passed through 
    the Context Encoder and the Predictor
   :param h: the representation of the patches after being passed through
    the Target Encoder """
-  pass
+  # loss_PKT = PKT.cosine_similarity_loss()
+
+  # PKT first shot
+  loss_pkt = 0
+  first_dim = z.size(0)
+  z = z.view(first_dim//num_pred_masks, num_pred_masks, *z.size()[1:])
+  h = h.view(first_dim//num_pred_masks, num_pred_masks, *h.size()[1:])
+  # suddenly, now instead of [256, 20, 768] we have [64, 4, 20, 768]
+  for i in range(z.size(0)):
+      z_ = z[i] # get element i which would be [4, 20, 768] in size
+      h_ = h[i]
+      emb_size = z.size(-1)
+      # t = t.view(big_b_s//num_patches, num_patches, *t.size()[1:])
+      z_ = z_.view(-1, emb_size) # flatten it, without changing anything
+      h_ = h_.view(-1, emb_size)
+      loss_pkt += PKTClass.cosine_similarity_loss(z_,h_)
+  loss_pkt /= z.size(0) # normalize by batch size
+  loss_pkt *= 100 # scale PKT to match l2 loss and equalize the effect
+
+  # -- Other thoughts to try out
+  # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
+  # OR [64,4,768] -> mean [64, 768]
+  # (64*4, 20, EMB_SIZE: 768) # h
+  # .view() 
+  # alpha = .1 * cosine_similarity_loss
+  # loss = AllReduce.apply(loss_l2 + loss_pkt) 
+  return loss_pkt
+
+  """
+  for i in range(batch_size):
+      PKT([4, 20, 768] [4, 20, 768])
+      [80, 768] @ [768, 80] = [80,80] # diagonal = 1
+
+  # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
+
+  """

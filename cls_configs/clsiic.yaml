@@ -1,0 +1,23 @@
+data:
+  crop_size: 150
+  num_classes: 6
+  train_dataset_path: datasets/intel-image-classification/train
+  val_dataset_path: datasets/intel-image-classification/test
+  model_name: vit_base
+  batch_size: 128
+  patch_size: 15
+  probe_checkpoints: true
+  probe_prefix: jepa_iic_L2
+logging:
+  log_dir: logs_PKT/iic-train-L2
+  pretrained_model_path: jepa_iic_L2-latest.pth.tar
+  save_path: classifiers/jepa-iic-L2-classifier-pretrained-vitb
+  checkpoint_freq: 1000
+  log_file: iic-stats
+  eval_output: jepa-iic-L2-cls
+optimization:
+  lr: 0.001
+  epochs: 200
+  use_last_n_blocks: 1 # not yet supported
+meta:
+  device: cuda

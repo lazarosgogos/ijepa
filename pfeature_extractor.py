@@ -25,7 +25,8 @@ from torchvision.datasets import ImageFolder
 import torch.nn.functional as F
 import torchvision
 
-
+import glob
+import re
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -121,7 +122,9 @@ class LinearProbe():
         self.model_name = args['data']['model_name']
         self.batch_size = args['data']['batch_size']
         self.patch_size = args['data']['patch_size']
-        
+        self.probe_checkpoints = args['data'].get('probe_checkpoints', False) # default to False
+        self.probe_prefix = args['data'].get('probe_prefix', None) # default to None
+
 
         # -- LOGGING
         self.log_dir = args['logging']['log_dir']
@@ -333,11 +336,56 @@ def process_main(fname, devices=['cuda:0']):
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(params)
     
+    # obtain all .tar files from the corresponding log dir in list format
+    # iterate over them all
+    # index them by overriding the `pretrained_model_path` in the params dictionary
+    # let it do its job
+
+    probe_checkpoints = params['logging'].get('probe_checkpoints', None)
+    if not probe_checkpoints: # if it was not found or it is False
+        linear_prober = LinearProbe(params, logger)
+        linear_prober.eval_linear()
+        return
     
-    linear_prober = LinearProbe(params, logger)
+    # else:
+    # ----------------------- AUTOMATIC LINEAR PROBING -----------------------
+    log_dir = params['logging'].get('log_dir', None)
+    probe_prefix = params['logging'].get('probe_prefix', None)
+    prefixed_path = os.path.join(log_dir, probe_prefix)
+    tarfiles = glob.glob(prefixed_path + '-ep*.pth.tar') # grab all requested pth tar files
+    epoch = 0
+    for tarfile in tarfiles:
+        eval_output = params['logging'].get('eval_output', 'pfeature_extractor.out')
+        logger.info('working on file %s ...' % str(tarfile))
+        params['logging']['pretrained_model_path'] = tarfile # use this tarfile
+        
+        # First, remove all handlers! 
+        for handler in logger.handlers[:]:
+            logger.removeHandler(handler)
+        
+        # extract the epoch
+        match_ = re.search(r'ep(\d+)\.', tarfile)
 
-    linear_prober.eval_linear()
+        if match_:
+            epoch = int(match_.group(1))
+        else:
+            epoch += 1
 
+        # tarfile_epoch = tarfile.
+        eval_output = os.path.join(log_dir, eval_output + f'-ep{epoch}.out')
+        logger.addHandler(logging.StreamHandler())
+        logger.addHandler(logging.FileHandler(eval_output))
+
+        linear_prober = LinearProbe(params, logger)
+        linear_prober.eval_linear()
+        logger.info('\n')
+
+
+    # Για καθε αρχειο, εκτυπωσε σε αλλο output file τα αποτελεσματα
+    # ωστε μετα να μπορεις να κανεις την αντιπαραβολη.
+    # ή! μαζεψε τις καλυτερες επιδοσεις, αποθηκευσε τες σε ενα dictionary/output file
+    # και επιστρεψε τες για plotting. Η δευτερη εναλλακτικη δεν αφήνει χώρο για μελλοντικές χρήσεις
+    # και ίσως χρειαστεί να τρέξεις τα tests => πολυς χρονος χαμένος !
 
 if __name__ == '__main__':
     """ No support for distributed training as of yet.

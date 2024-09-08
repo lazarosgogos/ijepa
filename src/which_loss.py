@@ -55,3 +55,15 @@ def PKT(z,h, num_pred_masks=4):
   # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
 
   """
+
+def L2_PKT(z,h, num_pred_masks=4):
+  """ Calculate the PKT loss. WIP
+   
+  :param z: the representation of the patches after being passed through 
+   the Context Encoder and the Predictor
+  :param h: the representation of the patches after being passed through
+   the Target Encoder """
+
+  loss_l2 = L2(z,h)
+  loss_pkt = PKT(z,h)
+  return loss_l2 + loss_pkt

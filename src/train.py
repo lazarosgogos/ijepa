@@ -142,7 +142,7 @@ def main(args, resume_preempt=False):
     tag = args['logging']['write_tag']
     checkpoint_freq = args['logging'].get('checkpoint_freq', 100) # get default frequency, default to 100 otherwise
     logging_frequency = args['logging'].get('logging_frequency', 3) # default to 3
-
+    output_file = args['logging'].get('output_file', tag)
     # force_cudnn_initialization()
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:
@@ -164,6 +164,8 @@ def main(args, resume_preempt=False):
     log_file = os.path.join(folder, f'{tag}_r{rank}.csv')
     save_path = os.path.join(folder, f'{tag}' + '-ep{epoch}.pth.tar')
     latest_path = os.path.join(folder, f'{tag}-latest.pth.tar')
+    output_file = os.path.join(folder, output_file)
+    logger.addHandler(logging.FileHandler(output_file)) # add auto output ;)
     load_path = None
     if load_model:
         load_path = os.path.join(folder, r_file) if r_file is not None else latest_path
@@ -287,7 +289,8 @@ def main(args, resume_preempt=False):
     for epoch in range(start_epoch, num_epochs):
         start_time_epoch = time.perf_counter()
         logger.info('Epoch %d' % (epoch + 1))
-        log_freq = ipe // logging_frequency # report every X := `logging_frequency` intermediate steps
+        if logging_frequency > 0:
+            log_freq = ipe // logging_frequency # report every X := `logging_frequency` intermediate steps
         # -- update distributed-data-loader epoch
         unsupervised_sampler.set_epoch(epoch)
 
@@ -415,7 +418,7 @@ def main(args, resume_preempt=False):
             # -- Logging
             def log_stats():
                 csv_logger.log(epoch + 1, itr, loss, maskA_meter.val, maskB_meter.val, etime)
-                if (itr % log_freq == 0) or np.isnan(loss) or np.isinf(loss):
+                if (logging_frequency > 0 and itr % log_freq == 0) or np.isnan(loss) or np.isinf(loss):
                     logger.info('[%d, %5d] loss: %e '
                                 'masks: %.1f %.1f '
                                 '[wd: %.2e] [lr: %.2e] '

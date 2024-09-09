@@ -32,7 +32,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--fname', type=str,
     help='name of config file to load',
-    default='cls_configs/clsin100.yaml'
+    default='cls_configs/clsiic.yaml'
 )
 VIT_EMBED_DIMS = {
     'vit_tiny': 192,
@@ -134,7 +134,12 @@ class LinearProbe():
         self.log_file = args['logging']['log_file']
 
         self.pretrained_model_path = os.path.join(self.log_dir, self.pretrained_model_path)
-        self.save_path = os.path.join(self.log_dir, self.save_path)
+
+        # self.save_path = os.path.join(self.log_dir, self.save_path)
+        _classifiers_dir = os.path.join(self.log_dir, 'classifiers')
+        os.makedirs(_classifiers_dir, exist_ok=True)
+        
+        logger.info(f'Directory {self.save_path} is now present')
         self.log_file = os.path.join(self.log_dir, f'{self.log_file}.csv')
         self.train_features_file_path = os.path.join(self.log_dir, 'train_features_and_labels.pt')
         self.val_features_file_path = os.path.join(self.log_dir, 'val_features_and_labels.pt')
@@ -162,7 +167,9 @@ class LinearProbe():
         for k, v in pretrained_dict.items():
             self.encoder.state_dict()[k[len('module.'):]].copy_(v) 
 
-        self.model = Both(self.encoder, self.embed_dims, self.num_classes)
+        if self.probe_checkpoints:
+            self.model = LinearClassifier(self.embed_dims, self.num_classes)
+        else: self.model = Both(self.encoder, self.embed_dims, self.num_classes)
         self.model.to(self.device)
         
         self.criterion = nn.CrossEntropyLoss()
@@ -187,8 +194,8 @@ class LinearProbe():
         self.save_features(self.encoder, self.train_loader_images, self.train_features_file_path)
         self.save_features(self.encoder, self.val_loader_images, self.val_features_file_path)
         
-        self.train_dataset_features = FeaturesDataset(self.features_file_path)
-        self.val_dataset_features = FeaturesDataset(self.features_file_path)
+        self.train_dataset_features = FeaturesDataset(self.train_features_file_path)
+        self.val_dataset_features = FeaturesDataset(self.val_features_file_path)
 
         self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True)
         self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size)
@@ -217,12 +224,13 @@ class LinearProbe():
         if (ep) % self.checkpoint_freq == 0:
             torch.save(save_dict, save_path)
 
-    def save_features(self, encoder, _loader, features_file_path):
+    def save_features(self, encoder, _loader, features_file_path, device='cuda'):
         all_features = []
         all_labels = []
         with torch.no_grad():
             encoder.eval()
             for inputs, labels in _loader:
+                inputs, labels = inputs.to(device), labels.to(device)
                 output = encoder(inputs)
 
                 # append to prior list
@@ -341,23 +349,28 @@ def process_main(fname, devices=['cuda:0']):
     # index them by overriding the `pretrained_model_path` in the params dictionary
     # let it do its job
 
-    probe_checkpoints = params['logging'].get('probe_checkpoints', None)
-    if not probe_checkpoints: # if it was not found or it is False
+    probe_checkpoints = params['data'].get('probe_checkpoints', None)
+    if probe_checkpoints is None: # if it was not found or it is False
+        logger.info('Doing Linear Probing on latest checkpoint')
         linear_prober = LinearProbe(params, logger)
         linear_prober.eval_linear()
         return
     
     # else:
     # ----------------------- AUTOMATIC LINEAR PROBING -----------------------
+    # These are hacks and need to be cleaned up. We cannot be playing around with the config file!
     log_dir = params['logging'].get('log_dir', None)
-    probe_prefix = params['logging'].get('probe_prefix', None)
+    probe_prefix = params['data'].get('probe_prefix', None)
+
     prefixed_path = os.path.join(log_dir, probe_prefix)
     tarfiles = glob.glob(prefixed_path + '-ep*.pth.tar') # grab all requested pth tar files
     epoch = 0
-    for tarfile in tarfiles:
-        eval_output = params['logging'].get('eval_output', 'pfeature_extractor.out')
+    import copy
+    for tarfile in sorted(tarfiles):
+        temp_params = copy.deepcopy(params)
+        eval_output = temp_params['logging'].get('eval_output', 'pfeature_extractor.out')
         logger.info('working on file %s ...' % str(tarfile))
-        params['logging']['pretrained_model_path'] = tarfile # use this tarfile
+        temp_params['logging']['pretrained_model_path'] = os.path.basename(tarfile) # use this tarfile
         
         # First, remove all handlers! 
         for handler in logger.handlers[:]:
@@ -369,14 +382,16 @@ def process_main(fname, devices=['cuda:0']):
         if match_:
             epoch = int(match_.group(1))
         else:
-            epoch += 1
+            epoch += 1 # signify that no epoch could be read in the title file
 
-        # tarfile_epoch = tarfile.
         eval_output = os.path.join(log_dir, eval_output + f'-ep{epoch}.out')
         logger.addHandler(logging.StreamHandler())
         logger.addHandler(logging.FileHandler(eval_output))
 
-        linear_prober = LinearProbe(params, logger)
+        temp_params['logging']['save_path'] += f'-ep{epoch}' 
+        temp_params['logging']['log_file'] += f'-ep{epoch}' 
+        # pprint.pprint(temp_params)
+        linear_prober = LinearProbe(temp_params, logger)
         linear_prober.eval_linear()
         logger.info('\n')
 

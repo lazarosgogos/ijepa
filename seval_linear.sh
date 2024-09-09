@@ -26,4 +26,5 @@ nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python peval_linear.py
   &> logs/in100/oin100-peval_linear.out &
 
 
-nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python peval_linear.py --fname cls_configs/clsin100.yaml &> logs/in100/oin100-peval_linear.out &
+nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python peval_linear.py 
+  --fname cls_configs/clsiic.yaml &> logs_PKT/iic-train-L2/oclsiic-pfeature_extractor_try.out

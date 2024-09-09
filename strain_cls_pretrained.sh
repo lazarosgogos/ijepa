@@ -19,3 +19,6 @@ nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_pretrained_vitb
 
 nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pcls_pretrained_vitb.py 
     &> cls_logs/ocls_pretrained_vitb_from100to200.out &
+
+nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python pfeature_extractor.py 
+  --fname cls_configs/clsiic.yaml &> logs_PKT/iic-train-L2/oclsiic-pfeature_extractor_try.out &

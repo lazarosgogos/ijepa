@@ -13,11 +13,11 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_PKT/iic-train-L2_PKT/
-  write_tag: jepa_iic_L2_PKT
+  folder: logs_PKT/iic-train-PKT/
+  write_tag: jepa_iic_PKT
   checkpoint_freq: 100 # new addition
   logging_frequency: 1 # defaults to , more concise logs
-  output_file: jepa_iic_L2_PKT
+  output_file: jepa_iic_PKT
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -35,11 +35,11 @@ mask:
   - 0.2                     # default: 0.2
 meta:
   copy_data: false          # default: false
-  load_checkpoint: false
+  load_checkpoint: true
   model_name: vit_base
   pred_depth: 12
   pred_emb_dim: 384
-  read_checkpoint: null     # default: null
+  read_checkpoint: jepa_iic_PKT-latest.pth.tar     # default: null
   use_bfloat16: false       # default: true
 optimization:
   ema:
@@ -53,4 +53,4 @@ optimization:
   start_lr: 0.0002          # default: 2e-4
   warmup: 40
   weight_decay: 0.04        # default: 0.04
-  loss_function: L2_PKT
+  loss_function: PKT

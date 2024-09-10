@@ -62,7 +62,7 @@ checkpoint_freq = 200
 
 # rng = np.random.Generator(np.random.PCG64()) 
 
-_GLOBAL_SEED = 1
+_GLOBAL_SEED = 10
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
 torch.backends.cudnn.benchmark = True

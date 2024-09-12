@@ -191,8 +191,8 @@ class LinearProbe():
         self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size)
         
 
-        self.save_features(self.encoder, self.train_loader_images, self.train_features_file_path)
-        self.save_features(self.encoder, self.val_loader_images, self.val_features_file_path)
+        self.save_features(self.encoder, self.train_loader_images, self.train_features_file_path, self.device)
+        self.save_features(self.encoder, self.val_loader_images, self.val_features_file_path, self.device)
         
         self.train_dataset_features = FeaturesDataset(self.train_features_file_path)
         self.val_dataset_features = FeaturesDataset(self.val_features_file_path)
@@ -324,6 +324,9 @@ class LinearProbe():
         end_time = time.perf_counter()
         total_duration = timedelta(seconds=end_time-start_time)
         self.logger.info('Total time taken %s' % str(total_duration))
+        self.logger.info('Cleaning up intermediate feature (.pt) files')
+        os.remove(self.train_features_file_path)
+        os.remove(self.val_features_file_path)
         self.logger.info('Done')
 
     

@@ -57,7 +57,7 @@ import datetime
 # --
 log_timings = True
 log_freq = 10
-checkpoint_freq = 200
+# checkpoint_freq = 200
 # --
 
 # rng = np.random.Generator(np.random.PCG64()) 
@@ -69,6 +69,7 @@ torch.backends.cudnn.benchmark = True
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
+# seed is logged later on
 
 def force_cudnn_initialization():
     return
@@ -159,7 +160,7 @@ def main(args, resume_preempt=False):
     logger.info(f'Initialized (rank/world-size) {rank}/{world_size}')
     if rank > 0:
         logger.setLevel(logging.ERROR)
-
+    logger.info(f'train.py: {_GLOBAL_SEED=}') # log seed
     # -- log/checkpointing paths
     log_file = os.path.join(folder, f'{tag}_r{rank}.csv')
     save_path = os.path.join(folder, f'{tag}' + '-ep{epoch}.pth.tar')

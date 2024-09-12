@@ -9,15 +9,15 @@ data:
   probe_checkpoints: true
   probe_prefix: jepa_iic_PKT
 logging:
-  log_dir: logs_PKT/iic-train-PKT
-  pretrained_model_path: jepa_iic_PKT-latest.pth.tar
-  save_path: classifiers/jepa-iic-PKT-classifier-pretrained-vitb
+  log_dir: logs_PKT/iic-train-PKT-seed-10
+  pretrained_model_path: jepa_iic_PKT-seed-10-latest.pth.tar
+  save_path: classifiers/jepa-iic-PKT-seed-10-classifier-pretrained-vitb
   checkpoint_freq: 1000
-  log_file: iic-stats-PKT
-  eval_output: jepa-iic-PKT-cls
+  log_file: iic-stats-PKT-seed-10
+  eval_output: jepa-iic-PKT-seed-10-cls
 optimization:
   lr: 0.001
   epochs: 200
   use_last_n_blocks: 1 # not yet supported
 meta:
-  device: cuda
+  device: cuda:1

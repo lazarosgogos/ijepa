@@ -28,3 +28,8 @@ nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python peval_linear.py
 
 nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python peval_linear.py 
   --fname cls_configs/clsiic.yaml &> logs_PKT/iic-train-L2/oclsiic-pfeature_extractor_try.out
+
+# feature extraction malena2
+nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pfeature_extractor.py  
+   --fname cls_configs/clsiic.yaml 
+  &> logs_PKT/iic-train-L2_PKT-seed-10/oclsiic-pfeature_extractor_try.out &

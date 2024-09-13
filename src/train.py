@@ -333,10 +333,12 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
+                    """# this should be fully functional, as proven by L2 
                     final_loss = which_loss.__dict__[loss_function](z,h)
                     # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
                     loss = AllReduce.apply(final_loss)
                     return loss
+                    """
 
                     
                     # # -- COSINE SIMILARITY 
@@ -372,7 +374,7 @@ def main(args, resume_preempt=False):
                     # (64*4, 20, EMB_SIZE: 768) # h
                     # .view() 
                     # alpha = .1 * cosine_similarity_loss
-                    loss = AllReduce.apply(loss_l2 + loss_pkt) 
+                    loss = AllReduce.apply(loss_pkt) 
                     return loss
 
                     """

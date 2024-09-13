@@ -61,7 +61,7 @@ class FeatureExtractor(nn.Module):
 """
 class LinearClassifier(nn.Module):
     """ Create a single fully connected layer for classification"""
-    def __init__(self, input_size, num_classes):
+    def __init__(self, input_size, num_classes, use_normalization):
         super(LinearClassifier, self).__init__()
         self.num_classes = num_classes
         self.input_size = input_size
@@ -69,23 +69,32 @@ class LinearClassifier(nn.Module):
         self.linear.weight.data.normal_(mean=0.0, std=0.1)
         self.linear.bias.data.zero_()
         self.softmax = nn.Softmax(dim=1)
+        self.use_normalization = use_normalization
+
+        self.head_dropout = nn.Dropout(.2) # try 20% dropout 
 
     def forward(self, x):
         # flatten 
         x = torch.mean(x, dim=1, dtype=x.dtype)
+        if self.use_normalization:
+            # add dropout
+            x = self.head_dropout(x)
 
+            # add layer norm
+            x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension
+                                       # but normalize over feature dim
         # linear layer
         return self.softmax(self.linear(x))
 
 class Both(nn.Module):
-    def __init__(self, encoder, EMBED_DIMS, num_classes):
+    def __init__(self, encoder, EMBED_DIMS, num_classes, use_normalization):
         super(Both, self).__init__()
         self.encoder = encoder
         # Freeze encoder so that it is not trained
         for param in self.encoder.parameters():
             param.requires_grad = False # do ONLY linear probing
 
-        self.head = LinearClassifier(EMBED_DIMS, num_classes)
+        self.head = LinearClassifier(EMBED_DIMS, num_classes, use_normalization)
         
     def forward(self, x):
         x = self.encoder(x)
@@ -139,7 +148,7 @@ class LinearProbe():
         _classifiers_dir = os.path.join(self.log_dir, 'classifiers')
         os.makedirs(_classifiers_dir, exist_ok=True)
         
-        logger.info(f'Directory {self.save_path} is now present')
+        logger.info(f'Directory {self.save_path} for saving the classifiers is now present')
         self.log_file = os.path.join(self.log_dir, f'{self.log_file}.csv')
         self.train_features_file_path = os.path.join(self.log_dir, 'train_features_and_labels.pt')
         self.val_features_file_path = os.path.join(self.log_dir, 'val_features_and_labels.pt')
@@ -148,7 +157,7 @@ class LinearProbe():
         self.lr = args['optimization']['lr']
         self.epochs = args['optimization']['epochs']
         self.embed_dims = VIT_EMBED_DIMS[self.model_name] # get dims based on model
-
+        self.use_normalization = args['optimization'].get('use_normalization', False)
         # -- META
         self.device_name = args['meta']['device']
 
@@ -168,10 +177,11 @@ class LinearProbe():
             self.encoder.state_dict()[k[len('module.'):]].copy_(v) 
 
         if self.probe_checkpoints:
-            self.model = LinearClassifier(self.embed_dims, self.num_classes)
-        else: self.model = Both(self.encoder, self.embed_dims, self.num_classes)
+            self.model = LinearClassifier(self.embed_dims, self.num_classes, self.use_normalization)
+        else: 
+            self.model = Both(self.encoder, self.embed_dims, self.num_classes, self.use_normalization)
         self.model.to(self.device)
-        
+
         self.criterion = nn.CrossEntropyLoss()
         self.optim = optim.AdamW(self.model.parameters(), lr=self.lr)
 
@@ -183,17 +193,17 @@ class LinearProbe():
 
         self.train_dataset_images = ImageFolder(root=self.train_dataset_path, transform=self.transform)
         self.val_dataset_images = ImageFolder(root=self.val_dataset_path, transform=self.transform)
-        
+
         # run feature extractor here
         # feature_extractor = FeatureExtractor(self.encoder)
         logger.info('Extracting features and saving them locally..')
         self.train_loader_images = DataLoader(self.train_dataset_images, batch_size=self.batch_size)
         self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size)
-        
+
 
         self.save_features(self.encoder, self.train_loader_images, self.train_features_file_path, self.device)
         self.save_features(self.encoder, self.val_loader_images, self.val_features_file_path, self.device)
-        
+
         self.train_dataset_features = FeaturesDataset(self.train_features_file_path)
         self.val_dataset_features = FeaturesDataset(self.val_features_file_path)
 
@@ -205,7 +215,7 @@ class LinearProbe():
                                    ('%.5e', 'train_accuracy'),
                                    ('%.5e', 'val_accuracy'),
                                    ('%.5e', 'loss'),
-                                   ('%s', 'time'))
+                                   ('%.2f', 'time'))
 
     
 
@@ -293,25 +303,17 @@ class LinearProbe():
             duration = time_taken
             val_accuracy = val_correct / total_val
 
-            """self.logger.info('Epoch: %d/%d' % (epoch+1, self.epochs) 
-                            'Train accuracy: %.5e' % train_accuracy 
-                            # 'Train correct: %d' % train_correct,
-                            # 'Train total: %d' % len(train_dataset),
-                            'Validation accuracy: %.5e' % val_accuracy 
-                            # 'Val correct: %d' % val_correct,
-                            # 'Val total: %d' % len(val_dataset),
-                            'Loss %.5e' % epoch_loss 
-                            'Time taken:', duration)"""
             self.logger.info('Epoch: %d/%d '
                             'Train accuracy: %.5e ' 
                             'Validation accuracy: %.5e '
                             'Loss %.5e '
-                            'Time taken: %d seconds'
+                            'Time taken: %.2f seconds '
+                            # 'ETA: %.2f '
                              % (epoch+1, self.epochs,
                                 train_accuracy,
                                 val_accuracy,
                                 epoch_loss,
-                                int(duration)) )
+                                duration) )
             self.csvlogger.log(epoch+1, 
                                train_accuracy, 
                                val_accuracy, 

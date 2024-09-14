@@ -169,12 +169,12 @@ class LinearProbe():
                                         crop_size=self.crop_size,)
 
 
-        ckpt = torch.load(self.pretrained_model_path, map_location=torch.device('cpu'))
-        pretrained_dict = ckpt['encoder']
+        # ckpt = torch.load(self.pretrained_model_path, map_location=torch.device('cpu'))
+        # pretrained_dict = ckpt['encoder']
 
-        # -- loading encoder
-        for k, v in pretrained_dict.items():
-            self.encoder.state_dict()[k[len('module.'):]].copy_(v) 
+        # # -- loading encoder
+        # for k, v in pretrained_dict.items():
+        #     self.encoder.state_dict()[k[len('module.'):]].copy_(v) 
 
         if self.probe_checkpoints:
             self.model = LinearClassifier(self.embed_dims, self.num_classes, self.use_normalization)

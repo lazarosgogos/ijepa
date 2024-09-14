@@ -62,14 +62,14 @@ log_freq = 10
 
 # rng = np.random.Generator(np.random.PCG64()) 
 
-_GLOBAL_SEED = 10
+_GLOBAL_SEED = 15 # 
+# seed is logged later on
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
 torch.backends.cudnn.benchmark = True
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
-# seed is logged later on
 
 def force_cudnn_initialization():
     return
@@ -333,12 +333,12 @@ def main(args, resume_preempt=False):
                     return z
 
                 def loss_fn(z, h):
-                    """# this should be fully functional, as proven by L2 
+                    # this should be fully functional, as proven by L2 
                     final_loss = which_loss.__dict__[loss_function](z,h)
                     # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
                     loss = AllReduce.apply(final_loss)
                     return loss
-                    """
+                    
 
                     
                     # # -- COSINE SIMILARITY 
@@ -366,7 +366,7 @@ def main(args, resume_preempt=False):
                         h_ = h_.view(-1, emb_size)
                         loss_pkt += PKT.cosine_similarity_loss(z_,h_)
                     loss_pkt /= z.size(0) # normalize by batch size
-                    loss_pkt *= 100 # scale PKT to match l2 loss and equalize the effect
+                    # loss_pkt *= 100 # scale PKT to match l2 loss and equalize the effect
 
                     # -- Other thoughts to try out
                     # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]

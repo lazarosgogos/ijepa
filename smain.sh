@@ -29,7 +29,7 @@ nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python main.py
 nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python main.py 
     --fname configs/iic-train.yaml 
     --devices cuda:0 cuda:1 
-    &> logs_PKT/iic-train-L2_PKT-seed-10/oiic-train-L2_PKT-seed-10.out &
+    &> logs_PKT/iic-train-PKT-seed-15/oiic-train-PKT-seed-15.out &
 
 # from cidl19
 nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python main.py --fname configs/in.yaml --devices cuda:0 &> logs/in100/oin100-vits.out &

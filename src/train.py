@@ -62,7 +62,7 @@ log_freq = 10
 
 # rng = np.random.Generator(np.random.PCG64()) 
 
-_GLOBAL_SEED = 15 # 
+_GLOBAL_SEED = 0 # 
 # seed is logged later on
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
@@ -136,7 +136,7 @@ def main(args, resume_preempt=False):
     lr = args['optimization']['lr']
     final_lr = args['optimization']['final_lr']
     loss_function = args['optimization'].get('loss_function', 'L2') # get the loss function, use L2 if no loss fn definition was found in the config file
-
+    evaluate = args['optimization'].get('evaluate', False) # print sim distributions only, do NOT pretrain
 
     # -- LOGGING
     folder = args['logging']['folder']

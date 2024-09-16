@@ -6,7 +6,7 @@ data:
   - 1.0
   crop_size: 150
   image_folder: intel-image-classification/
-  num_workers: 0
+  num_workers: 10
   pin_mem: true
   root_path: datasets
   use_color_distortion: false
@@ -14,9 +14,9 @@ data:
   use_horizontal_flip: false
 logging:
   checkpoint_freq: 100
-  folder: logs_PKT/iic-train-PKT-seed-1/
+  folder: logs_PKT_full/iic-train-PKT-seed0/
   logging_frequency: 1
-  output_file: oiic-pretrain-PKT-seed-1-evalluaion.out
+  output_file: oiic-pretrain-PKT-seed0.out
   write_tag: jepa-iic-PKT
 mask:
   allow_overlap: false
@@ -35,11 +35,11 @@ mask:
   - 0.2
 meta:
   copy_data: false
-  load_checkpoint: true
+  load_checkpoint: false
   model_name: vit_base
   pred_depth: 12
   pred_emb_dim: 384
-  read_checkpoint: jepa_iic_PKT-ep500.pth.tar
+  read_checkpoint: null
   use_bfloat16: false
 optimization:
   ema:
@@ -50,8 +50,9 @@ optimization:
   final_lr: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0
-  loss_function: PKT
+  loss_function: PKT_full
   lr: 0.001
+  message: third try at full PKT for reproducibility
   start_lr: 0.0002
   warmup: 40
   weight_decay: 0.04

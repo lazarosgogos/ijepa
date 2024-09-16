@@ -6,18 +6,18 @@ data:
   - 1.0
   crop_size: 150
   image_folder: intel-image-classification/
-  num_workers: 10
+  num_workers: 0
   pin_mem: true
   root_path: datasets
   use_color_distortion: false
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_PKT/iic-train-PKT-seed21/
+  folder: logs_PKT/iic-train-PKT-seed-1/
   write_tag: jepa-iic-PKT
   checkpoint_freq: 100 # new addition
   logging_frequency: 1 # defaults to 3, more concise logs
-  output_file: oiic-pretrain-PKT-seed21.out
+  output_file: oiic-pretrain-PKT-seed-1-evalluaion.out
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -35,12 +35,13 @@ mask:
   - 0.2                     # default: 0.2
 meta:
   copy_data: false          # default: false
-  load_checkpoint: false
+  load_checkpoint: true
   model_name: vit_base
   pred_depth: 12
   pred_emb_dim: 384
-  read_checkpoint: null     # default: null
+  read_checkpoint: jepa_iic_PKT-ep500.pth.tar     # default: null
   use_bfloat16: false       # default: true
+  
 optimization:
   ema:
   - 0.996                   # default: 0.996
@@ -54,5 +55,5 @@ optimization:
   warmup: 40
   weight_decay: 0.04        # default: 0.04
   loss_function: PKT
-  message: "PKT per image WITHOUT DIVISION"
-  
+  # message: "third try at full PKT for reproducibility"
+  evaluate: True           # get similarity distributions?

@@ -70,13 +70,13 @@ def L2_PKT(z,h, num_pred_masks=4):
   return loss_l2 + loss_pkt
 
 def L2_PKT_scaled(z,h, num_pred_masks=4, **kwargs):
-  """ Calculate the PKT loss. WIP
+  """ Calculate the PKT loss while scaling the PKT part by a factor of 100 by default.
    
   :param z: the representation of the patches after being passed through 
    the Context Encoder and the Predictor
   :param h: the representation of the patches after being passed through
    the Target Encoder """
-  pkt_scale = float(kwargs.get('pkt_scale', 1.)) # default to 1 if not present
+  pkt_scale = float(kwargs.get('pkt_scale', 100.)) # default to 1 if not present
   loss_l2 = L2(z,h)
   loss_pkt = PKT(z,h)
   return loss_l2 + loss_pkt * pkt_scale
@@ -130,4 +130,5 @@ def PKT_full(z,h, num_pred_masks=4):
 """
 [80, 768] @ [768, 80] = [80, 80] * 64 / 64
 
-[5120, 768] @ [768, 5120] =  [5120, 5120] """
+[5120, 768] @ [768, 5120] =  [5120, 5120] 
+"""

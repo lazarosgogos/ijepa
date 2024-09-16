@@ -163,6 +163,7 @@ def main(args, resume_preempt=False):
     logger.info(f'train.py: {_GLOBAL_SEED=}') # log seed
     # -- log/checkpointing paths
     log_file = os.path.join(folder, f'{tag}_r{rank}.csv')
+    losses_log_file = os.path.join(folder, 'f{tag}_all_losses.csv')
     save_path = os.path.join(folder, f'{tag}' + '-ep{epoch}.pth.tar')
     latest_path = os.path.join(folder, f'{tag}-latest.pth.tar')
     output_file = os.path.join(folder, output_file)
@@ -179,6 +180,17 @@ def main(args, resume_preempt=False):
                            ('%.5f', 'mask-A'),
                            ('%.5f', 'mask-B'),
                            ('%d', 'time (ms)'))
+    losses_logger = CSVLogger(losses_log_file, 
+                              ('%e', 'L2'), 
+                              ('%e', 'PKT')
+                              ('%e', 'L2_PKT')
+                              ('%e', 'L2_PKT_scaled')
+                              ('%e', 'PKT_full'))
+    """ loss_L2
+        loss_PKT
+        loss_L2_PKT
+        loss_L2_PKT_scaled
+        loss_PKT_full"""
 
     # -- init model
     encoder, predictor = init_model(
@@ -338,63 +350,40 @@ def main(args, resume_preempt=False):
                     # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
                     loss = AllReduce.apply(final_loss)
                     return loss
-                    
-
-                    
-                    # # -- COSINE SIMILARITY 
-                    # # we want to get the number of batch_size
-                    # # loss = 0
-                    # # for i in range(z.size(0)):
-                    # #     loss += F.cosine_embedding_loss(z[i],h[i],y)
-                    # y = torch.ones(z.size(1), device=device)
-                    # loss = sum([F.cosine_embedding_loss(z[i],h[i],y) for i in range(z.size(0))])/(z.size(0))
-                    # loss = AllReduce.apply(loss)
-                    # return loss
                 
-                    # PKT first shot
-                    loss_pkt = 0
-                    first_dim = z.size(0)
-                    z = z.view(first_dim//num_pred_masks, num_pred_masks, *z.size()[1:])
-                    h = h.view(first_dim//num_pred_masks, num_pred_masks, *h.size()[1:])
-                    # suddenly, now instead of [256, 20, 768] we have [64, 4, 20, 768]
-                    for i in range(z.size(0)):
-                        z_ = z[i] # get element i which would be [4, 20, 768] in size
-                        h_ = h[i]
-                        emb_size = z.size(-1)
-                        # t = t.view(big_b_s//num_patches, num_patches, *t.size()[1:])
-                        z_ = z_.view(-1, emb_size) # flatten it, without changing anything
-                        h_ = h_.view(-1, emb_size)
-                        loss_pkt += PKT.cosine_similarity_loss(z_,h_)
-                    loss_pkt /= z.size(0) # normalize by batch size
-                    # loss_pkt *= 100 # scale PKT to match l2 loss and equalize the effect
-
-                    # -- Other thoughts to try out
-                    # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
-                    # OR [64,4,768] -> mean [64, 768]
-                    # (64*4, 20, EMB_SIZE: 768) # h
-                    # .view() 
-                    # alpha = .1 * cosine_similarity_loss
-                    loss = AllReduce.apply(loss_pkt) 
-                    return loss
-
+                def all_losses(z,h):
+                    loss_L2 = which_loss.__dict__['L2'](z,h)
+                    loss_PKT = which_loss.__dict__['PKT'](z,h)
+                    loss_L2_PKT = which_loss.__dict__['L2_PKT'](z,h)
+                    loss_L2_PKT_scaled = which_loss.__dict__['L2_PKT_scaled'](z,h, {'pkt_scale': 100})
+                    loss_PKT_full = which_loss.__dict__['PKT_full'](z,h)
+                    """_gathered = {'loss_L2': which_loss.__dict__['L2'](z,h),
+                    'loss_PKT': which_loss.__dict__['PKT'](z,h),
+                    'loss_L2_PKT': which_loss.__dict__['L2_PKT'](z,h),
+                    'loss_L2_PKT_scaled': which_loss.__dict__['L2_PKT_scaled'](z,h, {'pkt_scale': 100}),
+                    'loss_PKT_full': which_loss.__dict__['PKT_full'](z,h),
+                    }
                     """
-                    for i in range(batch_size):
-                        PKT([4, 20, 768] [4, 20, 768])
-                        [80, 768] @ [768, 80] = [80,80] # diagonal = 1
+                    
+                    # needed? probably not, AllReduce is useful in backprop
+                    loss_L2 = AllReduce.apply(loss_L2)
+                    loss_PKT = AllReduce.apply(loss_PKT)
+                    loss_L2_PKT = AllReduce.apply(loss_L2_PKT)
+                    loss_L2_PKT_scaled = AllReduce.apply(loss_L2_PKT_scaled)
+                    loss_PKT_full = AllReduce.apply(loss_PKT_full)
 
-                    # (64*4, 20, EMB_SIZE: 768) # z -> [64*4*20, 768] or [64*4, 768]
-
-                    """
-
-
-                    # [256, 100, 768] -> [256, 768]
-                    # []
+                    return (loss_L2, 
+                            loss_PKT, 
+                            loss_L2_PKT, 
+                            loss_L2_PKT_scaled, 
+                            loss_PKT_full, )
 
                 # Step 1. Forward
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):
                     h = forward_target()
                     z = forward_context()
                     loss = loss_fn(z, h)
+                    gathered_losses = all_losses(z,h)
 
                 #  Step 2. Backward & step
                 if use_bfloat16:
@@ -413,14 +402,25 @@ def main(args, resume_preempt=False):
                     for param_q, param_k in zip(encoder.parameters(), target_encoder.parameters()):
                         param_k.data.mul_(m).add_((1.-m) * param_q.detach().data)
 
-                return (float(loss), _new_lr, _new_wd, grad_stats)
-            (loss, _new_lr, _new_wd, grad_stats), etime = gpu_timer(train_step)
+                return (float(loss), _new_lr, _new_wd, grad_stats, gathered_losses)
+            (loss, _new_lr, _new_wd, grad_stats, gathered_losses), etime = gpu_timer(train_step)
             loss_meter.update(loss)
             time_meter.update(etime)
 
             # -- Logging
             def log_stats():
                 csv_logger.log(epoch + 1, itr, loss, maskA_meter.val, maskB_meter.val, etime)
+                loss_L2 = gathered_losses[0]
+                loss_PKT = gathered_losses[1]
+                loss_L2_PKT = gathered_losses[2]
+                loss_L2_PKT_scaled = gathered_losses[3]
+                loss_PKT_full = gathered_losses[4]
+                losses_logger.log(loss_L2, 
+                                  loss_PKT, 
+                                  loss_L2_PKT, 
+                                  loss_L2_PKT_scaled, 
+                                  loss_PKT_full, 
+                                )
                 if (logging_frequency > 0 and itr % log_freq == 0) or np.isnan(loss) or np.isinf(loss):
                     logger.info('[%d, %5d] loss: %e '
                                 'masks: %.1f %.1f '

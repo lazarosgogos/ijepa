@@ -32,7 +32,7 @@ nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python peval_linear.py
 # feature extraction for malena2
 nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pfeature_extractor.py  
    --fname cls_configs/clsiic.yaml 
-  &> logs_PKT/iic-train-L2_PKT-seed-10/oclsiic-pfeature_extractor_try.out &
+  &> logs_PKT_chunks/iic-train-L2_PKT_chunks-seed21/ocls-iic-L2-PKT-chunks-sout.out &
 
 nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python pfeature_extractor.py  
    --fname cls_configs/clsiic.yaml &

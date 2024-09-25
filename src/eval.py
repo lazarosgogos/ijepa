@@ -325,10 +325,12 @@ def main(args, resume_preempt=False):
         all_model_sims.extend(model_sim.detach().cpu().numpy())
         all_target_sims.extend(target_sim.detach().cpu().numpy())
 
+    # logger.info('All model similarities: %s', str(all_model_sims[:5000]))
+    # logger.info('All target similarities: %s',str(all_target_sims[:5000]))
 
     # after all iterations
     # save_checkpoint(epoch+1)
-    
+
     # ep = '-ep100'
     import re
     match_ = re.search(r'ep(\d+)', r_file) # extract the number based on the checkpoint
@@ -339,8 +341,11 @@ def main(args, resume_preempt=False):
     # plt.savefig(outfile)
 
     plt.hist(all_target_sims, bins=100 ,fc=(1, 0, 0, 0.5))
+    plt.title('Evaluation of %s' % (r_file))
+    plt.xlabel('Values distribution')
+    plt.ylabel('Count')
     # , range=(0,1)
-    outfile = os.path.join(folder, f'target-sims-ep{ep}.png')
+    outfile = os.path.join(folder, f'target-sims-PKT-ep{ep}-changed.png')
     plt.savefig(outfile)
 
     time_epoch = time.perf_counter() - start_time_epoch

@@ -5,7 +5,7 @@
 
 import torch.utils
 from src import helper
-from src.utils.logging import CSVLogger
+from src.utils.logging import CSVLoggerAppender
 
 import os
 import argparse
@@ -168,6 +168,8 @@ class LinearProbe():
                                         model_name=self.model_name,
                                         crop_size=self.crop_size,)
 
+        # 404 error epoch not found
+        self.pretrain_checkpoint_epoch = args.get('pretrain_checkpoint_epoch', 404) 
 
         ckpt = torch.load(self.pretrained_model_path, map_location=torch.device('cpu'))
         pretrained_dict = ckpt['encoder']
@@ -210,12 +212,14 @@ class LinearProbe():
         self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True)
         self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size)
         self.logger = logger
-        self.csvlogger = CSVLogger(self.log_file, 
-                                   ('%d', 'epoch'),
-                                   ('%.5e', 'train_accuracy'),
-                                   ('%.5e', 'val_accuracy'),
-                                   ('%.5e', 'loss'),
-                                   ('%.2f', 'time'))
+        
+        self.csvlogger = CSVLoggerAppender(self.log_file, 
+                                            ('%d', 'pretrain_checkpoint_epoch'),
+                                            ('%d', 'epoch'),
+                                            ('%.5e', 'train_accuracy'),
+                                            ('%.5e', 'val_accuracy'),
+                                            ('%.5e', 'loss'),
+                                            ('%.2f', 'time'))
 
     
 
@@ -314,7 +318,8 @@ class LinearProbe():
                                 val_accuracy,
                                 epoch_loss,
                                 duration) )
-            self.csvlogger.log(epoch+1, 
+            self.csvlogger.log(self.pretrain_checkpoint_epoch,
+                               epoch+1, 
                                train_accuracy, 
                                val_accuracy, 
                                epoch_loss, 
@@ -375,7 +380,7 @@ def process_main(fname, devices=['cuda:0']):
         temp_params = copy.deepcopy(params)
         eval_output = temp_params['logging'].get('eval_output', 'pfeature_extractor.out')
         logger.info('working on file %s ...' % str(tarfile))
-        temp_params['logging']['pretrained_model_path'] = os.path.basename(tarfile) # use this tarfile
+        temp_params['logging']['pretrained_model_path'] = os.path.basename(tarfile) # use this tarfile name
         
         # First, remove all handlers! 
         for handler in logger.handlers[:]:
@@ -388,13 +393,16 @@ def process_main(fname, devices=['cuda:0']):
             epoch = int(match_.group(1))
         else:
             epoch += 1 # signify that no epoch could be read in the title file
+        
+        # keep info about what epoch this current run corresponds to
+        temp_params['pretrain_checkpoint_epoch'] = epoch 
 
         eval_output = os.path.join(log_dir, eval_output + f'-ep{epoch}.out')
         logger.addHandler(logging.StreamHandler())
         logger.addHandler(logging.FileHandler(eval_output))
 
         temp_params['logging']['save_path'] += f'-ep{epoch}' 
-        temp_params['logging']['log_file'] += f'-ep{epoch}' 
+        # temp_params['logging']['log_file'] += f'-ep{epoch}'  # do not create another log file, print them all in
         # pprint.pprint(temp_params)
         linear_prober = LinearProbe(temp_params, logger)
         linear_prober.eval_linear()

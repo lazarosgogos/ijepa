@@ -34,13 +34,13 @@ parser.add_argument(
     help='which devices to use on local machine')
 
 parser.add_argument( # 
-    '--eval', type=int, default=1, 
+    '--eval', type=int, default=0, 
     help='Whether to eval the model without any training',
     required=False
 )
 
 
-def process_main(rank, fname, world_size, devices, test=False):
+def process_main(rank, fname, world_size, devices, test=0):
     import os
     os.environ['CUDA_VISIBLE_DEVICES'] = str(devices[rank].split(':')[-1])
 
@@ -65,11 +65,11 @@ def process_main(rank, fname, world_size, devices, test=False):
     world_size, rank = init_distributed(rank_and_world_size=(rank, world_size))
     logger.info(f'Running... (rank: {rank}/{world_size})')
     if test == 1:
-        evall(args=params)
         logger.critical('EVALUATING')
+        evall(args=params)
     else:
-        app_main(args=params)
         logger.critical('PRETRAINING')
+        app_main(args=params)
 
 
 if __name__ == '__main__':
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     num_gpus = len(args.devices)
     mp.set_start_method('spawn')
     try:
-        test = args.eval # try to read test YAML parameter
+        test = args.eval # try to read test cl argument
     except:
         test = 0 # set it to false by default
     

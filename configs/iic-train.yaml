@@ -1,5 +1,5 @@
 data:
-  batch_size: 64
+  batch_size: 60
   color_jitter_strength: 0.0
   crop_scale:
   - 0.3
@@ -13,11 +13,11 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_PKT/iic-train-PKT-seed21/
-  write_tag: jepa-iic-PKT
+  folder: logs_PKT_chunks/iic-train-L2-PKT-chunks-scale10e3-seed43
+  write_tag: jepa-iic-L2-PKT-chunks-scale10e3-seed43
   checkpoint_freq: 100 # new addition
-  logging_frequency: 1 # defaults to 3, more concise logs
-  output_file: oiic-pretrain-PKT-seed21.out
+  logging_frequency: 1 # defaults to 3, for more concise logs
+  output_file: oiic-pretrain-L2-PKT-chunks-scale10e3-seed43.out
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -35,7 +35,7 @@ mask:
   - 0.2                     # default: 0.2
 meta:
   copy_data: false          # default: false
-  load_checkpoint: false
+  load_checkpoint: false    # default: true
   model_name: vit_base
   pred_depth: 12
   pred_emb_dim: 384
@@ -53,6 +53,7 @@ optimization:
   start_lr: 0.0002          # default: 2e-4
   warmup: 40
   weight_decay: 0.04        # default: 0.04
-  loss_function: PKT
-  message: "PKT per image WITHOUT DIVISION"
-  
+  loss_function: L2_PKT_chunks # this function name must exist in the which_loss.py file
+  pkt_scale: 1.0e+3         # perform grid search over this, no default value yet
+message: "L2+PKT chunks seed 43 for comparison, with scale 10e3" 
+# message is unused, only for printing info out

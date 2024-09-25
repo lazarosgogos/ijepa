@@ -7,15 +7,14 @@ data:
   batch_size: 128
   patch_size: 15
   probe_checkpoints: true
-  probe_prefix: jepa-iic-PKT
+  probe_prefix: jepa-iic-L2-seed43
 logging:
-  log_dir: logs_PKT_full/iic-train-PKT-seed15
-  pretrained_model_path: jepa_iic_PKT_seed-0-latest.pth.tar
-  save_path: classifiers/jepa-iic-PKT-seed-10-classifier-pretrained-vitb-normalized
+  log_dir: logs_PKT_full/iic-train-L2-seed43/
+  pretrained_model_path: jepa_iic_l2-seed-43-latest.pth.tar
+  save_path: classifiers/jepa-iic-L2-seed43-classifier-pretrained-vitb-normalized
   checkpoint_freq: 1000
-  log_file: iic-stats-pktfull # the .csv file
-  eval_output: ocls-jepa-iic-pktfull # the .out file
-  message: "Random backbone ViT-B"
+  log_file: iic-stats-l2-cls-norm-seed43 # the .csv file
+  eval_output: ocls-jepa-iic-l2-cls-norm-seed43 # the .out file
 optimization:
   lr: 0.001
   epochs: 200
@@ -23,3 +22,6 @@ optimization:
   use_normalization: true # use layer_norm and dropout layer
 meta:
   device: cuda:1
+message: "ViT-B backbone pretrained on L2 with seed 43 for comparison"
+
+  

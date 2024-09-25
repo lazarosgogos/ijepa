@@ -3,7 +3,7 @@ import torch.nn.functional as F
 
 from src import PKT as PKTClass
 
-def L2(z,h, num_pred_masks=4):
+def L2(z,h, **kwargs):
   """ Calculate the L2 loss between z and h, then return it.
   :param z: the representation of the patches after being passed through 
    the Context Encoder and the Predictor
@@ -12,7 +12,7 @@ def L2(z,h, num_pred_masks=4):
   loss_l2 = F.smooth_l1_loss(z,h)
   return loss_l2
 
-def PKT(z,h, num_pred_masks=4):
+def PKT(z_init,h_init, **kwargs):
   """ Calculate the PKT loss. WIP
    
   :param z: the representation of the patches after being passed through 
@@ -20,12 +20,12 @@ def PKT(z,h, num_pred_masks=4):
   :param h: the representation of the patches after being passed through
    the Target Encoder """
   # loss_PKT = PKT.cosine_similarity_loss()
-
+  num_pred_masks = int(kwargs.get('num_pred_masks', 4))
   # PKT first shot
   loss_pkt = 0
-  first_dim = z.size(0)
-  z = z.view(first_dim//num_pred_masks, num_pred_masks, *z.size()[1:])
-  h = h.view(first_dim//num_pred_masks, num_pred_masks, *h.size()[1:])
+  first_dim = z_init.size(0)
+  z = z_init.view(first_dim//num_pred_masks, num_pred_masks, *z_init.size()[1:])
+  h = h_init.view(first_dim//num_pred_masks, num_pred_masks, *h_init.size()[1:])
   # suddenly, now instead of [256, 20, 768] we have [64, 4, 20, 768]
   for i in range(z.size(0)):
       z_ = z[i] # get element i which would be [4, 20, 768] in size
@@ -57,7 +57,7 @@ def PKT(z,h, num_pred_masks=4):
 
   """
 
-def L2_PKT(z,h, num_pred_masks=4):
+def L2_PKT(z,h, **kwargs):
   """ Calculate the PKT loss. WIP
    
   :param z: the representation of the patches after being passed through 
@@ -69,7 +69,7 @@ def L2_PKT(z,h, num_pred_masks=4):
   loss_pkt = PKT(z,h)
   return loss_l2 + loss_pkt
 
-def L2_PKT_scaled(z,h, num_pred_masks=4, **kwargs):
+def L2_PKT_scaled(z,h, **kwargs):
   """ Calculate the PKT loss while scaling the PKT part by a factor of 100 by default.
    
   :param z: the representation of the patches after being passed through 
@@ -82,7 +82,7 @@ def L2_PKT_scaled(z,h, num_pred_masks=4, **kwargs):
   return loss_l2 + loss_pkt * pkt_scale
 
 
-def PKT_full(z,h, num_pred_masks=4):
+def PKT_full(z,h, **kwargs):
   """ Calculate the PKT loss between all patches of all batches, at once.
    
   :param z: the representation of the patches after being passed through 
@@ -95,10 +95,38 @@ def PKT_full(z,h, num_pred_masks=4):
   # and then perform PKT there
   # or take mean of second dimension and perform PKT over [256, 768]
   emb_size = z.size(-1)
-  z_ = z.view(-1, emb_size)
+  z_ = z.view(-1, emb_size) # [5120, 768]
   h_ = h.view(-1, emb_size)
   loss_pkt_full = PKTClass.cosine_similarity_loss(z_, h_)
   return loss_pkt_full
+
+def L2_PKT_batch(z,h, **kwargs):
+  return PKT_full(z,h) + L2(z,h)
+
+def L2_PKT_chunks(z,h, **kwargs):
+  """ Scale PKT after performing it in chunks of the patches """
+  emb_size = z.size(-1) # take vector embedding dimension
+  z_ = z.view(-1, emb_size) # transform from [256, 20, 768] into [5120, 768]
+  h_ = h.view(-1, emb_size) 
+  # create a random permutation
+  rperm = torch.randperm(z_.size(-1)) # this yields an array of [1, 5, 0,... , 5119] random indices
+  step = 512 # hardcoded size of matrices to perform PKT upon
+  vsize = h_.size(0) # vector size
+  
+  assert h_.size(0) == z_.size(0), 'Different batch sizes between z,h ?'
+
+  pkt_scale = kwargs.get('pkt_scale', 1.) # default to 1 if it fails
+  # pkt_scale = 1.0e+3 # hardcoded for now
+
+  loss_L2 = L2(z,h)
+  loss_pkt = 0
+  for i in range(0, vsize, step):
+    loss_pkt += PKTClass.cosine_similarity_loss(z_[rperm[i:i+step]],h_[rperm[i:i+step]])
+    # loss_pkt += PKTClass.cosine_similarity_loss(z_[i:i+step],h_[i:i+step])  
+    # loss_L2 += L2(z_[i:i+step],h_[i:i+step])
+ 
+  return (loss_pkt*pkt_scale + loss_L2)/(vsize/step)
+
 """
   # PKT between all patches of whole batch
   loss_pkt = 0

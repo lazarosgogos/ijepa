@@ -59,10 +59,7 @@ class PKTSchedule(object):
     T_max : int
         the epoch alpha reaches its final value
     final_alpha : float
-        the final value of alpha 
-    
-    
-
+        the final value of alpha
     """
     def __init__(
         self,

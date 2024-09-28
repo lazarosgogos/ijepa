@@ -121,8 +121,8 @@ def L2_PKT_chunks(z,h, **kwargs):
   loss_L2 = L2(z,h)
   loss_pkt = 0
   for i in range(0, vsize, step):
-    loss_pkt += PKTClass.cosine_similarity_loss(z_[rperm[i:i+step]],h_[rperm[i:i+step]])
-    # loss_pkt += PKTClass.cosine_similarity_loss(z_[i:i+step],h_[i:i+step])  
+    # loss_pkt += PKTClass.cosine_similarity_loss(z_[rperm[i:i+step]],h_[rperm[i:i+step]])
+    loss_pkt += PKTClass.cosine_similarity_loss(z_[i:i+step],h_[i:i+step])  
     # loss_L2 += L2(z_[i:i+step],h_[i:i+step])
  
   return (loss_pkt*pkt_scale + loss_L2)/(vsize/step)

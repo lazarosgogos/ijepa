@@ -315,15 +315,23 @@ def main(args, resume_preempt=False):
             with torch.no_grad():
                 h = forward_target()
                 z = forward_context()
+                z = z.view(4, 64, *z.size()[1:])
+                h = h.view(4, 64, *h.size()[1:])
+                logger.info(h.size())
+                
+                z = z[0, 0]
+                h = h[0, 0] # get ALL blocks from 0th (first) image, theoretically
+                logger.info(h.size())
                 z = z.view(-1, 768)
                 h = h.view(-1, 768)
-                model_sim, target_sim = PKT.get_similarity_distribution(z, h)
+                
+                model_sim, target_sim = PKT.get_similarity_matrices(z, h)
 
             return model_sim, target_sim
         (model_sim, target_sim), etime = gpu_timer(train_step)
 
-        all_model_sims.extend(model_sim.detach().cpu().numpy())
-        all_target_sims.extend(target_sim.detach().cpu().numpy())
+        all_model_sims. append(model_sim.detach().cpu().numpy())
+        all_target_sims.append(target_sim.detach().cpu().numpy())
 
     # logger.info('All model similarities: %s', str(all_model_sims[:5000]))
     # logger.info('All target similarities: %s',str(all_target_sims[:5000]))
@@ -335,26 +343,49 @@ def main(args, resume_preempt=False):
     import re
     match_ = re.search(r'ep(\d+)', r_file) # extract the number based on the checkpoint
     ep = match_.group(1)
-    plt.hist(all_model_sims, bins=100 ,fc=(0, 0, 1, 0.5))
+    ri = torch.randint(0, len(all_model_sims), (1,)) # pick a random image from the batch
+    # logger.critical(str(len(all_model_sims)))
+    
+    lb = min(all_model_sims[ri].min(), all_target_sims[ri].min()) # lower bound
+    ub = max(all_model_sims[ri].max(), all_target_sims[ri].max()) # upper bound
+    
+
+    fig = plt.figure(figsize=(20,10),dpi=300)
+    data = (all_model_sims[ri], all_target_sims[ri])
+    titles = ('Predictions', 'Targets')
+    for idx, datum in enumerate(data):
+        plt.subplot(1,2,idx+1)
+        img = plt.imshow(datum, interpolation='nearest', vmin=lb, vmax=ub)
+        plt.colorbar(img, fraction=0.046, pad=0.04)
+        plt.title(titles[idx])
+    plt.show()
+    """
+    fig = plt.figure()
+    plt.hist(all_model_sims, bins=100, range=(0. , 1.), fc=(0, 0, 1, 0.5), label='Predicted sims')
     # , range=(0,1)
     outfile = os.path.join(folder, f'model-sims-ep{ep}.png')
     # plt.savefig(outfile)
 
-    plt.hist(all_target_sims, bins=100 ,fc=(1, 0, 0, 0.5))
-    plt.title('Evaluation of %s' % (r_file))
+    plt.hist(all_target_sims, bins=100, range=(0. , 1.), fc=(1, 0, 0, 0.5), label='Target sims')
+    plt.legend()
+    """
+    plt.suptitle('Evaluation of %s' % (r_file))
+    """
     plt.xlabel('Values distribution')
     plt.ylabel('Count')
-    # , range=(0,1)
-    outfile = os.path.join(folder, f'target-sims-PKT-ep{ep}-changed.png')
+    """
+    # outfile = os.path.join(folder, f'sims-PKT-ep{ep}.png')
+    outfile = os.path.join(folder, f'matrices-inbefore-4-64-test-PKT-ep{ep}.png')
     plt.savefig(outfile)
-
+    fig.clear()
+    plt.close()
     time_epoch = time.perf_counter() - start_time_epoch
     logger.info('time taken for epoch %s' % str(datetime.timedelta(seconds=time_epoch)))
 
 
     total_time = time.perf_counter() - start_time
     logger.info('Total pretraining time %s' % str(datetime.timedelta(seconds = total_time)))
-
+    
 
 if __name__ == "__main__":
     main()

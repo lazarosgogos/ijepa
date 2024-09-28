@@ -66,7 +66,22 @@ def process_main(rank, fname, world_size, devices, test=0):
     logger.info(f'Running... (rank: {rank}/{world_size})')
     if test == 1:
         logger.critical('EVALUATING')
-        evall(args=params)
+        import glob
+        # this r_file has the prefix!
+        r_file = params['meta']['read_checkpoint']
+        log_dir = params['logging'].get('folder', None)
+        r_file = os.path.join(log_dir, r_file)
+        tarfiles = glob.glob(r_file + '-ep*.pth.tar')
+        logger.info('tarfiles: ' + str(tarfiles))
+        
+        # tarfiles has a  list of names of all tarballs with this desired prefix
+        import copy
+        epoch = 0
+        for tarfile in sorted(tarfiles):
+            temp_params = copy.deepcopy(params)
+            logger.info('working on file %s out of %s...' % (str(tarfile), str(tarfiles)))
+            temp_params['meta']['read_checkpoint'] = os.path.basename(tarfile)
+            evall(args=temp_params)
     else:
         logger.critical('PRETRAINING')
         app_main(args=params)

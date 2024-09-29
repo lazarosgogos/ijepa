@@ -14,6 +14,12 @@ def cosine_similarity_loss(output_net, target_net, eps=0.0000001):
     model_similarity = torch.mm(output_net, output_net.transpose(0, 1))
     target_similarity = torch.mm(target_net, target_net.transpose(0, 1))
 
+    cross = torch.mm(model_similarity, target_similarity) # cross sim matrix
+    
+    sdiag = -cross.diag().sum() # <- tend to 1
+    sltri = cross.tril().sum()  # <- tend to 0 
+
+
     # Scale cosine similarity to 0..1
     model_similarity = (model_similarity + 1.0) / 2.0
     target_similarity = (target_similarity + 1.0) / 2.0
@@ -26,6 +32,52 @@ def cosine_similarity_loss(output_net, target_net, eps=0.0000001):
     loss = torch.mean(target_similarity * torch.log((target_similarity + eps) / (model_similarity + eps)))
 
     return loss
+
+def cosine_similarity_loss_max_var(output_net, target_net, eps=0.0000001):
+    # Normalize each vector by its norm
+    output_net_norm = torch.sqrt(torch.sum(output_net ** 2, dim=1, keepdim=True))
+    output_net = output_net / (output_net_norm + eps)
+    output_net[output_net != output_net] = 0
+
+    target_net_norm = torch.sqrt(torch.sum(target_net ** 2, dim=1, keepdim=True))
+    target_net = target_net / (target_net_norm + eps)
+    target_net[target_net != target_net] = 0
+
+    # Calculate the cosine similarity
+    model_similarity = torch.mm(output_net, output_net.transpose(0, 1))
+    target_similarity = torch.mm(target_net, target_net.transpose(0, 1))
+
+    # Scale cosine similarity to 0..1
+    model_similarity = (model_similarity + 1.0) / 2.0
+    target_similarity = (target_similarity + 1.0) / 2.0
+
+    # Transform them into probabilities
+    model_similarity = model_similarity / torch.sum(model_similarity, dim=1, keepdim=True)
+    target_similarity = target_similarity / torch.sum(target_similarity, dim=1, keepdim=True)
+
+    # Calculate the KL-divergence
+    loss = torch.mean(target_similarity * torch.log((target_similarity + eps) / (model_similarity + eps)))
+
+    return (loss, -torch.var(model_similarity))
+
+def cross_similarity_loss(output_net, target_net, eps=0.0000001):
+    # Normalize each vector by its norm
+    output_net_norm = torch.sqrt(torch.sum(output_net ** 2, dim=1, keepdim=True))
+    output_net = output_net / (output_net_norm + eps)
+    output_net[output_net != output_net] = 0
+
+    target_net_norm = torch.sqrt(torch.sum(target_net ** 2, dim=1, keepdim=True))
+    target_net = target_net / (target_net_norm + eps)
+    target_net[target_net != target_net] = 0
+
+    # Calculate the cosine similarity
+    cross = torch.mm(output_net, target_net) # cross sim matrix
+    
+    sdiag = -cross.diag().sum() # <- tend to 1
+    sltri = cross.tril().sum()  # <- tend to 0 
+
+    w = 1.e-1
+    return sdiag + w*sltri
 
 
 # take inter-image similarity 
@@ -66,7 +118,6 @@ def cosine_similarity_loss_inter(output_net, target_net, output_net_2, target_ne
     return loss
 
 
-
 def get_similarity_matrices(output_net, target_net, eps=0.0000001):
     """ Return similarity matrices for model and target. Should 
     be symmetric"""
@@ -94,6 +145,7 @@ def get_similarity_matrices(output_net, target_net, eps=0.0000001):
     # target_similarity = target_similarity / torch.sum(target_similarity, dim=1, keepdim=True)
 
     return model_similarity, target_similarity
+
 
 def get_similarity_distribution(output_net, target_net, eps=0.0000001):
     """ Return similarities for model and target sim matrices. """

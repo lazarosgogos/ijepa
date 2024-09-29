@@ -52,6 +52,7 @@ from src.transforms import make_transforms
 from src import PKT
 from src import which_loss
 from src.utils.schedulers import PKTSchedule
+from torch.utils.tensorboard import SummaryWriter
 
 import time
 import datetime
@@ -139,7 +140,7 @@ def main(args, resume_preempt=False):
     checkpoint_freq = args['logging'].get('checkpoint_freq', 100) # get default frequency, default to 100 otherwise
     logging_frequency = args['logging'].get('logging_frequency', 3) # default to 3
     output_file = args['logging'].get('output_file', tag)
-    
+
     # -- PKT scheduling
     use_pkt_scheduler = args['pkt'].get('use_pkt_scheduler', 1.)
     start_alpha = args['pkt'].get('start_alpha', 1.)
@@ -150,6 +151,7 @@ def main(args, resume_preempt=False):
     
 
     # force_cudnn_initialization()
+    writer_dest = os.path.join(folder, f'tensorboard-{tag}')
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:
         yaml.dump(args, f)
@@ -179,7 +181,7 @@ def main(args, resume_preempt=False):
         load_path = os.path.join(folder, r_file) if r_file is not None else latest_path
 
     # -- make csv_logger
-
+    writer = SummaryWriter(writer_dest)
     csv_logger = CSVLogger(log_file,
                             ('%d', 'epoch'),
                             ('%d', 'itr'),
@@ -495,10 +497,11 @@ def main(args, resume_preempt=False):
             log_stats()
 
             assert not np.isnan(loss), 'loss is nan'
-        # -- Log loss into appropriate CSV file
+        # -- Log loss into appropriate CSV file and to tensorboard
         if rank == 0:
             loss_file_logger.log(epoch+1,
                                  loss_meter.avg,)
+            writer.add_scalar('Loss', loss_meter.avg, epoch+1) 
         # -- Save Checkpoint after every epoch
         logger.info('avg. loss %.8e' % loss_meter.avg)
         save_checkpoint(epoch+1)

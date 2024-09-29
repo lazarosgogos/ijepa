@@ -104,8 +104,8 @@ def PKT_full(z,h, **kwargs):
   z_ = z.view(-1, emb_size) # [5120, 768]
   h_ = h.view(-1, emb_size)
   loss_pkt_full, neg_variance = PKTClass.cosine_similarity_loss_max_var(z_, h_)
-  logger.info('neg variance: %e, \n loss w/o max_var %e' % (neg_variance.item(), loss_pkt_full.item()))
-  return loss_pkt_full + w*neg_variance
+  # logger.info('neg variance: %e, \n loss w/o max_var %e' % (neg_variance.item(), loss_pkt_full.item()))
+  return loss_pkt_full #  + w*neg_variance
 
 def L2_PKT_batch(z,h, **kwargs):
   alpha = kwargs.get('alpha', -1)

@@ -69,10 +69,10 @@ class PKTSchedule(object):
         T_max,
         final_alpha=0.
     ):
+        self.warmup_steps = warmup_steps
         self.start_alpha = start_alpha
         self.ref_alpha = ref_alpha
         self.final_alpha = final_alpha
-        self.warmup_steps = warmup_steps
         self.T_max = T_max - warmup_steps
         self._step = 0.
 
@@ -82,14 +82,15 @@ class PKTSchedule(object):
         if self._step < self.warmup_steps:
             # progress = float(self._step) / float(max(1, self.warmup_steps))
             # alpha = self.start_alpha + progress * (self.ref_lr - self.start_alpha)
-            alpha = 1. # initially, alpha is steadily 1.
-        else:
+            alpha = self.start_alpha # initially, alpha is steadily 1.
+        elif self._step < self.T_max + self.warmup_steps:
             # -- progress after warmup
             progress = float(self._step - self.warmup_steps) / float(max(1, self.T_max)) 
             alpha = max(self.final_alpha,
                          self.final_alpha + (self.ref_alpha - self.final_alpha) * 0.5 * (1. + math.cos(math.pi * progress))
                         )
-
+        else:
+            alpha = self.final_alpha
         return alpha
 
 

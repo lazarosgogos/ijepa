@@ -51,6 +51,7 @@ from src.transforms import make_transforms
 
 from src import PKT
 from src import which_loss
+from src.utils.schedulers import PKTSchedule
 
 import time
 import datetime
@@ -138,6 +139,16 @@ def main(args, resume_preempt=False):
     checkpoint_freq = args['logging'].get('checkpoint_freq', 100) # get default frequency, default to 100 otherwise
     logging_frequency = args['logging'].get('logging_frequency', 3) # default to 3
     output_file = args['logging'].get('output_file', tag)
+    
+    # -- PKT scheduling
+    use_pkt_scheduler = args['pkt'].get('use_pkt_scheduler', 1.)
+    start_alpha = args['pkt'].get('start_alpha', 1.)
+    warmup_steps_alpha = args['pkt'].get('warmup_steps_alpha', 100)
+    ref_alpha = args['pkt'].get('ref_alpha', 1.)
+    T_max_alpha = args['pkt'].get('T_max', 200)
+    final_alpha = args['pkt'].get('final_alpha', 0.)
+    
+
     # force_cudnn_initialization()
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:
@@ -263,6 +274,15 @@ def main(args, resume_preempt=False):
     momentum_scheduler = (ema[0] + i*(ema[1]-ema[0])/(ipe*num_epochs*ipe_scale)
                           for i in range(int(ipe*num_epochs*ipe_scale)+1))
 
+    # convert T_max_alpha from epoch to actual itr number
+    T_max_alpha = ipe*T_max_alpha*ipe_scale
+    warmup_steps_alpha = ipe*warmup_steps_alpha*ipe_scale
+    pkt_scheduler = PKTSchedule(warmup_steps=warmup_steps_alpha,
+                                start_alpha=start_alpha,
+                                ref_alpha=ref_alpha,
+                                T_max=T_max_alpha,
+                                final_alpha=final_alpha)
+
     start_epoch = 0
     # -- load training checkpoint
     if load_model:
@@ -279,6 +299,7 @@ def main(args, resume_preempt=False):
             wd_scheduler.step()
             next(momentum_scheduler)
             mask_collator.step()
+            pkt_scheduler.step()
 
     def save_checkpoint(epoch):
         save_dict = {
@@ -328,6 +349,9 @@ def main(args, resume_preempt=False):
             def train_step():
                 _new_lr = scheduler.step()
                 _new_wd = wd_scheduler.step()
+                _new_alpha = pkt_scheduler.step()
+                if rank == 0 and itr == 0:
+                    logger.info('new alpha: %f' % _new_alpha)
                 # --
 
                 def forward_target():
@@ -392,8 +416,10 @@ def main(args, resume_preempt=False):
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):
                     h = forward_target()
                     z = forward_context()
-                    
-                    loss = loss_fn(z, h, pkt_scale=pkt_scale) # pkt scale default to 1
+                    if not use_pkt_scheduler:
+                        loss = loss_fn(z, h, pkt_scale=pkt_scale) # pkt scale default to 1
+                    else: 
+                        loss = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha)
                     # gathered_losses = all_losses(z,h) # this contains all loss functions
 
                 #  Step 2. Backward & step

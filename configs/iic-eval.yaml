@@ -13,11 +13,12 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_PKT_full/iic-train-L2-seed21/
+  folder: logs_PKT_full/iic-train-L2-seed21
   write_tag: jepa_iic_PKT_seed-0-ep____.pth.tar
   checkpoint_freq: 100 # new addition
   logging_frequency: 1 # defaults to 3, more concise logs
   output_file: oiic-evaluate-PKT-matrices.out
+  plot_matrices: false # defaults to true
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -43,7 +44,6 @@ meta:
   # to the read_checkpoint
   read_checkpoint: jepa-iic-L2    # default: null
   use_bfloat16: false       # default: true
-  
 optimization:
   ema:
   - 0.996                   # default: 0.996

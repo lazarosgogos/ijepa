@@ -51,6 +51,7 @@ from src.transforms import make_transforms
 
 from src import PKT
 from src import which_loss
+from torch.utils.tensorboard import SummaryWriter
 
 import time
 import datetime
@@ -71,6 +72,8 @@ torch.backends.cudnn.benchmark = True
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
 
+
+
 def force_cudnn_initialization():
     return
     s = 32
@@ -80,7 +83,6 @@ def force_cudnn_initialization():
 
 
 def main(args, resume_preempt=False):
-
     # ----------------------------------------------------------------------- #
     #  PASSED IN PARAMS FROM CONFIG FILE
     # ----------------------------------------------------------------------- #
@@ -145,6 +147,7 @@ def main(args, resume_preempt=False):
     checkpoint_freq = args['logging'].get('checkpoint_freq', 100) # get default frequency, default to 100 otherwise
     logging_frequency = args['logging'].get('logging_frequency', 3) # default to 3
     output_file = args['logging'].get('output_file', tag)
+    plot_matrices = args['logging'].get('plot_matrices', True)
     # force_cudnn_initialization()
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:
@@ -169,6 +172,7 @@ def main(args, resume_preempt=False):
     output_file = os.path.join(folder, output_file)
     logger.addHandler(logging.FileHandler(output_file)) # add auto output ;)
 
+    
     load_path = None
     if load_model:
         load_path = os.path.join(folder, r_file) if r_file is not None else latest_path
@@ -315,8 +319,8 @@ def main(args, resume_preempt=False):
             with torch.no_grad():
                 h = forward_target()
                 z = forward_context()
-                z = z.view(4, 64, *z.size()[1:])
-                h = h.view(4, 64, *h.size()[1:])
+                z = z.view(64, 4, *z.size()[1:])
+                h = h.view(64, 4, *h.size()[1:])
                 logger.info(h.size())
                 
                 z = z[0, 0]
@@ -339,26 +343,57 @@ def main(args, resume_preempt=False):
     # after all iterations
     # save_checkpoint(epoch+1)
 
+
+    
     # ep = '-ep100'
     import re
     match_ = re.search(r'ep(\d+)', r_file) # extract the number based on the checkpoint
     ep = match_.group(1)
-    ri = torch.randint(0, len(all_model_sims), (1,)) # pick a random image from the batch
+    writer = SummaryWriter(f'runs/l2-{ep}')
     # logger.critical(str(len(all_model_sims)))
-    
-    lb = min(all_model_sims[ri].min(), all_target_sims[ri].min()) # lower bound
-    ub = max(all_model_sims[ri].max(), all_target_sims[ri].max()) # upper bound
-    
+    all_params = []
+    for idx, (name, param) in enumerate(encoder.named_parameters()):
+        # logger.info('epoch: %s, name: %s, param: %s ' 
+        #             % (ep, name, param))
+        # logger.info('extending params epoch: %s, name: %s' % (ep, name))
+        all_params.extend(param.view(-1).detach().cpu().numpy())
+        writer.add_histogram(name, param, 
+                             global_step=idx, bins=1000)
 
-    fig = plt.figure(figsize=(20,10),dpi=300)
-    data = (all_model_sims[ri], all_target_sims[ri])
-    titles = ('Predictions', 'Targets')
-    for idx, datum in enumerate(data):
-        plt.subplot(1,2,idx+1)
-        img = plt.imshow(datum, interpolation='nearest', vmin=lb, vmax=ub)
-        plt.colorbar(img, fraction=0.046, pad=0.04)
-        plt.title(titles[idx])
-    plt.show()
+    outfile_params = os.path.join(folder, f'params-ep{ep}.png')
+    ub = max(all_params)
+    lb = min(all_params)
+    plt.figure(figsize=(10,10),dpi=300)
+    plt.yscale('log')
+    plt.hist(all_params, bins=1000, range=(lb, ub))
+    # plt.hist(all_params,)
+    plt.title('Params')
+    plt.ylabel('param count')
+    plt.xlabel('param value')
+    # plt.savefig(outfile_params)
+    plt.close()
+    del all_params
+    writer.close()
+
+    if plot_matrices:
+        ri = torch.randint(0, len(all_model_sims), (1,)) # pick a random image from the batch
+        lb = min(all_model_sims[ri].min(), all_target_sims[ri].min()) # lower bound
+        ub = max(all_model_sims[ri].max(), all_target_sims[ri].max()) # upper bound
+        fig = plt.figure(figsize=(20,10),dpi=300)
+        data = (all_model_sims[ri], all_target_sims[ri])
+        titles = ('Predictions', 'Targets')
+        for idx, datum in enumerate(data):
+            plt.subplot(1,2,idx+1)
+            img = plt.imshow(datum, interpolation='nearest', vmin=lb, vmax=ub)
+            plt.colorbar(img, fraction=0.046, pad=0.04)
+            plt.title(titles[idx])
+        plt.show()
+        plt.suptitle('Evaluation of %s' % (r_file))
+        # outfile = os.path.join(folder, f'sims-PKT-ep{ep}.png')
+        outfile = os.path.join(folder, f'matrices-inbefore-4-64-test-PKT-ep{ep}.png')
+        plt.savefig(outfile)
+        fig.clear()
+        plt.close()
     """
     fig = plt.figure()
     plt.hist(all_model_sims, bins=100, range=(0. , 1.), fc=(0, 0, 1, 0.5), label='Predicted sims')
@@ -369,16 +404,12 @@ def main(args, resume_preempt=False):
     plt.hist(all_target_sims, bins=100, range=(0. , 1.), fc=(1, 0, 0, 0.5), label='Target sims')
     plt.legend()
     """
-    plt.suptitle('Evaluation of %s' % (r_file))
+    
     """
     plt.xlabel('Values distribution')
     plt.ylabel('Count')
     """
-    # outfile = os.path.join(folder, f'sims-PKT-ep{ep}.png')
-    outfile = os.path.join(folder, f'matrices-inbefore-4-64-test-PKT-ep{ep}.png')
-    plt.savefig(outfile)
-    fig.clear()
-    plt.close()
+    
     time_epoch = time.perf_counter() - start_time_epoch
     logger.info('time taken for epoch %s' % str(datetime.timedelta(seconds=time_epoch)))
 

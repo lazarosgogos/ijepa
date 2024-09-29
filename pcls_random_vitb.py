@@ -17,7 +17,7 @@ IMG_CROPSIZE = 150
 NUM_CLASSES = 6
 SAVE_PATH = 'classifiers/jepa_iic_classifier_locked_randomvitb'
 LR = 0.001
-NUM_EPOCHS = 300
+# NUM_EPOCHS = 300
 NUM_EPOCHS = 100
 BATCH_SIZE = 256
 # Define paths to datasets

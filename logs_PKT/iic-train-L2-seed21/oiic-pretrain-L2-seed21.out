@@ -1,0 +1,84 @@
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+Epoch 1
+[1,     0] loss: 4.865471e-01 masks: 17.0 20.0 [wd: 4.00e-02] [lr: 2.00e-04] [mem: 6.03e+03] (1305.5 ms)
+[1,     0] grad_stats: [2.80e-02 1.40e-02] (1.39e-02, 3.53e-02)
+avg. loss 1.72506554e-01
+time taken for epoch 0:01:16.824818
+Epoch 2
+[2,     0] loss: 1.721724e-01 masks: 21.0 16.0 [wd: 4.00e-02] [lr: 2.20e-04] [mem: 8.44e+03] (543.6 ms)
+[2,     0] grad_stats: [7.35e-02 2.24e-03] (2.24e-03, 8.82e-02)
+avg. loss 1.51980123e-01
+time taken for epoch 0:01:25.148147
+Epoch 3
+[3,     0] loss: 1.360967e-01 masks: 23.0 16.0 [wd: 4.00e-02] [lr: 2.40e-04] [mem: 8.57e+03] (546.2 ms)
+[3,     0] grad_stats: [4.48e-02 1.51e-03] (1.22e-03, 7.29e-02)
+avg. loss 1.42131484e-01
+time taken for epoch 0:01:24.638672
+Epoch 4
+[4,     0] loss: 1.389035e-01 masks: 19.0 20.0 [wd: 4.00e-02] [lr: 2.60e-04] [mem: 8.57e+03] (552.3 ms)
+[4,     0] grad_stats: [3.90e-02 9.73e-04] (8.91e-04, 6.11e-02)
+avg. loss 1.37954693e-01
+time taken for epoch 0:01:25.090815
+Epoch 5
+[5,     0] loss: 1.306764e-01 masks: 19.0 20.0 [wd: 4.01e-02] [lr: 2.80e-04] [mem: 8.57e+03] (566.5 ms)
+[5,     0] grad_stats: [4.77e-02 1.26e-03] (9.78e-04, 5.34e-02)
+avg. loss 1.30001681e-01
+time taken for epoch 0:01:24.553264
+Epoch 6
+[6,     0] loss: 1.032838e-01 masks: 25.0 16.0 [wd: 4.01e-02] [lr: 3.00e-04] [mem: 8.57e+03] (567.0 ms)
+[6,     0] grad_stats: [3.85e-02 1.24e-03] (7.79e-04, 6.27e-02)
+avg. loss 1.10130349e-01
+time taken for epoch 0:01:25.054804
+Epoch 7
+[7,     0] loss: 1.140269e-01 masks: 21.0 16.0 [wd: 4.01e-02] [lr: 3.20e-04] [mem: 8.57e+03] (540.2 ms)
+[7,     0] grad_stats: [2.91e-02 9.17e-04] (5.17e-04, 5.28e-02)
+avg. loss 9.65684052e-02
+time taken for epoch 0:01:24.440096
+Epoch 8
+[8,     0] loss: 8.974235e-02 masks: 16.0 20.0 [wd: 4.02e-02] [lr: 3.40e-04] [mem: 8.57e+03] (531.4 ms)
+[8,     0] grad_stats: [2.70e-02 1.06e-03] (4.45e-04, 4.08e-02)
+avg. loss 8.23937261e-02
+time taken for epoch 0:01:24.455563
+Epoch 9
+[9,     0] loss: 7.190672e-02 masks: 23.0 16.0 [wd: 4.02e-02] [lr: 3.60e-04] [mem: 8.57e+03] (545.1 ms)
+[9,     0] grad_stats: [1.86e-02 9.26e-04] (3.85e-04, 2.78e-02)
+avg. loss 7.14341738e-02
+time taken for epoch 0:01:24.771297
+Epoch 10
+[10,     0] loss: 6.842514e-02 masks: 21.0 20.0 [wd: 4.03e-02] [lr: 3.80e-04] [mem: 8.57e+03] (560.3 ms)
+[10,     0] grad_stats: [3.39e-02 1.19e-03] (5.29e-04, 6.84e-02)
+avg. loss 6.61326180e-02
+time taken for epoch 0:01:24.534287
+Epoch 11
+[11,     0] loss: 6.542209e-02 masks: 17.0 16.0 [wd: 4.04e-02] [lr: 4.00e-04] [mem: 8.57e+03] (526.2 ms)
+[11,     0] grad_stats: [1.84e-02 4.86e-04] (2.56e-04, 3.19e-02)

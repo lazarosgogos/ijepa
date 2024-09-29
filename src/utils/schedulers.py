@@ -44,6 +44,55 @@ class WarmupCosineSchedule(object):
 
         return new_lr
 
+class PKTSchedule(object):
+    """ The scheduler for the alpha value, to implement PKT
+    combined with L2 to enhance learning ability.
+
+    Attributes
+    ----------
+    warmup_steps : int
+        the steps where only PKT should be used
+    start_alpha : float
+        the value of alpha in the beggining
+    ref_alpha : float
+        the value of alpha in the intermediate step
+    T_max : int
+        the epoch alpha reaches its final value
+    final_alpha : float
+        the final value of alpha
+    """
+    def __init__(
+        self,
+        warmup_steps,
+        start_alpha,
+        ref_alpha,
+        T_max,
+        final_alpha=0.
+    ):
+        self.warmup_steps = warmup_steps
+        self.start_alpha = start_alpha
+        self.ref_alpha = ref_alpha
+        self.final_alpha = final_alpha
+        self.T_max = T_max - warmup_steps
+        self._step = 0.
+
+    def step(self):
+        self._step += 1
+        
+        if self._step < self.warmup_steps:
+            # progress = float(self._step) / float(max(1, self.warmup_steps))
+            # alpha = self.start_alpha + progress * (self.ref_lr - self.start_alpha)
+            alpha = self.start_alpha # initially, alpha is steadily 1.
+        elif self._step < self.T_max + self.warmup_steps:
+            # -- progress after warmup
+            progress = float(self._step - self.warmup_steps) / float(max(1, self.T_max)) 
+            alpha = max(self.final_alpha,
+                         self.final_alpha + (self.ref_alpha - self.final_alpha) * 0.5 * (1. + math.cos(math.pi * progress))
+                        )
+        else:
+            alpha = self.final_alpha
+        return alpha
+
 
 class CosineWDSchedule(object):
 

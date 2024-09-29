@@ -6,7 +6,7 @@
 #
 
 import torch
-
+import os
 
 def gpu_timer(closure, log_timings=True):
     """ Helper to time gpu-time to execute closure() """
@@ -26,6 +26,30 @@ def gpu_timer(closure, log_timings=True):
         elapsed_time = start.elapsed_time(end)
 
     return result, elapsed_time
+
+class CSVLoggerAppender(object):
+
+    def __init__(self, fname, *argv):
+        self.fname = fname
+        self.types = []
+        # -- print headers
+        if not os.path.isfile(self.fname): # if file did not exist
+            # create it and write column titles
+            with open(self.fname, '+a') as f:
+                for i, v in enumerate(argv, 1):
+                    self.types.append(v[0])
+                    if i < len(argv):
+                        print(v[1], end=',', file=f)
+                    else:
+                        print(v[1], end='\n', file=f)
+        else: 
+            for i, v in enumerate(argv, 1): # else simply create the types
+                self.types.append(v[0])
+    def log(self, *argv):
+        with open(self.fname, '+a') as f:
+            for i, tv in enumerate(zip(self.types, argv), 1):
+                end = ',' if i < len(argv) else '\n'
+                print(tv[0] % tv[1], end=end, file=f)
 
 
 class CSVLogger(object):

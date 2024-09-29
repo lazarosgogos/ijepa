@@ -1,5 +1,5 @@
 data:
-  batch_size: 64
+  batch_size: 60
   color_jitter_strength: 0.0
   crop_scale:
   - 0.3
@@ -13,8 +13,11 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs/iic-train-PKT/
-  write_tag: jepa_iic_L2_PKT
+  folder: logs_PKT_scheduled/iic-train-L2-PKT-whole-seed43
+  write_tag: jepa-iic-L2-PKT-whole-scheduled-seed43
+  checkpoint_freq: 100 # new addition
+  logging_frequency: 1 # defaults to 3, for more concise logs
+  output_file: oiic-pretrain-L2-PKT-whole-scheduled-seed43.out
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -32,16 +35,16 @@ mask:
   - 0.2                     # default: 0.2
 meta:
   copy_data: false          # default: false
-  load_checkpoint: false
+  load_checkpoint: true    # default: true
   model_name: vit_base
   pred_depth: 12
   pred_emb_dim: 384
-  read_checkpoint: null     # default: null
-  use_bfloat16: false
+  read_checkpoint: jepa-iic-L2-PKT-whole-scheduled-seed43-ep200.pth.tar     # default: null
+  use_bfloat16: false       # default: true
 optimization:
   ema:
   - 0.996                   # default: 0.996
-  - 1.0
+  - 1.0                     # default: 1.
   epochs: 500
   final_lr: 1.0e-06         # default: 1.0e-06
   final_weight_decay: 0.4   # default: 0.4
@@ -50,3 +53,14 @@ optimization:
   start_lr: 0.0002          # default: 2e-4
   warmup: 40
   weight_decay: 0.04        # default: 0.04
+  loss_function: L2_PKT_batch # this function name must exist in the which_loss.py file
+  pkt_scale: 1.0e+0         # perform grid search over this, no default value yet
+pkt:
+  use_pkt_scheduler: true
+  start_alpha: 1.
+  warmup_steps_alpha: 100
+  ref_alpha: 1.
+  T_max: 200
+  final_alpha: 0.
+message: "PKT whole with scheduler seed 43 for comparison" 
+# message is unused, only for printing info out

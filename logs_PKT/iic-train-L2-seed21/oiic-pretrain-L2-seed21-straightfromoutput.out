@@ -1,0 +1,176 @@
+nohup: ignoring input
+INFO:root:called-params configs/iic-train.yaml
+INFO:root:loaded params...
+{   'data': {   'batch_size': 64,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 150,
+                'image_folder': 'intel-image-classification/',
+                'num_workers': 10,
+                'pin_mem': True,
+                'root_path': 'datasets',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 100,
+                   'folder': 'logs_PKT/iic-train-L2-seed21/',
+                   'logging_frequency': 1,
+                   'output_file': 'oiic-pretrain-L2-seed21.out',
+                   'write_tag': 'jepa-iic-L2'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 1,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 15,
+                'pred_mask_scale': [0.15, 0.2]},
+    'message': "L2 with full loss logging for better view of what's going on",
+    'meta': {   'copy_data': False,
+                'load_checkpoint': False,
+                'model_name': 'vit_base',
+                'pred_depth': 12,
+                'pred_emb_dim': 384,
+                'read_checkpoint': None,
+                'use_bfloat16': False},
+    'optimization': {   'ema': [0.996, 1.0],
+                        'epochs': 500,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'L2',
+                        'lr': 0.001,
+                        'start_lr': 0.0002,
+                        'warmup': 40,
+                        'weight_decay': 0.04}}
+INFO:root:Running... (rank: 0/2)
+INFO:root:Initialized (rank/world-size) 0/2
+INFO:root:train.py: _GLOBAL_SEED=21
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/intel-image-classification/train/
+INFO:root:Initialized ImageNet
+INFO:root:ImageNet dataset created
+INFO:root:ImageNet unsupervised data loader created
+INFO:root:Using AdamW
+INFO:root:Epoch 1
+{   'data': {   'batch_size': 64,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 150,
+                'image_folder': 'intel-image-classification/',
+                'num_workers': 10,
+                'pin_mem': True,
+                'root_path': 'datasets',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 100,
+                   'folder': 'logs_PKT/iic-train-L2-seed21/',
+                   'logging_frequency': 1,
+                   'output_file': 'oiic-pretrain-L2-seed21.out',
+                   'write_tag': 'jepa-iic-L2'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 1,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 15,
+                'pred_mask_scale': [0.15, 0.2]},
+    'message': "L2 with full loss logging for better view of what's going on",
+    'meta': {   'copy_data': False,
+                'load_checkpoint': False,
+                'model_name': 'vit_base',
+                'pred_depth': 12,
+                'pred_emb_dim': 384,
+                'read_checkpoint': None,
+                'use_bfloat16': False},
+    'optimization': {   'ema': [0.996, 1.0],
+                        'epochs': 500,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'L2',
+                        'lr': 0.001,
+                        'start_lr': 0.0002,
+                        'warmup': 40,
+                        'weight_decay': 0.04}}
+INFO:root:[1,     0] loss: 4.865471e-01 masks: 17.0 20.0 [wd: 4.00e-02] [lr: 2.00e-04] [mem: 6.03e+03] (1305.5 ms)
+INFO:root:[1,     0] grad_stats: [2.80e-02 1.40e-02] (1.39e-02, 3.53e-02)
+INFO:root:avg. loss 1.72506554e-01
+INFO:root:time taken for epoch 0:01:16.824818
+INFO:root:Epoch 2
+INFO:root:[2,     0] loss: 1.721724e-01 masks: 21.0 16.0 [wd: 4.00e-02] [lr: 2.20e-04] [mem: 8.44e+03] (543.6 ms)
+INFO:root:[2,     0] grad_stats: [7.35e-02 2.24e-03] (2.24e-03, 8.82e-02)
+INFO:root:avg. loss 1.51980123e-01
+INFO:root:time taken for epoch 0:01:25.148147
+INFO:root:Epoch 3
+INFO:root:[3,     0] loss: 1.360967e-01 masks: 23.0 16.0 [wd: 4.00e-02] [lr: 2.40e-04] [mem: 8.57e+03] (546.2 ms)
+INFO:root:[3,     0] grad_stats: [4.48e-02 1.51e-03] (1.22e-03, 7.29e-02)
+INFO:root:avg. loss 1.42131484e-01
+INFO:root:time taken for epoch 0:01:24.638672
+INFO:root:Epoch 4
+INFO:root:[4,     0] loss: 1.389035e-01 masks: 19.0 20.0 [wd: 4.00e-02] [lr: 2.60e-04] [mem: 8.57e+03] (552.3 ms)
+INFO:root:[4,     0] grad_stats: [3.90e-02 9.73e-04] (8.91e-04, 6.11e-02)
+INFO:root:avg. loss 1.37954693e-01
+INFO:root:time taken for epoch 0:01:25.090815
+INFO:root:Epoch 5
+INFO:root:[5,     0] loss: 1.306764e-01 masks: 19.0 20.0 [wd: 4.01e-02] [lr: 2.80e-04] [mem: 8.57e+03] (566.5 ms)
+INFO:root:[5,     0] grad_stats: [4.77e-02 1.26e-03] (9.78e-04, 5.34e-02)
+INFO:root:avg. loss 1.30001681e-01
+INFO:root:time taken for epoch 0:01:24.553264
+INFO:root:Epoch 6
+INFO:root:[6,     0] loss: 1.032838e-01 masks: 25.0 16.0 [wd: 4.01e-02] [lr: 3.00e-04] [mem: 8.57e+03] (567.0 ms)
+INFO:root:[6,     0] grad_stats: [3.85e-02 1.24e-03] (7.79e-04, 6.27e-02)
+INFO:root:avg. loss 1.10130349e-01
+INFO:root:time taken for epoch 0:01:25.054804
+INFO:root:Epoch 7
+INFO:root:[7,     0] loss: 1.140269e-01 masks: 21.0 16.0 [wd: 4.01e-02] [lr: 3.20e-04] [mem: 8.57e+03] (540.2 ms)
+INFO:root:[7,     0] grad_stats: [2.91e-02 9.17e-04] (5.17e-04, 5.28e-02)
+INFO:root:avg. loss 9.65684052e-02
+INFO:root:time taken for epoch 0:01:24.440096
+INFO:root:Epoch 8
+INFO:root:[8,     0] loss: 8.974235e-02 masks: 16.0 20.0 [wd: 4.02e-02] [lr: 3.40e-04] [mem: 8.57e+03] (531.4 ms)
+INFO:root:[8,     0] grad_stats: [2.70e-02 1.06e-03] (4.45e-04, 4.08e-02)
+INFO:root:avg. loss 8.23937261e-02
+INFO:root:time taken for epoch 0:01:24.455563
+INFO:root:Epoch 9
+INFO:root:[9,     0] loss: 7.190672e-02 masks: 23.0 16.0 [wd: 4.02e-02] [lr: 3.60e-04] [mem: 8.57e+03] (545.1 ms)
+INFO:root:[9,     0] grad_stats: [1.86e-02 9.26e-04] (3.85e-04, 2.78e-02)
+INFO:root:avg. loss 7.14341738e-02
+INFO:root:time taken for epoch 0:01:24.771297
+INFO:root:Epoch 10
+INFO:root:[10,     0] loss: 6.842514e-02 masks: 21.0 20.0 [wd: 4.03e-02] [lr: 3.80e-04] [mem: 8.57e+03] (560.3 ms)
+INFO:root:[10,     0] grad_stats: [3.39e-02 1.19e-03] (5.29e-04, 6.84e-02)
+INFO:root:avg. loss 6.61326180e-02
+INFO:root:time taken for epoch 0:01:24.534287
+INFO:root:Epoch 11
+INFO:root:[11,     0] loss: 6.542209e-02 masks: 17.0 16.0 [wd: 4.04e-02] [lr: 4.00e-04] [mem: 8.57e+03] (526.2 ms)
+INFO:root:[11,     0] grad_stats: [1.84e-02 4.86e-04] (2.56e-04, 3.19e-02)
+/media/data/lazarosg/miniconda3/envs/ijepa/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 78 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

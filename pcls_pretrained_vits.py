@@ -1,4 +1,3 @@
-from src.models.vision_transformer import vit_huge
 from src import helper
 import torch
 import torch.nn as nn
@@ -63,12 +62,24 @@ def print_model_layers(model, prefix=''):
       print(module_name)
       print_model_layers(module, prefix=module_name)
 
-# print_model_layers(encoder) # alright this works :)
-# print('INFO Gogos - Printing the predictor\'s architecture.')
-# print_model_layers(predictor) # 
-# print('Done with predictor\'s architecture.')
 
+class LinearClassifier(nn.Module):
+  def __init__(self, input_size, num_classes):
+    super(LinearClassifier, self).__init__()
+    self.num_classes = num_classes
+    self.input_size = input_size
+    self.linear = nn.Linear(input_size, num_classes)
+    self.linear.weight.data.normal_(mean=0.0, std=0.1)
+    self.linear.biad.data.zero_()
+  
+  def forward(self, x):
+    # flatten 
+    x = torch.mean(x, dim=1, dtype=x.dtype)
 
+    # linear layer
+    return self.linear(x)
+
+"""
 class ClassifierHead(nn.Module):
   def __init__(self, input_size, num_classes):
     super(ClassifierHead, self).__init__()
@@ -92,9 +103,10 @@ class ClassifierHead(nn.Module):
 
     # add layer norm
     x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension
-                                        # but normalize over feature dim
+                                       # but normalize over feature dim
     x = self.softmax(self.straight(x))
     return x
+"""
 
 class Both(nn.Module):
   def __init__(self, encoder, num_classes):
@@ -103,7 +115,8 @@ class Both(nn.Module):
     # Freeze encoder so that it is not trained
     for param in self.encoder.parameters():
       param.requires_grad = False # do ONLY linear probing
-    self.head = ClassifierHead(EMBED_DIMS, num_classes)
+    # self.head = ClassifierHead(EMBED_DIMS, num_classes)
+    self.head = LinearClassifier(EMBED_DIMS, num_classes)
     for param in self.head.parameters():
       param.requires_grad = True # not needed. in MAE they do it this way
 

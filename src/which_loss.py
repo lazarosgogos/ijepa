@@ -3,6 +3,8 @@ import torch.nn.functional as F
 
 from src import PKT as PKTClass
 
+import logging
+
 def L2(z,h, **kwargs):
   """ Calculate the L2 loss between z and h, then return it.
   :param z: the representation of the patches after being passed through 
@@ -94,14 +96,22 @@ def PKT_full(z,h, **kwargs):
   # we can view it as [256*20, 768] = [5120, 768]
   # and then perform PKT there
   # or take mean of second dimension and perform PKT over [256, 768]
+  logger = logging.getLogger()
+
+  w = kwargs.get('var_weight', 1.)
+
   emb_size = z.size(-1)
   z_ = z.view(-1, emb_size) # [5120, 768]
   h_ = h.view(-1, emb_size)
-  loss_pkt_full = PKTClass.cosine_similarity_loss(z_, h_)
-  return loss_pkt_full
+  loss_pkt_full, neg_variance = PKTClass.cosine_similarity_loss_max_var(z_, h_)
+  logger.info('neg variance: %e, \n loss w/o max_var %e' % (neg_variance.item(), loss_pkt_full.item()))
+  return loss_pkt_full + w*neg_variance
 
 def L2_PKT_batch(z,h, **kwargs):
-  return PKT_full(z,h) + L2(z,h)
+  alpha = kwargs.get('alpha', -1)
+  if alpha == -1:
+    return PKT_full(z,h) + L2(z,h) # normal behavior if alpha is absent
+  return alpha*PKT_full(z,h) + (1-alpha) * L2(z,h)
 
 def L2_PKT_chunks(z,h, **kwargs):
   """ Scale PKT after performing it in chunks of the patches """

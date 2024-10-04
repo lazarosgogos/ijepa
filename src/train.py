@@ -64,7 +64,7 @@ log_freq = 10
 
 # rng = np.random.Generator(np.random.PCG64()) 
 
-_GLOBAL_SEED = 43 # 
+_GLOBAL_SEED = 10 # 
 # seed is logged later on
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
@@ -133,6 +133,7 @@ def main(args, resume_preempt=False):
     loss_function = args['optimization'].get('loss_function', 'L2') # get the loss function, use L2 if no loss fn definition was found in the config file
     evaluate = args['optimization'].get('evaluate', False) # print sim distributions only, do NOT pretrain
     pkt_scale = args['optimization'].get('pkt_scale', 1.0)
+    variance_weight = args['optimization'].get('variance_weight', 1.0)
 
     # -- LOGGING
     folder = args['logging']['folder']
@@ -204,6 +205,7 @@ def main(args, resume_preempt=False):
         loss_file_logger = CSVLogger(loss_file, 
                                     ('%d', 'epoch'),
                                     ('%e', 'loss'), 
+                                    ('%e', 'variance'),
                                     )
 
     # -- init model
@@ -335,6 +337,7 @@ def main(args, resume_preempt=False):
         maskA_meter = AverageMeter()
         maskB_meter = AverageMeter()
         time_meter = AverageMeter()
+        neg_var_meter = AverageMeter()
 
         for itr, (udata, masks_enc, masks_pred) in enumerate(unsupervised_loader):
 
@@ -352,7 +355,7 @@ def main(args, resume_preempt=False):
                 _new_lr = scheduler.step()
                 _new_wd = wd_scheduler.step()
                 _new_alpha = pkt_scheduler.step()
-                if rank == 0 and itr == 0:
+                if rank == 0 and itr == 0 and use_pkt_scheduler:
                     logger.info('new alpha: %f' % _new_alpha)
                 # --
 
@@ -370,13 +373,23 @@ def main(args, resume_preempt=False):
                     z = encoder(imgs, masks_enc)
                     z = predictor(z, masks_enc, masks_pred)
                     return z
-
+                
                 def loss_fn(z, h, **kwargs):
+                    # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
                     # this should be fully functional, as proven by L2 
                     final_loss = which_loss.__dict__[loss_function](z,h, **kwargs)
-                    # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
-                    loss = AllReduce.apply(final_loss)
-                    return loss
+                    neg_var = 0
+                    loss_pkt = 0
+                    if isinstance(final_loss, tuple): # if more than two losses were returned
+                        loss_pkt = final_loss[0]
+                        neg_variance = final_loss[1]
+                        # logger.critical('loss %e and variance %e' % (loss, neg_variance))
+                        neg_var = neg_variance # replace None value with sth
+                        loss = AllReduce.apply(loss_pkt + neg_variance)
+                        # neg_var = AllReduce.apply(neg_var)
+                    else: 
+                        loss = AllReduce.apply(final_loss)
+                    return loss, loss_pkt , neg_var
                 
                 def all_losses(z,h):
                     loss_L2 = which_loss.__dict__['L2'](z,h)
@@ -419,9 +432,9 @@ def main(args, resume_preempt=False):
                     h = forward_target()
                     z = forward_context()
                     if not use_pkt_scheduler:
-                        loss = loss_fn(z, h, pkt_scale=pkt_scale) # pkt scale default to 1
+                        loss, loss_pkt, neg_var = loss_fn(z, h, pkt_scale=pkt_scale, variance_weight=variance_weight) # pkt scale default to 1
                     else: 
-                        loss = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha)
+                        loss, loss_pkt, neg_var = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha, variance_weight=variance_weight)
                     # gathered_losses = all_losses(z,h) # this contains all loss functions
 
                 #  Step 2. Backward & step
@@ -441,11 +454,13 @@ def main(args, resume_preempt=False):
                     for param_q, param_k in zip(encoder.parameters(), target_encoder.parameters()):
                         param_k.data.mul_(m).add_((1.-m) * param_q.detach().data)
 
-                return (float(loss), _new_lr, _new_wd, grad_stats) #, gathered_losses)
-            (loss, _new_lr, _new_wd, grad_stats), etime = gpu_timer(train_step)
+                return (float(loss), _new_lr, _new_wd, grad_stats, neg_var) #, gathered_losses)
+            (loss, _new_lr, _new_wd, grad_stats, neg_var), etime = gpu_timer(train_step)
+            # neg_var could be None
             loss_meter.update(loss)
             time_meter.update(etime)
-
+            if neg_var is not None:
+                neg_var_meter.update(neg_var)
             # -- Logging
             def log_stats():
                 csv_logger.log(epoch + 1, itr, loss, maskA_meter.val, maskB_meter.val, etime)
@@ -476,6 +491,7 @@ def main(args, resume_preempt=False):
                                 'masks: %.1f %.1f '
                                 '[wd: %.2e] [lr: %.2e] '
                                 '[mem: %.2e] '
+                                'var: %e '
                                 '(%.1f ms)'
                                 % (epoch + 1, itr,
                                    loss_meter.avg,
@@ -484,6 +500,7 @@ def main(args, resume_preempt=False):
                                    _new_wd,
                                    _new_lr,
                                    torch.cuda.max_memory_allocated() / 1024.**2,
+                                   -neg_var_meter.avg,
                                    time_meter.avg))
 
                     if grad_stats is not None:
@@ -500,8 +517,10 @@ def main(args, resume_preempt=False):
         # -- Log loss into appropriate CSV file and to tensorboard
         if rank == 0:
             loss_file_logger.log(epoch+1,
-                                 loss_meter.avg,)
+                                 loss_meter.avg, -neg_var_meter.avg)
             writer.add_scalar('Loss', loss_meter.avg, epoch+1) 
+            if neg_var_meter.count != 0:
+                writer.add_scalar('Variance', -neg_var_meter.avg, epoch+1)
         # -- Save Checkpoint after every epoch
         logger.info('avg. loss %.8e' % loss_meter.avg)
         save_checkpoint(epoch+1)

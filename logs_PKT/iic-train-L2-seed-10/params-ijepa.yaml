@@ -6,7 +6,7 @@ data:
   - 1.0
   crop_size: 150
   image_folder: intel-image-classification/
-  num_workers: 10
+  num_workers: 0
   pin_mem: true
   root_path: datasets
   use_color_distortion: false
@@ -16,8 +16,11 @@ logging:
   checkpoint_freq: 100
   folder: logs_PKT/iic-train-L2-seed-10/
   logging_frequency: 1
-  output_file: oiic-pretrain-L2-SEED-10.out
-  write_tag: jepa_iic_L2_seed-10
+  output_file: oiic-evaluate-L2-seed10-matrices.out
+  plot_matrices: false
+  tensorboard_dir: eval_tb/
+  use_tensorboard: true
+  write_tag: jepa_iic_PKT_seed-0-ep____.pth.tar
 mask:
   allow_overlap: false
   aspect_ratio:
@@ -35,21 +38,22 @@ mask:
   - 0.2
 meta:
   copy_data: false
-  load_checkpoint: false
+  load_checkpoint: true
   model_name: vit_base
   pred_depth: 12
   pred_emb_dim: 384
-  read_checkpoint: null
+  read_checkpoint: jepa_iic_L2_seed-10-ep500.pth.tar
   use_bfloat16: false
 optimization:
   ema:
   - 0.996
   - 1.0
   epochs: 500
+  evaluate: true
   final_lr: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0
-  loss_function: L2
+  loss_function: PKT
   lr: 0.001
   start_lr: 0.0002
   warmup: 40

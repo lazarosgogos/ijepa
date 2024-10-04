@@ -13,12 +13,14 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_PKT_full/iic-train-L2-seed21
+  folder: logs_PKT/iic-train-PKT-seed-10/
   write_tag: jepa_iic_PKT_seed-0-ep____.pth.tar
   checkpoint_freq: 100 # new addition
   logging_frequency: 1 # defaults to 3, more concise logs
-  output_file: oiic-evaluate-PKT-matrices.out
+  output_file: oiic-evaluate-L2-seed10-matrices.out
   plot_matrices: false # defaults to true
+  use_tensorboard: true
+  tensorboard_dir: eval_tb/ # possibly not used
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -42,7 +44,7 @@ meta:
   pred_emb_dim: 384
   # this should append the -ep500.pth.tar appropriately
   # to the read_checkpoint
-  read_checkpoint: jepa-iic-L2    # default: null
+  read_checkpoint: jepa_iic_PKT    # default: null
   use_bfloat16: false       # default: true
 optimization:
   ema:

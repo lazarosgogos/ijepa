@@ -5,6 +5,8 @@ from src import PKT as PKTClass
 
 import logging
 
+logger = logging.getLogger()
+
 def L2(z,h, **kwargs):
   """ Calculate the L2 loss between z and h, then return it.
   :param z: the representation of the patches after being passed through 
@@ -24,7 +26,9 @@ def PKT(z_init,h_init, **kwargs):
   # loss_PKT = PKT.cosine_similarity_loss()
   num_pred_masks = int(kwargs.get('num_pred_masks', 4))
   # PKT first shot
+  variance_weight = kwargs.get('variance_weight', 0.) # use 0 by default
   loss_pkt = 0
+  neg_variance_sum = 0
   first_dim = z_init.size(0)
   z = z_init.view(first_dim//num_pred_masks, num_pred_masks, *z_init.size()[1:])
   h = h_init.view(first_dim//num_pred_masks, num_pred_masks, *h_init.size()[1:])
@@ -36,8 +40,12 @@ def PKT(z_init,h_init, **kwargs):
       # t = t.view(big_b_s//num_patches, num_patches, *t.size()[1:])
       z_ = z_.view(-1, emb_size) # flatten it, without changing anything
       h_ = h_.view(-1, emb_size)
-      loss_pkt += PKTClass.cosine_similarity_loss(z_,h_)
-  # loss_pkt /= z.size(0) # normalize by batch size
+      # loss_pkt += PKTClass.cosine_similarity_loss(z_,h_)
+      _loss, neg_variance = PKTClass.cosine_similarity_loss_max_var(z_, h_)
+      loss_pkt += _loss
+      neg_variance_sum += neg_variance*variance_weight
+  loss_pkt /= z.size(0) # normalize by batch size
+  neg_variance_sum /= z.size(0)
 
   # loss_pkt *= 100 # scale PKT to match l2 loss and equalize the effect
 
@@ -48,7 +56,7 @@ def PKT(z_init,h_init, **kwargs):
   # .view() 
   # alpha = .1 * cosine_similarity_loss
   # loss = AllReduce.apply(loss_l2 + loss_pkt) 
-  return loss_pkt
+  return loss_pkt, neg_variance_sum
 
   """
   for i in range(batch_size):
@@ -98,14 +106,14 @@ def PKT_full(z,h, **kwargs):
   # or take mean of second dimension and perform PKT over [256, 768]
   logger = logging.getLogger()
 
-  w = kwargs.get('var_weight', 1.)
+  w = kwargs.get('variance_weight', 1.)
 
   emb_size = z.size(-1)
   z_ = z.view(-1, emb_size) # [5120, 768]
   h_ = h.view(-1, emb_size)
   loss_pkt_full, neg_variance = PKTClass.cosine_similarity_loss_max_var(z_, h_)
   # logger.info('neg variance: %e, \n loss w/o max_var %e' % (neg_variance.item(), loss_pkt_full.item()))
-  return loss_pkt_full #  + w*neg_variance
+  return loss_pkt_full + w*neg_variance
 
 def L2_PKT_batch(z,h, **kwargs):
   alpha = kwargs.get('alpha', -1)
@@ -120,8 +128,8 @@ def L2_PKT_chunks(z,h, **kwargs):
   h_ = h.view(-1, emb_size) 
   # create a random permutation
   rperm = torch.randperm(z_.size(-1)) # this yields an array of [1, 5, 0,... , 5119] random indices
-  step = 512 # hardcoded size of matrices to perform PKT upon
   vsize = h_.size(0) # vector size
+  step = 512 # hardcoded # vsize/10    # split sim matrix in x parts and run pkt in them
   
   assert h_.size(0) == z_.size(0), 'Different batch sizes between z,h ?'
 

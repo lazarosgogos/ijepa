@@ -148,6 +148,9 @@ def main(args, resume_preempt=False):
     logging_frequency = args['logging'].get('logging_frequency', 3) # default to 3
     output_file = args['logging'].get('output_file', tag)
     plot_matrices = args['logging'].get('plot_matrices', True)
+    tensorboard_dir = folder # args['logging'].get('tensorboard_dir', 'runs/')
+    use_tensorboard = args['logging'].get('use_tensorboard', False)
+
     # force_cudnn_initialization()
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:
@@ -170,9 +173,10 @@ def main(args, resume_preempt=False):
     save_path = os.path.join(folder, f'{tag}' + '-ep{epoch}.pth.tar')
     latest_path = os.path.join(folder, f'{tag}-latest.pth.tar')
     output_file = os.path.join(folder, output_file)
+    # tensorboard_dir = os.path.join(folder, tensorboard_dir)
     logger.addHandler(logging.FileHandler(output_file)) # add auto output ;)
 
-    
+
     load_path = None
     if load_model:
         load_path = os.path.join(folder, r_file) if r_file is not None else latest_path
@@ -186,8 +190,18 @@ def main(args, resume_preempt=False):
         crop_size=crop_size,
         pred_depth=pred_depth,
         pred_emb_dim=pred_emb_dim,
-        model_name=model_name)
+        model_name=model_name,
+        use_tensorboard=use_tensorboard,
+        tensorboard_dir=tensorboard_dir
+        )
+    import re
+    match_ = re.search(r'ep(\d+)', r_file) # extract the number based on the checkpoint
+    pretrain_epoch = match_.group(1)
     target_encoder = copy.deepcopy(encoder)
+    if use_tensorboard:
+        encoder.init_summary_writer('context_encoder', pretrain_epoch)
+        target_encoder.init_summary_writer('target_encoder', pretrain_epoch)
+        predictor.init_summary_writer('predictor', pretrain_epoch)
 
     # -- make data transforms
     mask_collator = MBMaskCollator(
@@ -305,6 +319,7 @@ def main(args, resume_preempt=False):
             def forward_context():
                 z = encoder(imgs, masks_enc)
                 z = predictor(z, masks_enc, masks_pred)
+                logger.critical('z[:100] values: %s' % (str(z[:100])))
                 return z
 
             def loss_fn(z, h):
@@ -323,8 +338,8 @@ def main(args, resume_preempt=False):
                 h = h.view(64, 4, *h.size()[1:])
                 logger.info(h.size())
                 
-                z = z[0, 0]
-                h = h[0, 0] # get ALL blocks from 0th (first) image, theoretically
+                z = z[0]
+                h = h[0] # get ALL blocks from 0th (first) image, theoretically
                 logger.info(h.size())
                 z = z.view(-1, 768)
                 h = h.view(-1, 768)
@@ -344,7 +359,7 @@ def main(args, resume_preempt=False):
     # save_checkpoint(epoch+1)
 
 
-    
+    # -- Visualize weights using Summary Writer - old method with no filtering# 
     # ep = '-ep100'
     import re
     match_ = re.search(r'ep(\d+)', r_file) # extract the number based on the checkpoint
@@ -379,6 +394,8 @@ def main(args, resume_preempt=False):
         ri = torch.randint(0, len(all_model_sims), (1,)) # pick a random image from the batch
         lb = min(all_model_sims[ri].min(), all_target_sims[ri].min()) # lower bound
         ub = max(all_model_sims[ri].max(), all_target_sims[ri].max()) # upper bound
+        lb = 0.
+        ub = 1.
         fig = plt.figure(figsize=(20,10),dpi=300)
         data = (all_model_sims[ri], all_target_sims[ri])
         titles = ('Predictions', 'Targets')
@@ -390,7 +407,7 @@ def main(args, resume_preempt=False):
         plt.show()
         plt.suptitle('Evaluation of %s' % (r_file))
         # outfile = os.path.join(folder, f'sims-PKT-ep{ep}.png')
-        outfile = os.path.join(folder, f'matrices-inbefore-4-64-test-PKT-ep{ep}.png')
+        outfile = os.path.join(folder, f'matrices-inbefore-1ims-1-16-test-PKT-maxvar100-ep{ep}.png')
         plt.savefig(outfile)
         fig.clear()
         plt.close()

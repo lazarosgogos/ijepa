@@ -72,6 +72,20 @@ def process_main(rank, fname, world_size, devices, test=0):
         log_dir = params['logging'].get('folder', None)
         r_file = os.path.join(log_dir, r_file)
         tarfiles = glob.glob(r_file + '-ep*.pth.tar')
+        
+        import re # import regex
+        def relevant(v):
+
+            m = re.search(r'-ep(\d+)', v) # find the epoch number
+            m = int(m.group(1))
+            rel = [10, 20, 100, 200, 300, 400, 500] 
+            # rel = [100]
+            if m in rel: # if the epoch number is in the relevant ones
+                return True
+            else: 
+                return False
+        
+        tarfiles = list(filter(relevant, tarfiles)) # this should only grab the relevant file
         logger.info('tarfiles: ' + str(tarfiles))
         
         # tarfiles has a  list of names of all tarballs with this desired prefix
@@ -97,6 +111,10 @@ if __name__ == '__main__':
     except:
         test = 0 # set it to false by default
     
+    # if num_gpus == 1:
+    #     # no DDP
+    #     process_main(0, args.fname, 1, 1, test)
+
     for rank in range(num_gpus):
         mp.Process(
             target=process_main,

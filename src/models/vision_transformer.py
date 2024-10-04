@@ -12,12 +12,15 @@ import numpy as np
 import torch
 import torch.nn as nn
 
+from torch.utils.tensorboard import SummaryWriter
+
 from src.utils.tensors import (
     trunc_normal_,
     repeat_interleave_batch
 )
 from src.masks.utils import apply_masks
-
+import logging
+logger = logging.getLogger()
 
 def get_2d_sincos_pos_embed(embed_dim, grid_size, cls_token=False):
     """
@@ -260,6 +263,14 @@ class VisionTransformerPredictor(nn.Module):
         trunc_normal_(self.mask_token, std=self.init_std)
         self.apply(self._init_weights)
         self.fix_init_weight()
+        # --  tensorboard additions
+        self.use_tb = kwargs.get('use_tensorboard', False) # False by default
+        self.tensorboard_dir = kwargs.get('tensorboard_dir', 'tb_default_dir')
+
+    def init_summary_writer(self, encoder_name, epoch):
+        # assert self.use_tb, 'tensorboard is not used, why are you trying to initialize it?'
+        if self.use_tb:
+            self.writer = SummaryWriter(f'tensorboard/{self.tensorboard_dir}/{encoder_name}-mean_std-{epoch}')
 
     def fix_init_weight(self):
         def rescale(param, layer_id):
@@ -315,8 +326,12 @@ class VisionTransformerPredictor(nn.Module):
         x = torch.cat([x, pred_tokens], dim=1)
 
         # -- fwd prop
-        for blk in self.predictor_blocks:
+        for i, blk in enumerate(self.predictor_blocks):
             x = blk(x)
+            if self.use_tb:
+                self.writer.add_scalar('Mean', x.mean(), i)
+                self.writer.add_scalar('Std', x.reshape(-1, 768).std(dim=1).mean(), i) # [64, 100]
+
         x = self.predictor_norm(x)
 
         # -- return preds for mask tokens
@@ -325,7 +340,7 @@ class VisionTransformerPredictor(nn.Module):
 
         return x
 
-
+'''
 class VisionTransformer(nn.Module):
     """ Vision Transformer """
     def __init__(
@@ -376,6 +391,144 @@ class VisionTransformer(nn.Module):
         self.init_std = init_std
         self.apply(self._init_weights)
         self.fix_init_weight()
+    
+    def fix_init_weight(self):
+        def rescale(param, layer_id):
+            param.div_(math.sqrt(2.0 * layer_id))
+
+        for layer_id, layer in enumerate(self.blocks):
+            rescale(layer.attn.proj.weight.data, layer_id + 1)
+            rescale(layer.mlp.fc2.weight.data, layer_id + 1)
+
+    def _init_weights(self, m):
+        if isinstance(m, nn.Linear):
+            trunc_normal_(m.weight, std=self.init_std)
+            if isinstance(m, nn.Linear) and m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+        elif isinstance(m, nn.LayerNorm):
+            nn.init.constant_(m.bias, 0)
+            nn.init.constant_(m.weight, 1.0)
+        elif isinstance(m, nn.Conv2d):
+            trunc_normal_(m.weight, std=self.init_std)
+            if m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+
+    def forward(self, x, masks=None):
+        if masks is not None:
+            if not isinstance(masks, list):
+                masks = [masks]
+
+        # -- patchify x
+        x = self.patch_embed(x)
+        B, N, D = x.shape
+
+        # -- add positional embedding to x
+        pos_embed = self.interpolate_pos_encoding(x, self.pos_embed)
+        x = x + pos_embed
+
+        # -- mask x
+        if masks is not None:
+            x = apply_masks(x, masks)
+
+        # -- fwd prop
+        for i, blk in enumerate(self.blocks):
+            x = blk(x)
+
+        if self.norm is not None:
+            x = self.norm(x)
+
+        return x
+
+    def get_intermediate_layers(self, x, n=1):
+        """Source: https://github.com/facebookresearch/dino/blob/7c446df5b9f45747937fb0d72314eb9f7b66930a/vision_transformer.py#L225
+        This can be used to take the representation of the image from the last n layers of the ViT"""
+        x = self.prepare_tokens(x)
+        # we return the output tokens from the `n` last blocks
+        output = []
+        for i, blk in enumerate(self.blocks):
+            x = blk(x)
+            if len(self.blocks) - i <= n:
+                output.append(self.norm(x))
+        return output
+
+
+    def interpolate_pos_encoding(self, x, pos_embed):
+        npatch = x.shape[1] - 1
+        N = pos_embed.shape[1] - 1
+        if npatch == N:
+            return pos_embed
+        class_emb = pos_embed[:, 0]
+        pos_embed = pos_embed[:, 1:]
+        dim = x.shape[-1]
+        pos_embed = nn.functional.interpolate(
+            pos_embed.reshape(1, int(math.sqrt(N)), int(math.sqrt(N)), dim).permute(0, 3, 1, 2),
+            scale_factor=math.sqrt(npatch / N),
+            mode='bicubic',
+        )
+        pos_embed = pos_embed.permute(0, 2, 3, 1).view(1, -1, dim)
+        return torch.cat((class_emb.unsqueeze(0), pos_embed), dim=1)
+'''
+class VisionTransformer(nn.Module):
+    """ Vision Transformer """
+    def __init__(
+        self,
+        img_size=[224],
+        patch_size=16,
+        in_chans=3,
+        embed_dim=768,
+        predictor_embed_dim=384,
+        depth=12,
+        predictor_depth=12,
+        num_heads=12,
+        mlp_ratio=4.0,
+        qkv_bias=True,
+        qk_scale=None,
+        drop_rate=0.0,
+        attn_drop_rate=0.0,
+        drop_path_rate=0.0,
+        norm_layer=nn.LayerNorm,
+        init_std=0.02,
+        **kwargs
+    ):
+        super().__init__()
+        self.num_features = self.embed_dim = embed_dim
+        self.num_heads = num_heads
+        # --
+        self.patch_embed = PatchEmbed(
+            img_size=img_size[0],
+            patch_size=patch_size,
+            in_chans=in_chans,
+            embed_dim=embed_dim)
+        num_patches = self.patch_embed.num_patches
+        # --
+        self.pos_embed = nn.Parameter(torch.zeros(1, num_patches, embed_dim), requires_grad=False)
+        pos_embed = get_2d_sincos_pos_embed(self.pos_embed.shape[-1],
+                                            int(self.patch_embed.num_patches**.5),
+                                            cls_token=False)
+        self.pos_embed.data.copy_(torch.from_numpy(pos_embed).float().unsqueeze(0))
+        # --
+        dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]  # stochastic depth decay rule
+        self.blocks = nn.ModuleList([
+            Block(
+                dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale,
+                drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[i], norm_layer=norm_layer)
+            for i in range(depth)])
+        self.norm = norm_layer(embed_dim)
+        # ------
+        self.init_std = init_std
+        self.apply(self._init_weights)
+        self.fix_init_weight()
+        self.use_tb = kwargs.get('use_tensorboard', False) # False by default
+        self.tensorboard_dir = kwargs.get('tensorboard_dir', 'tb_default_dir')
+        # ep = kwargs.get('epoch', 404)
+        # encoder_name = kwargs.get('encoder_name', 'default_name')
+        # if self.use_tb:
+        #     self.writer = SummaryWriter(f'tensorboard/{encoder_name}-mean_std-{ep}')
+
+    def init_summary_writer(self, encoder_name, epoch):
+        # assert self.use_tb, 'tensorboard is not used, why are you trying to initialize it?'
+        if self.use_tb:
+            self.writer = SummaryWriter(f'tensorboard/{self.tensorboard_dir}/{encoder_name}-mean_std-{epoch}')
 
     def fix_init_weight(self):
         def rescale(param, layer_id):
@@ -418,6 +571,11 @@ class VisionTransformer(nn.Module):
         # -- fwd prop
         for i, blk in enumerate(self.blocks):
             x = blk(x)
+            # logger.critical('x, in ViT has shape: %s' % (str(x.size())))
+            if self.use_tb:
+                self.writer.add_scalar('Mean', x.mean(), i)
+                self.writer.add_scalar('Std', x.reshape(-1, 768).std(dim=1).mean(), i) # [64, 100]
+
 
         if self.norm is not None:
             x = self.norm(x)

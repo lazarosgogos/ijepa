@@ -1,0 +1,571 @@
+nohup: ignoring input
+INFO:root:called-params configs/iic-eval.yaml
+INFO:root:loaded params...
+{   'data': {   'batch_size': 64,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 150,
+                'image_folder': 'intel-image-classification/',
+                'num_workers': 0,
+                'pin_mem': True,
+                'root_path': 'datasets',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 100,
+                   'folder': 'logs_PKT/iic-train-PKT-seed-10/',
+                   'logging_frequency': 1,
+                   'output_file': 'oiic-evaluate-L2-seed10-matrices.out',
+                   'plot_matrices': False,
+                   'tensorboard_dir': 'eval_tb/',
+                   'use_tensorboard': True,
+                   'write_tag': 'jepa_iic_PKT_seed-0-ep____.pth.tar'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 1,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 15,
+                'pred_mask_scale': [0.15, 0.2]},
+    'meta': {   'copy_data': False,
+                'load_checkpoint': True,
+                'model_name': 'vit_base',
+                'pred_depth': 12,
+                'pred_emb_dim': 384,
+                'read_checkpoint': 'jepa_iic_PKT',
+                'use_bfloat16': False},
+    'optimization': {   'ema': [0.996, 1.0],
+                        'epochs': 500,
+                        'evaluate': True,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'PKT',
+                        'lr': 0.001,
+                        'start_lr': 0.0002,
+                        'warmup': 40,
+                        'weight_decay': 0.04}}
+INFO:root:Running... (rank: 0/1)
+CRITICAL:root:EVALUATING
+INFO:root:tarfiles: ['logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep400.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep300.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep100.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep200.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep500.pth.tar']
+INFO:root:working on file logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep100.pth.tar out of ['logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep400.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep300.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep100.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep200.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep500.pth.tar']...
+INFO:root:Initialized (rank/world-size) 0/1
+INFO:root:train.py: _GLOBAL_SEED=0
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/intel-image-classification/train/
+INFO:root:Initialized ImageNet
+INFO:root:ImageNet dataset created
+INFO:root:ImageNet unsupervised data loader created
+INFO:root:Using AdamW
+INFO:root:loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+INFO:root:loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+['encoder', 'predictor', 'target_encoder', 'opt', 'scaler', 'epoch', 'loss', 'batch_size', 'world_size', 'lr']
+INFO:root:loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+INFO:root:loaded optimizers from epoch 99
+INFO:root:read-path: logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep100.pth.tar
+INFO:root:Starting
+INFO:root:Iteration: 0
+CRITICAL:root:z[:100] values: tensor([[[-0.3271, -0.1017, -0.1681,  ...,  0.3167,  0.6474, -0.6360],
+         [-0.3558, -0.1160, -0.1650,  ...,  0.2943,  0.6120, -0.6461],
+         [-0.3903, -0.1468, -0.1479,  ...,  0.2921,  0.5712, -0.6174],
+         ...,
+         [-0.3656, -0.0600, -0.1529,  ...,  0.2846,  0.7419, -0.7050],
+         [-0.4015, -0.0949, -0.1333,  ...,  0.2897,  0.6933, -0.6657],
+         [-0.4291, -0.1147, -0.1193,  ...,  0.3047,  0.6543, -0.6035]],
+
+        [[-0.3745, -0.0955, -0.1414,  ...,  0.4564,  0.7388, -0.5430],
+         [-0.4131, -0.0861, -0.1394,  ...,  0.4427,  0.7070, -0.5413],
+         [-0.4349, -0.1008, -0.1349,  ...,  0.4270,  0.6775, -0.5464],
+         ...,
+         [-0.3701, -0.0923, -0.2381,  ...,  0.4060,  0.7384, -0.5925],
+         [-0.3971, -0.1107, -0.2274,  ...,  0.3917,  0.7009, -0.5902],
+         [-0.4067, -0.1282, -0.2135,  ...,  0.3878,  0.6794, -0.5750]],
+
+        [[-0.3159, -0.1457, -0.1177,  ...,  0.3864,  0.6722, -0.6071],
+         [-0.3307, -0.1108, -0.1353,  ...,  0.3847,  0.6917, -0.6365],
+         [-0.3462, -0.0950, -0.1457,  ...,  0.3601,  0.6800, -0.6702],
+         ...,
+         [-0.3544, -0.1306, -0.0415,  ...,  0.3676,  0.7333, -0.7014],
+         [-0.3867, -0.1160, -0.0472,  ...,  0.3534,  0.7107, -0.7118],
+         [-0.4066, -0.1301, -0.0429,  ...,  0.3333,  0.6744, -0.7183]],
+
+        ...,
+
+        [[-0.3720, -0.1502, -0.1188,  ...,  0.3787,  0.7100, -0.5382],
+         [-0.4004, -0.1143, -0.1320,  ...,  0.3862,  0.7260, -0.5444],
+         [-0.4321, -0.1025, -0.1396,  ...,  0.3821,  0.7190, -0.5531],
+         ...,
+         [-0.4196, -0.1158, -0.1505,  ...,  0.4169,  0.7353, -0.5506],
+         [-0.4483, -0.1053, -0.1606,  ...,  0.4106,  0.7256, -0.5607],
+         [-0.4668, -0.1140, -0.1585,  ...,  0.3997,  0.7024, -0.5647]],
+
+        [[-0.4206, -0.1070, -0.0904,  ...,  0.4307,  0.7149, -0.5369],
+         [-0.4469, -0.1227, -0.0837,  ...,  0.4121,  0.6787, -0.5411],
+         [-0.4432, -0.1437, -0.0849,  ...,  0.4049,  0.6746, -0.5479],
+         ...,
+         [-0.4157, -0.1164, -0.1737,  ...,  0.3763,  0.6957, -0.5833],
+         [-0.4184, -0.1391, -0.1700,  ...,  0.3670,  0.6812, -0.5830],
+         [-0.4228, -0.1501, -0.1650,  ...,  0.3724,  0.6719, -0.5496]],
+
+        [[-0.3388, -0.1372, -0.1399,  ...,  0.3451,  0.6536, -0.6026],
+         [-0.3464, -0.1623, -0.1332,  ...,  0.3345,  0.6262, -0.5956],
+         [-0.3499, -0.1767, -0.1303,  ...,  0.3382,  0.6165, -0.5635],
+         ...,
+         [-0.3865, -0.1736, -0.0407,  ...,  0.3174,  0.6701, -0.6652],
+         [-0.3883, -0.1886, -0.0371,  ...,  0.3194,  0.6614, -0.6359],
+         [-0.3914, -0.1862, -0.0489,  ...,  0.3376,  0.6685, -0.5877]]],
+       device='cuda:0')
+INFO:root:torch.Size([64, 4, 16, 768])
+INFO:root:torch.Size([4, 16, 768])
+INFO:root:Iteration: 1
+INFO:root:time taken for epoch 0:01:41.582337
+INFO:root:Total pretraining time 0:01:41.604140
+INFO:root:working on file logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep200.pth.tar out of ['logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep400.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep300.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep100.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep200.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep500.pth.tar']...
+INFO:root:Initialized (rank/world-size) 0/1
+INFO:root:train.py: _GLOBAL_SEED=0
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/intel-image-classification/train/
+INFO:root:Initialized ImageNet
+INFO:root:ImageNet dataset created
+INFO:root:ImageNet unsupervised data loader created
+INFO:root:Using AdamW
+INFO:root:loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+INFO:root:loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+['encoder', 'predictor', 'target_encoder', 'opt', 'scaler', 'epoch', 'loss', 'batch_size', 'world_size', 'lr']
+INFO:root:loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+INFO:root:loaded optimizers from epoch 199
+INFO:root:read-path: logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep200.pth.tar
+INFO:root:Starting
+INFO:root:Iteration: 0
+CRITICAL:root:z[:100] values: tensor([[[-0.7935, -0.1238, -0.5861,  ..., -0.6081,  1.1984, -0.8520],
+         [-0.6490, -0.0693, -0.5618,  ..., -0.5304,  1.3868, -0.9624],
+         [-0.5679,  0.0694, -0.6151,  ..., -0.4272,  1.4709, -0.9247],
+         ...,
+         [-0.3651, -0.4343, -0.6778,  ..., -0.2780,  0.9917, -0.9092],
+         [-0.2815, -0.2986, -0.7438,  ..., -0.1477,  1.0768, -0.8435],
+         [-0.4344, -0.1447, -0.8785,  ..., -0.1531,  0.9625, -0.7834]],
+
+        [[-0.8295,  0.1807, -0.5267,  ..., -0.0533,  1.5267, -1.1951],
+         [-0.9467,  0.2768, -0.5621,  ..., -0.0657,  1.4500, -1.2080],
+         [-1.1109,  0.3314, -0.5863,  ..., -0.1400,  1.3611, -1.2589],
+         ...,
+         [-0.5432,  0.2080, -0.9805,  ..., -0.1944,  1.5043, -1.2546],
+         [-0.7688,  0.3120, -1.0178,  ..., -0.2649,  1.4493, -1.3563],
+         [-0.9005,  0.3055, -0.9584,  ..., -0.3412,  1.3937, -1.4021]],
+
+        [[-1.0084,  0.0060, -0.4746,  ..., -0.4186,  1.3178, -1.0321],
+         [-0.9216,  0.0789, -0.5508,  ..., -0.3361,  1.3811, -0.9478],
+         [-0.7680,  0.0213, -0.7091,  ..., -0.2690,  1.1139, -0.7992],
+         ...,
+         [-0.6561, -0.0811, -0.8144,  ..., -0.1688,  1.2552, -0.9578],
+         [-0.6804,  0.0028, -0.9438,  ..., -0.1485,  1.1742, -0.9182],
+         [-0.8191,  0.0652, -1.0512,  ..., -0.3163,  0.9588, -1.0312]],
+
+        ...,
+
+        [[-0.8927,  0.4269, -0.6117,  ..., -0.1776,  1.6912, -1.2374],
+         [-0.9504,  0.5750, -0.7149,  ..., -0.1446,  1.7515, -1.2873],
+         [-1.0236,  0.5923, -0.7808,  ..., -0.2042,  1.7058, -1.2966],
+         ...,
+         [-0.5062,  0.3605, -1.1159,  ..., -0.1118,  1.4767, -1.1874],
+         [-0.6902,  0.3688, -1.1105,  ..., -0.2005,  1.3695, -1.2057],
+         [-0.8156,  0.3102, -1.0226,  ..., -0.2862,  1.2673, -1.1834]],
+
+        [[-0.7862,  0.0239, -0.3203,  ..., -0.0757,  0.7947, -0.9033],
+         [-0.2689,  0.0310, -0.2831,  ...,  0.1902,  0.7604, -0.9702],
+         [-0.2250,  0.2163, -0.5501,  ...,  0.1744,  0.6030, -0.9424],
+         ...,
+         [-0.4653,  0.2206, -0.7511,  ..., -0.1675,  1.3439, -0.8837],
+         [-0.5007,  0.3327, -0.9431,  ..., -0.1959,  1.1836, -0.8347],
+         [-0.6975,  0.3348, -0.9929,  ..., -0.3651,  1.0061, -0.9629]],
+
+        [[-0.3540, -0.1415, -0.7661,  ..., -0.3058,  0.8490, -1.1429],
+         [-0.2590,  0.0160, -0.8054,  ..., -0.1981,  0.9345, -1.1576],
+         [-0.3671,  0.1515, -0.8725,  ..., -0.1875,  0.8974, -1.1925],
+         ...,
+         [-0.4078,  0.0330, -0.6313,  ..., -0.3803,  1.3202, -1.2061],
+         [-0.5204,  0.1527, -0.6906,  ..., -0.3863,  1.2847, -1.2429],
+         [-0.7406,  0.2073, -0.7243,  ..., -0.4880,  1.1898, -1.3327]]],
+       device='cuda:0')
+INFO:root:torch.Size([64, 4, 20, 768])
+INFO:root:torch.Size([4, 20, 768])
+INFO:root:Iteration: 1
+INFO:root:time taken for epoch 0:01:38.511676
+INFO:root:Total pretraining time 0:01:38.511789
+INFO:root:working on file logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep300.pth.tar out of ['logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep400.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep300.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep100.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep200.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep500.pth.tar']...
+INFO:root:Initialized (rank/world-size) 0/1
+INFO:root:train.py: _GLOBAL_SEED=0
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/intel-image-classification/train/
+INFO:root:Initialized ImageNet
+INFO:root:ImageNet dataset created
+INFO:root:ImageNet unsupervised data loader created
+INFO:root:Using AdamW
+INFO:root:loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+INFO:root:loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+['encoder', 'predictor', 'target_encoder', 'opt', 'scaler', 'epoch', 'loss', 'batch_size', 'world_size', 'lr']
+INFO:root:loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+INFO:root:loaded optimizers from epoch 299
+INFO:root:read-path: logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep300.pth.tar
+INFO:root:Starting
+INFO:root:Iteration: 0
+CRITICAL:root:z[:100] values: tensor([[[-1.3079, -0.1242, -0.4429,  ..., -0.3909,  1.0059, -1.2303],
+         [-0.9740, -0.3196, -0.1776,  ..., -0.3082,  1.0508, -0.9748],
+         [-0.7342, -0.5348, -0.2812,  ..., -0.2259,  0.8020, -0.2751],
+         ...,
+         [-0.6208, -0.5150, -0.5174,  ..., -0.4267,  0.9442, -0.7773],
+         [-0.5224, -0.6174, -0.7290,  ..., -0.3283,  0.7612, -0.1551],
+         [-0.5527, -0.5864, -0.8223,  ..., -0.3094,  0.6746,  0.0268]],
+
+        [[-0.5007,  0.1002,  0.2068,  ..., -0.0426,  0.6961, -1.1244],
+         [-0.5804,  0.1223,  0.3334,  ..., -0.0777,  0.7225, -1.1300],
+         [-0.6321,  0.0999,  0.2192,  ..., -0.1353,  0.6062, -1.0350],
+         ...,
+         [-0.4677, -0.0744,  0.1859,  ...,  0.1757,  0.6387, -1.0019],
+         [-0.4618, -0.1026,  0.0496,  ...,  0.1346,  0.5421, -0.8727],
+         [-0.5000, -0.1166, -0.0310,  ...,  0.1214,  0.4983, -0.7225]],
+
+        [[-0.7155, -0.4085, -0.0913,  ..., -0.3896,  1.0585, -0.8187],
+         [-0.8253, -0.3665, -0.4750,  ..., -0.4330,  0.7023, -0.5670],
+         [-0.8076, -0.3596, -0.5773,  ..., -0.5423,  0.4373, -0.5759],
+         ...,
+         [-0.5871, -0.4843, -0.4206,  ...,  0.0363,  0.5911, -0.5465],
+         [-0.9204, -0.4896, -0.3772,  ..., -0.1571,  0.4865, -0.7670],
+         [-1.0996, -0.5151,  0.1278,  ..., -0.2166,  0.7791, -1.2416]],
+
+        ...,
+
+        [[ 0.0661, -0.0767, -0.5822,  ..., -0.2480,  0.6651, -0.7772],
+         [ 0.0257,  0.0554, -0.6108,  ..., -0.1766,  0.6240, -0.8213],
+         [-0.0549,  0.0966, -0.5178,  ..., -0.1725,  0.5817, -0.8542],
+         ...,
+         [-0.3628, -0.0325, -0.7579,  ..., -0.2071,  1.1177, -0.8998],
+         [-0.4740, -0.0068, -0.7312,  ..., -0.2249,  1.1013, -0.9474],
+         [-0.5164, -0.0314, -0.5558,  ..., -0.2192,  1.1695, -0.9425]],
+
+        [[ 0.2190, -0.4223, -0.2095,  ..., -0.0294,  0.8524, -0.2168],
+         [ 0.3939, -0.1412, -0.3447,  ...,  0.1237,  0.7693, -0.3900],
+         [ 0.5844,  0.1337, -0.7754,  ...,  0.2046,  0.2258, -0.3411],
+         ...,
+         [ 0.1766, -0.4147, -0.4405,  ..., -0.1541,  0.7592, -0.4812],
+         [-0.1126, -0.3522, -0.5336,  ..., -0.1227,  0.5086, -0.3767],
+         [-0.3350, -0.3976, -0.4320,  ..., -0.2201,  0.4642, -0.5402]],
+
+        [[-0.2182,  0.1565, -0.2300,  ..., -0.5505,  0.7992, -0.8314],
+         [-0.2218,  0.2831, -0.2186,  ..., -0.4080,  0.8275, -0.8480],
+         [-0.5035,  0.1288, -0.3225,  ..., -0.5172,  0.6306, -0.7986],
+         ...,
+         [-0.1359,  0.0898, -0.7162,  ...,  0.1026,  1.2179, -0.6148],
+         [-0.4045, -0.0513, -0.8527,  ..., -0.0752,  0.9444, -0.6426],
+         [-0.5620, -0.3322, -0.4863,  ..., -0.3392,  0.7766, -0.9592]]],
+       device='cuda:0')
+INFO:root:torch.Size([64, 4, 16, 768])
+INFO:root:torch.Size([4, 16, 768])
+INFO:root:Iteration: 1
+INFO:root:time taken for epoch 0:01:40.614604
+INFO:root:Total pretraining time 0:01:40.614760
+INFO:root:working on file logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep400.pth.tar out of ['logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep400.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep300.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep100.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep200.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep500.pth.tar']...
+INFO:root:Initialized (rank/world-size) 0/1
+INFO:root:train.py: _GLOBAL_SEED=0
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/intel-image-classification/train/
+INFO:root:Initialized ImageNet
+INFO:root:ImageNet dataset created
+INFO:root:ImageNet unsupervised data loader created
+INFO:root:Using AdamW
+INFO:root:loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+INFO:root:loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+['encoder', 'predictor', 'target_encoder', 'opt', 'scaler', 'epoch', 'loss', 'batch_size', 'world_size', 'lr']
+INFO:root:loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+INFO:root:loaded optimizers from epoch 399
+INFO:root:read-path: logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep400.pth.tar
+INFO:root:Starting
+INFO:root:Iteration: 0
+CRITICAL:root:z[:100] values: tensor([[[-0.2559, -0.6912,  0.2105,  ...,  0.0701,  0.2483,  0.2825],
+         [-0.2342, -0.3062,  0.1693,  ...,  0.0952,  0.2949, -0.0199],
+         [-0.2175, -0.1103,  0.1187,  ...,  0.1819,  0.2121, -0.0346],
+         ...,
+         [ 0.1014, -0.4320, -0.0916,  ..., -0.0187,  0.2691,  0.0770],
+         [ 0.1828, -0.2785, -0.1731,  ...,  0.0829,  0.0689,  0.0290],
+         [ 0.0338, -0.2696, -0.2355,  ...,  0.0526, -0.0786, -0.0299]],
+
+        [[-0.1204, -0.2087,  0.2985,  ..., -0.0031, -0.0676,  0.1874],
+         [-0.2061, -0.0993,  0.2628,  ..., -0.0789, -0.0672,  0.0072],
+         [-0.2814,  0.0372,  0.1617,  ..., -0.0735, -0.0117, -0.1229],
+         ...,
+         [ 0.1004, -0.4747, -0.0142,  ..., -0.0333, -0.2078,  0.1842],
+         [ 0.0062, -0.2814, -0.1715,  ..., -0.0177, -0.2291,  0.1266],
+         [-0.0168, -0.2334, -0.2902,  ...,  0.1050, -0.1406,  0.1594]],
+
+        [[-0.3404, -0.0280, -0.1675,  ...,  0.0551, -0.2175, -0.2463],
+         [-0.4770, -0.1909,  0.0987,  ..., -0.1187, -0.1536, -0.4748],
+         [-0.3029, -0.2505,  0.0814,  ..., -0.0120, -0.0201, -0.1902],
+         ...,
+         [-0.4359, -0.0171,  0.1938,  ..., -0.0385,  0.0026, -0.2972],
+         [-0.3348, -0.0600,  0.1977,  ...,  0.0629,  0.0944, -0.0693],
+         [-0.3206, -0.1100,  0.0833,  ...,  0.1441,  0.0241,  0.2285]],
+
+        ...,
+
+        [[ 0.1475, -0.1547, -0.4821,  ...,  0.0023, -0.0863,  0.2757],
+         [ 0.0815, -0.0318, -0.4576,  ..., -0.0496, -0.0506,  0.0539],
+         [ 0.0844,  0.1027, -0.4264,  ..., -0.0042, -0.0957, -0.0294],
+         ...,
+         [-0.0291, -0.1550,  0.0211,  ..., -0.1224, -0.0440, -0.0493],
+         [-0.0467, -0.0007,  0.0247,  ..., -0.1040, -0.0153, -0.1443],
+         [-0.0639,  0.0687, -0.0297,  ..., -0.0662, -0.0199, -0.1403]],
+
+        [[ 0.1982, -0.2169,  0.2409,  ...,  0.1771, -0.1445,  0.4616],
+         [ 0.3882, -0.0304,  0.0838,  ...,  0.0992, -0.0981, -0.0779],
+         [ 0.3805,  0.1431, -0.0615,  ...,  0.1296, -0.2114, -0.1352],
+         ...,
+         [ 0.0785,  0.2015,  0.2150,  ...,  0.3050,  0.3916,  0.2660],
+         [ 0.1288,  0.2969,  0.0455,  ...,  0.3522,  0.4024,  0.2331],
+         [ 0.0567,  0.2243, -0.0748,  ...,  0.1732,  0.2218,  0.0880]],
+
+        [[ 0.0333,  0.1903, -0.4313,  ...,  0.1377,  0.2874,  0.0079],
+         [-0.1870,  0.0277, -0.4937,  ...,  0.1131,  0.1975,  0.0060],
+         [-0.2682, -0.1494, -0.2296,  ..., -0.1163,  0.0610, -0.1137],
+         ...,
+         [-0.1897,  0.2225, -0.3576,  ...,  0.0369,  0.3144, -0.2368],
+         [-0.1607,  0.1008, -0.3368,  ..., -0.0203,  0.2337, -0.2101],
+         [-0.0517,  0.0195, -0.3255,  ...,  0.0415,  0.2568, -0.0181]]],
+       device='cuda:0')
+INFO:root:torch.Size([64, 4, 16, 768])
+INFO:root:torch.Size([4, 16, 768])
+INFO:root:Iteration: 1
+INFO:root:time taken for epoch 0:01:40.137403
+INFO:root:Total pretraining time 0:01:40.137552
+INFO:root:working on file logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep500.pth.tar out of ['logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep400.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep300.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep100.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep200.pth.tar', 'logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep500.pth.tar']...
+INFO:root:Initialized (rank/world-size) 0/1
+INFO:root:train.py: _GLOBAL_SEED=0
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/intel-image-classification/train/
+INFO:root:Initialized ImageNet
+INFO:root:ImageNet dataset created
+INFO:root:ImageNet unsupervised data loader created
+INFO:root:Using AdamW
+INFO:root:loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+INFO:root:loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+['encoder', 'predictor', 'target_encoder', 'opt', 'scaler', 'epoch', 'loss', 'batch_size', 'world_size', 'lr']
+INFO:root:loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+INFO:root:loaded optimizers from epoch 499
+INFO:root:read-path: logs_PKT/iic-train-PKT-seed-10/jepa_iic_PKT-ep500.pth.tar
+INFO:root:Starting
+INFO:root:Iteration: 0
+CRITICAL:root:z[:100] values: tensor([[[-2.3880e-01,  2.9334e-02, -3.3414e-02,  ..., -3.0390e-02,
+           7.4582e-02, -2.9998e-01],
+         [-1.4089e-01, -3.6460e-02, -3.0728e-03,  ...,  7.7939e-02,
+           1.1203e-01, -5.6749e-02],
+         [-1.1807e-01, -2.6256e-01,  3.6149e-02,  ...,  3.9704e-02,
+          -9.7184e-02,  3.6975e-01],
+         ...,
+         [-3.2541e-02, -2.6780e-01, -3.4227e-02,  ...,  7.4868e-02,
+          -5.2510e-02,  3.7613e-02],
+         [-6.3369e-03, -2.5568e-01, -8.7296e-02,  ...,  9.0663e-02,
+          -3.6074e-01,  4.2723e-01],
+         [-1.2800e-01, -9.7199e-02, -9.2509e-02,  ..., -1.1335e-01,
+          -4.1931e-01,  3.4780e-01]],
+
+        [[-1.6631e-01,  7.6765e-02,  8.3575e-02,  ..., -4.2276e-02,
+          -1.5080e-01, -1.7494e-01],
+         [-1.6265e-01,  2.1299e-01,  1.5930e-01,  ...,  2.5780e-02,
+           2.1969e-02, -2.9710e-01],
+         [-1.4959e-01,  3.2161e-01, -1.1484e-02,  ...,  1.5365e-01,
+           5.1314e-02, -1.6460e-01],
+         ...,
+         [ 8.6107e-02, -3.1352e-01,  2.1482e-01,  ...,  5.6025e-02,
+          -1.1883e-01, -2.0322e-01],
+         [ 2.6092e-02, -2.4561e-01, -1.1605e-02,  ...,  2.4869e-01,
+          -1.6483e-01,  3.9409e-02],
+         [-1.6297e-01, -3.0824e-01, -9.7449e-03,  ...,  5.3767e-02,
+          -2.7196e-01, -1.1949e-02]],
+
+        [[-4.6188e-01, -2.9212e-01,  1.3237e-03,  ..., -2.7618e-01,
+          -5.3341e-02, -3.1716e-01],
+         [-2.1066e-01, -4.0032e-01,  1.3535e-01,  ...,  6.4862e-02,
+           8.0306e-02,  9.1776e-02],
+         [-2.1624e-01, -3.8856e-01, -1.6939e-01,  ...,  1.3375e-01,
+           3.5344e-02,  5.3799e-01],
+         ...,
+         [-2.4231e-01, -7.6343e-02, -1.9643e-01,  ...,  1.0754e-01,
+           4.4815e-02, -4.1089e-02],
+         [-2.0455e-01, -8.2807e-02, -2.9541e-01,  ...,  1.9328e-01,
+          -1.7862e-02,  2.7639e-01],
+         [-2.8660e-01,  7.0694e-03, -3.1289e-01,  ..., -3.1405e-02,
+          -1.5714e-01,  2.3965e-01]],
+
+        ...,
+
+        [[-8.6832e-02,  1.8943e-01,  2.0283e-02,  ...,  3.6759e-02,
+           1.1335e-02, -8.9396e-02],
+         [-2.1352e-01,  2.0332e-02, -8.1811e-02,  ..., -3.4355e-02,
+           7.8663e-02, -9.7521e-02],
+         [-2.5037e-01, -5.1573e-02, -1.8002e-01,  ...,  1.1873e-01,
+           3.2621e-01,  1.1433e-04],
+         ...,
+         [ 9.2572e-02,  7.4420e-02, -2.9965e-01,  ...,  8.5811e-03,
+          -1.2717e-01,  3.7997e-02],
+         [ 1.3869e-01, -5.6380e-02, -2.0042e-01,  ...,  1.2452e-01,
+          -1.0906e-01,  1.5839e-01],
+         [ 1.4834e-01, -1.1512e-01, -1.9491e-01,  ...,  1.1850e-01,
+          -1.7934e-01,  3.3852e-01]],
+
+        [[-5.7306e-02,  2.6585e-01,  1.4775e-01,  ...,  1.1637e-01,
+           6.6184e-02,  5.5895e-02],
+         [ 1.1197e-01,  2.6710e-01, -1.2244e-01,  ..., -2.0718e-03,
+          -8.3153e-02, -3.9435e-02],
+         [ 3.4085e-01,  2.4691e-01, -2.1553e-01,  ..., -1.0030e-01,
+          -2.7555e-01, -2.0988e-01],
+         ...,
+         [-8.8860e-04, -1.3494e-01, -3.2602e-01,  ...,  1.2498e-01,
+          -2.5118e-01, -1.1282e-01],
+         [-1.4682e-01, -2.7892e-01, -4.2743e-02,  ..., -6.3659e-02,
+          -2.3096e-01, -2.6954e-01],
+         [-5.0665e-02, -3.6509e-01,  1.1330e-01,  ...,  1.4761e-01,
+          -1.0612e-01, -8.9834e-03]],
+
+        [[-1.0531e-01, -3.1859e-01, -1.5573e-01,  ...,  9.7508e-02,
+          -1.8136e-02,  3.1440e-01],
+         [-1.7288e-01, -2.2739e-01, -1.5375e-01,  ...,  1.0020e-01,
+           1.7230e-01,  3.0685e-02],
+         [-2.4602e-01, -5.6509e-02, -2.0767e-01,  ...,  1.5274e-01,
+           2.5521e-01, -1.0035e-01],
+         ...,
+         [-1.7919e-01, -1.1070e-01, -1.5803e-01,  ..., -2.3652e-02,
+           8.9134e-02, -8.2585e-02],
+         [-1.5177e-01,  4.4910e-02, -4.5095e-02,  ...,  4.5277e-02,
+           6.6453e-02, -1.9638e-01],
+         [-1.5158e-01,  1.4245e-01, -1.3559e-01,  ...,  1.1925e-01,
+           6.6104e-02, -2.0227e-01]]], device='cuda:0')
+INFO:root:torch.Size([64, 4, 20, 768])
+INFO:root:torch.Size([4, 20, 768])
+INFO:root:Iteration: 1
+INFO:root:time taken for epoch 0:01:34.803745
+INFO:root:Total pretraining time 0:01:34.803873

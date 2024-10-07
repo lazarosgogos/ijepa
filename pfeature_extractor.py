@@ -149,7 +149,7 @@ class LinearProbe():
         os.makedirs(_classifiers_dir, exist_ok=True)
         
         logger.info(f'Directory {self.save_path} for saving the classifiers is now present')
-        self.log_file = os.path.join(self.log_dir, f'{self.log_file}.csv')
+        self.log_file = os.path.join(self.log_dir, log_file)
         self.train_features_file_path = os.path.join(self.log_dir, 'train_features_and_labels.pt')
         self.val_features_file_path = os.path.join(self.log_dir, 'val_features_and_labels.pt')
 
@@ -397,7 +397,8 @@ def process_main(fname, devices=['cuda:0']):
         # keep info about what epoch this current run corresponds to
         temp_params['pretrain_checkpoint_epoch'] = epoch 
 
-        eval_output = os.path.join(log_dir, eval_output + f'-ep{epoch}.out')
+        # eval_output = os.path.join(log_dir, eval_output + f'-ep{epoch}.out') 
+        # # do not alter evalout name
         logger.addHandler(logging.StreamHandler())
         logger.addHandler(logging.FileHandler(eval_output))
 

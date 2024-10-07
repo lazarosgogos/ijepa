@@ -38,7 +38,9 @@ def cosine_similarity_loss(output_net, target_net, eps=0.0000001):
 
     return loss
 
-def cosine_similarity_loss_max_var(output_net, target_net, eps=0.0000001):
+
+def cosine_similarity_loss_cross_diag(output_net, target_net, eps=0.0000001):
+
     # Normalize each vector by its norm
     output_net_norm = torch.sqrt(torch.sum(output_net ** 2, dim=1, keepdim=True))
     output_net = output_net / (output_net_norm + eps)
@@ -49,8 +51,16 @@ def cosine_similarity_loss_max_var(output_net, target_net, eps=0.0000001):
     target_net[target_net != target_net] = 0
 
     # Calculate the cosine similarity
-    model_similarity = torch.mm(output_net, output_net.transpose(0, 1))
+    model_similarity = torch.mm(output_net, output_net.transpose(0, 1)) 
     target_similarity = torch.mm(target_net, target_net.transpose(0, 1))
+
+    cross = torch.mm(model_similarity, target_similarity) # cross sim matrix
+    
+    sdiag = cross.diag() # <- tend to 1
+    # sltri = cross.tril().sum()  # <- tend to 0 
+    ones_v = torch.ones_like(sdiag)
+
+    mse = torch.nn.functional.mse_loss(sdiag, ones_v) 
 
     # Scale cosine similarity to 0..1
     model_similarity = (model_similarity + 1.0) / 2.0
@@ -63,7 +73,8 @@ def cosine_similarity_loss_max_var(output_net, target_net, eps=0.0000001):
     # Calculate the KL-divergence
     loss = torch.mean(target_similarity * torch.log((target_similarity + eps) / (model_similarity + eps)))
 
-    return (loss, -torch.var(model_similarity))
+    return loss, mse
+
 
 def cross_similarity_loss(output_net, target_net, eps=0.0000001):
     # Normalize each vector by its norm

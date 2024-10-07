@@ -146,6 +146,57 @@ def L2_PKT_chunks(z,h, **kwargs):
   # logger.critical(pkt_scale)
   return (loss_pkt*pkt_scale + loss_L2)/(vsize/step)
 
+def PKT_chunks(z,h, **kwargs):
+  """ Scale PKT after performing it in chunks of the patches """
+  emb_size = z.size(-1) # take vector embedding dimension
+  z_ = z.view(-1, emb_size) # transform from [256, 20, 768] into [5120, 768]
+  h_ = h.view(-1, emb_size) 
+  # create a random permutation
+  # rperm = torch.randperm(z_.size(-1)) # this yields an array of [1, 5, 0,... , 5119] random indices
+  vsize = h_.size(0) # vector size
+  step = 512 # hardcoded # vsize/10    # split sim matrix in x parts and run pkt in them
+  
+  assert h_.size(0) == z_.size(0), 'Different batch sizes between z,h ?'
+
+  pkt_scale = kwargs.get('pkt_scale', 1.) # default to 1 if it fails
+  # pkt_scale = 1.0e+3 # hardcoded for now
+
+  # loss_L2 = L2(z,h)
+  loss_pkt = 0
+  for i in range(0, vsize, step):
+    loss_pkt += PKTClass.cosine_similarity_loss(z_[i:i+step],h_[i:i+step])  
+    
+ 
+  return (loss_pkt*pkt_scale)/(vsize/step)
+
+def L2_PKT_cross(z,h, **kwargs):  
+  """L2 + PKT in chunks after performing it in chunks of the patches """
+  emb_size = z.size(-1) # take vector embedding dimension
+  z_ = z.view(-1, emb_size) # transform from [256, 20, 768] into [5120, 768]
+  h_ = h.view(-1, emb_size) 
+  # create a random permutation
+  # rperm = torch.randperm(z_.size(-1)) # this yields an array of [1, 5, 0,... , 5119] random indices
+  vsize = h_.size(0) # vector size
+  step = 512 # hardcoded # vsize/10    # split sim matrix in x parts and run pkt in them
+  
+  assert h_.size(0) == z_.size(0), 'Different batch sizes between z,h ?'
+
+  
+  loss_L2 = L2(z,h)
+  loss_pkt = 0
+  mse = 0
+  for i in range(0, vsize, step):
+    loss_pkt_, mse_ = PKTClass.cosine_similarity_loss_cross_diag(z_[i:i+step],h_[i:i+step])  
+    loss_pkt += loss_pkt_
+    mse += mse_
+  
+  loss_pkt /= (vsize/step)
+  mse /= (vsize/step)
+    
+ 
+  return (loss_pkt + loss_L2)/(vsize/step), mse
+  
+
 """
   # PKT between all patches of whole batch
   loss_pkt = 0

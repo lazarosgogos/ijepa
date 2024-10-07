@@ -14,10 +14,10 @@ data:
   use_horizontal_flip: false
 logging:
   checkpoint_freq: 100
-  folder: logs_STL/stl-l2-seed0
+  folder: logs_STL/stl-l2-pkt-chunks-seed0
   logging_frequency: 2
-  output_file: ostl-pretrain-l2-seed0.out
-  write_tag: jepa-stl-l2-seed0
+  output_file: ostl-pretrain-l2-pkt-chunks-seed0.out
+  write_tag: jepa-stl-l2-pkt-chunks-seed0
 mask:
   allow_overlap: false
   aspect_ratio:
@@ -33,7 +33,7 @@ mask:
   pred_mask_scale:
   - 0.15
   - 0.2
-message: L2 on stl seed 0
+message: L2+PKT chunks scale 1.e0 on stl seed 0
 meta:
   copy_data: false
   load_checkpoint: false
@@ -50,9 +50,9 @@ optimization:
   final_lr: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0
-  loss_function: L2
+  loss_function: L2_PKT_chunks
   lr: 0.001
-  pkt_scale: 0.1
+  pkt_scale: 1.0
   start_lr: 0.0002
   variance_weight: 0.0
   warmup: 6

@@ -35,7 +35,7 @@ def cosine_similarity_loss(output_net, target_net, eps=0.0000001):
 
     # Calculate the KL-divergence
     loss = torch.mean(target_similarity * torch.log((target_similarity + eps) / (model_similarity + eps)))
-
+    
     return loss
 
 def cosine_similarity_loss_max_var(output_net, target_net, eps=0.0000001):

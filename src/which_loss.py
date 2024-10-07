@@ -56,7 +56,7 @@ def PKT(z_init,h_init, **kwargs):
   # .view() 
   # alpha = .1 * cosine_similarity_loss
   # loss = AllReduce.apply(loss_l2 + loss_pkt) 
-  return loss_pkt, neg_variance_sum
+  return loss_pkt
 
   """
   for i in range(batch_size):
@@ -142,7 +142,8 @@ def L2_PKT_chunks(z,h, **kwargs):
     # loss_pkt += PKTClass.cosine_similarity_loss(z_[rperm[i:i+step]],h_[rperm[i:i+step]])
     loss_pkt += PKTClass.cosine_similarity_loss(z_[i:i+step],h_[i:i+step])  
     # loss_L2 += L2(z_[i:i+step],h_[i:i+step])
- 
+  # logger.critical('loss inside PKT is : %s and pkt scale: %f' % (loss_pkt, pkt_scale))
+  # logger.critical(pkt_scale)
   return (loss_pkt*pkt_scale + loss_L2)/(vsize/step)
 
 """

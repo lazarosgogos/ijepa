@@ -1,0 +1,839 @@
+nohup: ignoring input
+INFO:root:called-params configs/stl-train.yaml
+INFO:root:loaded params...
+{   'data': {   'batch_size': 128,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 150,
+                'image_folder': 'stl10/',
+                'num_workers': 10,
+                'pin_mem': True,
+                'root_path': 'datasets',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 10,
+                   'folder': 'logs_STL/stl-l2-seed2',
+                   'logging_frequency': 2,
+                   'output_file': 'ostl-pretrain-l2-seed2.out',
+                   'write_tag': 'jepa-stl-l2-seed2'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 1,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 15,
+                'pred_mask_scale': [0.15, 0.2]},
+    'message': 'L2 on stl seed 2',
+    'meta': {   'copy_data': False,
+                'load_checkpoint': False,
+                'model_name': 'vit_base',
+                'pred_depth': 12,
+                'pred_emb_dim': 384,
+                'read_checkpoint': None,
+                'use_bfloat16': False},
+    'optimization': {   'ema': [0.996, 1.0],
+                        'epochs': 75,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'L2',
+                        'lr': 0.001,
+                        'pkt_scale': 1.0,
+                        'start_lr': 0.0002,
+                        'variance_weight': 0.0,
+                        'warmup': 6,
+                        'weight_decay': 0.04},
+    'pkt': {   'T_max': 200,
+               'final_alpha': 0.0,
+               'ref_alpha': 1.0,
+               'start_alpha': 1.0,
+               'use_pkt_scheduler': False,
+               'warmup_steps_alpha': 100}}
+INFO:root:Running... (rank: 0/1)
+CRITICAL:root:PRETRAINING
+INFO:root:Initialized (rank/world-size) 0/1
+INFO:root:train.py: _GLOBAL_SEED=2
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/stl10/train/
+INFO:root:Initialized ImageNet
+INFO:root:ImageNet dataset created
+INFO:root:ImageNet unsupervised data loader created
+INFO:root:Using AdamW
+INFO:root:Epoch 1
+INFO:root:[1,     0] loss: 4.856764e-01 masks: 15.0 20.0 [wd: 4.00e-02] [lr: 2.00e-04] [mem: 8.38e+03] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (719.2 ms)
+INFO:root:[1,     0] grad_stats: [2.40e-02 1.13e-02] (1.12e-02, 2.70e-02)
+INFO:root:[1,   390] loss: 1.883942e-01 masks: 20.0 17.4 [wd: 4.00e-02] [lr: 2.67e-04] [mem: 1.28e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (425.8 ms)
+INFO:root:[1,   390] grad_stats: [1.73e-02 1.09e-03] (8.99e-04, 2.82e-02)
+INFO:root:[1,   780] loss: 1.403913e-01 masks: 20.2 17.2 [wd: 4.02e-02] [lr: 3.33e-04] [mem: 1.30e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (428.8 ms)
+INFO:root:[1,   780] grad_stats: [1.24e-02 7.87e-04] (4.00e-04, 1.58e-02)
+INFO:root:avg. loss 1.40391274e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:47.703658
+INFO:root:Epoch 2
+INFO:root:[2,     0] loss: 6.279068e-02 masks: 15.0 20.0 [wd: 4.02e-02] [lr: 3.34e-04] [mem: 1.30e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (392.2 ms)
+INFO:root:[2,     0] grad_stats: [6.50e-03 4.15e-04] (2.69e-04, 9.49e-03)
+INFO:root:[2,   390] loss: 5.408066e-02 masks: 20.3 17.2 [wd: 4.04e-02] [lr: 4.00e-04] [mem: 1.30e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.7 ms)
+INFO:root:[2,   390] grad_stats: [6.81e-03 3.85e-04] (2.74e-04, 8.67e-03)
+INFO:root:[2,   780] loss: 5.090585e-02 masks: 20.2 17.3 [wd: 4.06e-02] [lr: 4.67e-04] [mem: 1.30e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.2 ms)
+INFO:root:[2,   780] grad_stats: [1.20e-02 4.05e-04] (2.64e-04, 1.60e-02)
+INFO:root:avg. loss 5.09058470e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:49.205089
+INFO:root:Epoch 3
+INFO:root:[3,     0] loss: 4.495418e-02 masks: 21.0 16.0 [wd: 4.06e-02] [lr: 4.67e-04] [mem: 1.30e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (423.2 ms)
+INFO:root:[3,     0] grad_stats: [7.46e-03 3.05e-04] (1.45e-04, 8.67e-03)
+INFO:root:[3,   390] loss: 4.929752e-02 masks: 20.6 17.1 [wd: 4.10e-02] [lr: 5.33e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.0 ms)
+INFO:root:[3,   390] grad_stats: [8.17e-03 2.64e-04] (1.37e-04, 1.37e-02)
+INFO:root:[3,   780] loss: 4.972874e-02 masks: 20.4 17.2 [wd: 4.14e-02] [lr: 6.00e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.4 ms)
+INFO:root:[3,   780] grad_stats: [7.32e-03 3.14e-04] (1.36e-04, 1.11e-02)
+INFO:root:avg. loss 4.97287434e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.743521
+INFO:root:Epoch 4
+INFO:root:[4,     0] loss: 5.032241e-02 masks: 20.0 16.0 [wd: 4.14e-02] [lr: 6.00e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (416.5 ms)
+INFO:root:[4,     0] grad_stats: [9.97e-03 4.70e-04] (1.18e-04, 1.30e-02)
+INFO:root:[4,   390] loss: 4.984911e-02 masks: 20.4 17.3 [wd: 4.19e-02] [lr: 6.67e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.5 ms)
+INFO:root:[4,   390] grad_stats: [1.14e-02 6.34e-04] (1.23e-04, 1.37e-02)
+INFO:root:[4,   780] loss: 4.974871e-02 masks: 20.2 17.3 [wd: 4.25e-02] [lr: 7.33e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.6 ms)
+INFO:root:[4,   780] grad_stats: [5.23e-03 2.63e-04] (8.93e-05, 7.00e-03)
+INFO:root:avg. loss 4.97487101e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.272055
+INFO:root:Epoch 5
+INFO:root:[5,     0] loss: 5.640902e-02 masks: 12.0 20.0 [wd: 4.25e-02] [lr: 7.34e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (362.6 ms)
+INFO:root:[5,     0] grad_stats: [7.22e-03 3.08e-04] (1.02e-04, 1.13e-02)
+INFO:root:[5,   390] loss: 4.714261e-02 masks: 20.2 17.2 [wd: 4.32e-02] [lr: 8.00e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.9 ms)
+INFO:root:[5,   390] grad_stats: [3.99e-03 3.20e-04] (6.96e-05, 7.20e-03)
+INFO:root:[5,   780] loss: 4.621462e-02 masks: 20.2 17.3 [wd: 4.39e-02] [lr: 8.67e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.3 ms)
+INFO:root:[5,   780] grad_stats: [3.88e-03 2.49e-04] (5.68e-05, 4.96e-03)
+INFO:root:avg. loss 4.62146186e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.059663
+INFO:root:Epoch 6
+INFO:root:[6,     0] loss: 4.412028e-02 masks: 21.0 16.0 [wd: 4.39e-02] [lr: 8.67e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (424.1 ms)
+INFO:root:[6,     0] grad_stats: [3.74e-03 1.88e-04] (4.43e-05, 5.19e-03)
+INFO:root:[6,   390] loss: 4.572399e-02 masks: 20.4 17.2 [wd: 4.48e-02] [lr: 9.33e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.4 ms)
+INFO:root:[6,   390] grad_stats: [6.17e-03 4.92e-04] (7.07e-05, 9.67e-03)
+INFO:root:[6,   780] loss: 4.534258e-02 masks: 20.4 17.2 [wd: 4.57e-02] [lr: 1.00e-03] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.6 ms)
+INFO:root:[6,   780] grad_stats: [5.97e-03 2.67e-04] (5.50e-05, 1.05e-02)
+INFO:root:avg. loss 4.53425810e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.192390
+INFO:root:Epoch 7
+INFO:root:[7,     0] loss: 4.183192e-02 masks: 23.0 16.0 [wd: 4.57e-02] [lr: 1.00e-03] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (443.0 ms)
+INFO:root:[7,     0] grad_stats: [3.48e-03 2.39e-04] (3.79e-05, 9.04e-03)
+INFO:root:[7,   390] loss: 4.323385e-02 masks: 20.1 17.3 [wd: 4.66e-02] [lr: 1.00e-03] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.9 ms)
+INFO:root:[7,   390] grad_stats: [3.12e-03 2.93e-04] (5.59e-05, 6.29e-03)
+INFO:root:[7,   780] loss: 4.287086e-02 masks: 20.2 17.2 [wd: 4.77e-02] [lr: 9.99e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.8 ms)
+INFO:root:[7,   780] grad_stats: [2.56e-03 2.80e-04] (4.56e-05, 3.71e-03)
+INFO:root:avg. loss 4.28708630e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.431820
+INFO:root:Epoch 8
+INFO:root:[8,     0] loss: 4.319593e-02 masks: 17.0 16.0 [wd: 4.77e-02] [lr: 9.99e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (391.3 ms)
+INFO:root:[8,     0] grad_stats: [2.87e-03 3.23e-04] (4.16e-05, 3.18e-03)
+INFO:root:[8,   390] loss: 4.238617e-02 masks: 19.8 17.4 [wd: 4.88e-02] [lr: 9.99e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (428.8 ms)
+INFO:root:[8,   390] grad_stats: [2.65e-03 2.39e-04] (3.52e-05, 5.69e-03)
+INFO:root:[8,   780] loss: 4.217823e-02 masks: 19.9 17.5 [wd: 5.00e-02] [lr: 9.98e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (429.8 ms)
+INFO:root:[8,   780] grad_stats: [4.69e-03 3.09e-04] (5.44e-05, 7.81e-03)
+INFO:root:avg. loss 4.21782336e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:48.854280
+INFO:root:Epoch 9
+INFO:root:[9,     0] loss: 4.144200e-02 masks: 18.0 20.0 [wd: 5.00e-02] [lr: 9.98e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (418.9 ms)
+INFO:root:[9,     0] grad_stats: [3.02e-03 2.33e-04] (2.79e-05, 4.51e-03)
+INFO:root:[9,   390] loss: 4.063665e-02 masks: 20.2 17.3 [wd: 5.13e-02] [lr: 9.97e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.9 ms)
+INFO:root:[9,   390] grad_stats: [3.13e-03 2.66e-04] (3.24e-05, 4.11e-03)
+INFO:root:[9,   780] loss: 4.072168e-02 masks: 20.3 17.2 [wd: 5.26e-02] [lr: 9.95e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.3 ms)
+INFO:root:[9,   780] grad_stats: [2.09e-03 1.67e-04] (2.71e-05, 3.15e-03)
+INFO:root:avg. loss 4.07216812e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.526198
+INFO:root:Epoch 10
+INFO:root:[10,     0] loss: 3.089968e-02 masks: 34.0 12.0 [wd: 5.26e-02] [lr: 9.95e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (513.0 ms)
+INFO:root:[10,     0] grad_stats: [4.44e-03 2.27e-04] (3.66e-05, 6.44e-03)
+INFO:root:[10,   390] loss: 3.978107e-02 masks: 20.4 17.1 [wd: 5.41e-02] [lr: 9.94e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.2 ms)
+INFO:root:[10,   390] grad_stats: [2.05e-03 3.10e-04] (2.97e-05, 2.55e-03)
+INFO:root:[10,   780] loss: 3.992828e-02 masks: 20.4 17.2 [wd: 5.56e-02] [lr: 9.92e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.8 ms)
+INFO:root:[10,   780] grad_stats: [1.63e-03 1.77e-04] (2.14e-05, 3.14e-03)
+INFO:root:avg. loss 3.99282761e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.957771
+INFO:root:Epoch 11
+INFO:root:[11,     0] loss: 3.799580e-02 masks: 21.0 16.0 [wd: 5.56e-02] [lr: 9.92e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (424.8 ms)
+INFO:root:[11,     0] grad_stats: [1.89e-03 1.46e-04] (2.32e-05, 2.33e-03)
+INFO:root:[11,   390] loss: 4.009442e-02 masks: 20.2 17.4 [wd: 5.71e-02] [lr: 9.90e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.7 ms)
+INFO:root:[11,   390] grad_stats: [3.38e-03 2.24e-04] (2.72e-05, 3.65e-03)
+INFO:root:[11,   780] loss: 3.982798e-02 masks: 20.5 17.2 [wd: 5.88e-02] [lr: 9.87e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.9 ms)
+INFO:root:[11,   780] grad_stats: [2.74e-03 1.93e-04] (2.53e-05, 2.99e-03)
+INFO:root:avg. loss 3.98279774e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.771827
+INFO:root:Epoch 12
+INFO:root:[12,     0] loss: 4.161932e-02 masks: 17.0 16.0 [wd: 5.88e-02] [lr: 9.87e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (391.7 ms)
+INFO:root:[12,     0] grad_stats: [2.00e-03 2.47e-04] (2.88e-05, 3.67e-03)
+INFO:root:[12,   390] loss: 4.079982e-02 masks: 19.9 17.5 [wd: 6.05e-02] [lr: 9.84e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.5 ms)
+INFO:root:[12,   390] grad_stats: [3.77e-03 4.12e-04] (3.37e-05, 3.89e-03)
+INFO:root:[12,   780] loss: 4.066054e-02 masks: 20.1 17.4 [wd: 6.23e-02] [lr: 9.81e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.2 ms)
+INFO:root:[12,   780] grad_stats: [1.33e-03 2.20e-04] (2.23e-05, 2.08e-03)
+INFO:root:avg. loss 4.06605433e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.695207
+INFO:root:Epoch 13
+INFO:root:[13,     0] loss: 4.133640e-02 masks: 19.0 20.0 [wd: 6.23e-02] [lr: 9.81e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.5 ms)
+INFO:root:[13,     0] grad_stats: [1.35e-03 1.77e-04] (2.39e-05, 2.04e-03)
+INFO:root:[13,   390] loss: 4.096004e-02 masks: 20.1 17.3 [wd: 6.41e-02] [lr: 9.78e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.7 ms)
+INFO:root:[13,   390] grad_stats: [1.49e-03 2.00e-04] (2.27e-05, 2.37e-03)
+INFO:root:[13,   780] loss: 4.115808e-02 masks: 20.2 17.3 [wd: 6.60e-02] [lr: 9.75e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.1 ms)
+INFO:root:[13,   780] grad_stats: [4.25e-03 1.88e-04] (2.48e-05, 4.26e-03)
+INFO:root:avg. loss 4.11580809e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.627239
+INFO:root:Epoch 14
+INFO:root:[14,     0] loss: 4.318497e-02 masks: 17.0 16.0 [wd: 6.60e-02] [lr: 9.75e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (391.7 ms)
+INFO:root:[14,     0] grad_stats: [1.88e-03 1.48e-04] (2.38e-05, 2.60e-03)
+INFO:root:[14,   390] loss: 4.125928e-02 masks: 20.5 17.1 [wd: 6.80e-02] [lr: 9.71e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.3 ms)
+INFO:root:[14,   390] grad_stats: [4.11e-03 2.25e-04] (2.87e-05, 4.71e-03)
+INFO:root:[14,   780] loss: 4.165849e-02 masks: 20.4 17.2 [wd: 7.01e-02] [lr: 9.67e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.9 ms)
+INFO:root:[14,   780] grad_stats: [5.33e-03 2.48e-04] (3.13e-05, 6.83e-03)
+INFO:root:avg. loss 4.16584866e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.000156
+INFO:root:Epoch 15
+INFO:root:[15,     0] loss: 4.672106e-02 masks: 15.0 20.0 [wd: 7.01e-02] [lr: 9.67e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (394.7 ms)
+INFO:root:[15,     0] grad_stats: [2.39e-03 2.63e-04] (2.46e-05, 5.49e-03)
+INFO:root:[15,   390] loss: 4.348321e-02 masks: 20.1 17.4 [wd: 7.22e-02] [lr: 9.63e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.4 ms)
+INFO:root:[15,   390] grad_stats: [2.93e-03 1.85e-04] (2.28e-05, 3.49e-03)
+INFO:root:[15,   780] loss: 4.354523e-02 masks: 20.3 17.3 [wd: 7.44e-02] [lr: 9.59e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.8 ms)
+INFO:root:[15,   780] grad_stats: [1.87e-03 1.99e-04] (2.80e-05, 4.70e-03)
+INFO:root:avg. loss 4.35452284e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.860601
+INFO:root:Epoch 16
+INFO:root:[16,     0] loss: 4.347477e-02 masks: 21.0 16.0 [wd: 7.44e-02] [lr: 9.59e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (424.5 ms)
+INFO:root:[16,     0] grad_stats: [3.20e-03 2.66e-04] (2.74e-05, 3.31e-03)
+INFO:root:[16,   390] loss: 4.451673e-02 masks: 20.0 17.3 [wd: 7.66e-02] [lr: 9.54e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.6 ms)
+INFO:root:[16,   390] grad_stats: [2.61e-03 2.72e-04] (2.69e-05, 4.93e-03)
+INFO:root:[16,   780] loss: 4.527714e-02 masks: 20.2 17.4 [wd: 7.89e-02] [lr: 9.49e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.0 ms)
+INFO:root:[16,   780] grad_stats: [1.62e-03 1.95e-04] (2.23e-05, 3.27e-03)
+INFO:root:avg. loss 4.52771437e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.403002
+INFO:root:Epoch 17
+INFO:root:[17,     0] loss: 4.442539e-02 masks: 21.0 16.0 [wd: 7.89e-02] [lr: 9.49e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (424.4 ms)
+INFO:root:[17,     0] grad_stats: [2.58e-03 1.93e-04] (2.35e-05, 3.23e-03)
+INFO:root:[17,   390] loss: 4.797054e-02 masks: 20.0 17.5 [wd: 8.13e-02] [lr: 9.44e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.8 ms)
+INFO:root:[17,   390] grad_stats: [2.97e-03 2.03e-04] (3.20e-05, 3.34e-03)
+INFO:root:[17,   780] loss: 4.891650e-02 masks: 20.0 17.4 [wd: 8.37e-02] [lr: 9.39e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.8 ms)
+INFO:root:[17,   780] grad_stats: [3.22e-03 3.71e-04] (4.22e-05, 5.90e-03)
+INFO:root:avg. loss 4.89165037e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.370640
+INFO:root:Epoch 18
+INFO:root:[18,     0] loss: 5.286833e-02 masks: 16.0 20.0 [wd: 8.37e-02] [lr: 9.39e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (399.3 ms)
+INFO:root:[18,     0] grad_stats: [1.74e-03 2.81e-04] (3.05e-05, 5.24e-03)
+INFO:root:[18,   390] loss: 5.106544e-02 masks: 20.5 17.2 [wd: 8.62e-02] [lr: 9.33e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.8 ms)
+INFO:root:[18,   390] grad_stats: [3.08e-03 1.41e-04] (2.70e-05, 3.08e-03)
+INFO:root:[18,   780] loss: 5.163283e-02 masks: 20.5 17.2 [wd: 8.88e-02] [lr: 9.27e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.5 ms)
+INFO:root:[18,   780] grad_stats: [3.86e-03 1.92e-04] (2.65e-05, 5.97e-03)
+INFO:root:avg. loss 5.16328273e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.662876
+INFO:root:Epoch 19
+INFO:root:[19,     0] loss: 5.063285e-02 masks: 19.0 20.0 [wd: 8.88e-02] [lr: 9.27e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.2 ms)
+INFO:root:[19,     0] grad_stats: [2.07e-03 1.49e-04] (2.14e-05, 2.21e-03)
+INFO:root:[19,   390] loss: 5.391452e-02 masks: 19.8 17.4 [wd: 9.14e-02] [lr: 9.21e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.0 ms)
+INFO:root:[19,   390] grad_stats: [2.78e-03 2.75e-04] (3.14e-05, 5.04e-03)
+INFO:root:[19,   780] loss: 5.433510e-02 masks: 20.0 17.3 [wd: 9.41e-02] [lr: 9.15e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.4 ms)
+INFO:root:[19,   780] grad_stats: [1.59e-03 1.67e-04] (2.90e-05, 2.82e-03)
+INFO:root:avg. loss 5.43350992e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.981795
+INFO:root:Epoch 20
+INFO:root:[20,     0] loss: 6.629100e-02 masks: 11.0 20.0 [wd: 9.41e-02] [lr: 9.15e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (356.9 ms)
+INFO:root:[20,     0] grad_stats: [2.18e-03 2.43e-04] (3.60e-05, 2.98e-03)
+INFO:root:[20,   390] loss: 5.575584e-02 masks: 20.5 17.2 [wd: 9.68e-02] [lr: 9.09e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.5 ms)
+INFO:root:[20,   390] grad_stats: [2.12e-03 3.04e-04] (3.72e-05, 3.40e-03)
+INFO:root:[20,   780] loss: 5.667085e-02 masks: 20.5 17.2 [wd: 9.96e-02] [lr: 9.02e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.2 ms)
+INFO:root:[20,   780] grad_stats: [3.62e-03 2.17e-04] (3.50e-05, 3.62e-03)
+INFO:root:avg. loss 5.66708456e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.959949
+INFO:root:Epoch 21
+INFO:root:[21,     0] loss: 4.605751e-02 masks: 34.0 12.0 [wd: 9.96e-02] [lr: 9.02e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (514.5 ms)
+INFO:root:[21,     0] grad_stats: [2.09e-03 1.80e-04] (2.82e-05, 3.66e-03)
+INFO:root:[21,   390] loss: 6.010534e-02 masks: 20.5 17.2 [wd: 1.02e-01] [lr: 8.95e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.2 ms)
+INFO:root:[21,   390] grad_stats: [2.33e-03 2.15e-04] (3.51e-05, 3.91e-03)
+INFO:root:[21,   780] loss: 6.124769e-02 masks: 20.3 17.4 [wd: 1.05e-01] [lr: 8.88e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.7 ms)
+INFO:root:[21,   780] grad_stats: [3.66e-03 2.50e-04] (3.99e-05, 7.86e-03)
+INFO:root:avg. loss 6.12476874e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.875278
+INFO:root:Epoch 22
+INFO:root:[22,     0] loss: 6.775643e-02 masks: 17.0 16.0 [wd: 1.05e-01] [lr: 8.88e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (391.3 ms)
+INFO:root:[22,     0] grad_stats: [2.32e-03 2.09e-04] (3.03e-05, 4.96e-03)
+INFO:root:[22,   390] loss: 6.398438e-02 masks: 20.0 17.4 [wd: 1.08e-01] [lr: 8.81e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.0 ms)
+INFO:root:[22,   390] grad_stats: [1.94e-03 1.74e-04] (3.36e-05, 3.25e-03)
+INFO:root:[22,   780] loss: 6.448300e-02 masks: 20.4 17.2 [wd: 1.11e-01] [lr: 8.73e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.2 ms)
+INFO:root:[22,   780] grad_stats: [3.64e-03 2.42e-04] (3.63e-05, 4.27e-03)
+INFO:root:avg. loss 6.44829982e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.360661
+INFO:root:Epoch 23
+INFO:root:[23,     0] loss: 7.293536e-02 masks: 17.0 16.0 [wd: 1.11e-01] [lr: 8.73e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (392.2 ms)
+INFO:root:[23,     0] grad_stats: [2.93e-03 1.55e-04] (2.92e-05, 4.16e-03)
+INFO:root:[23,   390] loss: 6.731830e-02 masks: 20.4 17.2 [wd: 1.14e-01] [lr: 8.66e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.3 ms)
+INFO:root:[23,   390] grad_stats: [2.47e-03 1.79e-04] (3.88e-05, 3.41e-03)
+INFO:root:[23,   780] loss: 6.803454e-02 masks: 20.5 17.3 [wd: 1.17e-01] [lr: 8.58e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.3 ms)
+INFO:root:[23,   780] grad_stats: [1.70e-03 2.39e-04] (4.34e-05, 6.01e-03)
+INFO:root:avg. loss 6.80345447e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:53.045564
+INFO:root:Epoch 24
+INFO:root:[24,     0] loss: 6.440011e-02 masks: 24.0 16.0 [wd: 1.17e-01] [lr: 8.58e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (450.8 ms)
+INFO:root:[24,     0] grad_stats: [4.28e-03 2.50e-04] (3.12e-05, 8.88e-03)
+INFO:root:[24,   390] loss: 7.037614e-02 masks: 20.4 17.3 [wd: 1.20e-01] [lr: 8.50e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.7 ms)
+INFO:root:[24,   390] grad_stats: [5.82e-03 3.38e-04] (4.12e-05, 5.82e-03)
+INFO:root:[24,   780] loss: 7.123305e-02 masks: 20.4 17.2 [wd: 1.24e-01] [lr: 8.41e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.3 ms)
+INFO:root:[24,   780] grad_stats: [3.14e-03 1.91e-04] (3.52e-05, 4.08e-03)
+INFO:root:avg. loss 7.12330458e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.393764
+INFO:root:Epoch 25
+INFO:root:[25,     0] loss: 7.500173e-02 masks: 17.0 20.0 [wd: 1.24e-01] [lr: 8.41e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (413.0 ms)
+INFO:root:[25,     0] grad_stats: [3.22e-03 2.03e-04] (3.53e-05, 5.61e-03)
+INFO:root:[25,   390] loss: 7.422932e-02 masks: 20.3 17.3 [wd: 1.27e-01] [lr: 8.33e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.4 ms)
+INFO:root:[25,   390] grad_stats: [2.76e-03 2.49e-04] (4.15e-05, 4.95e-03)
+INFO:root:[25,   780] loss: 7.560298e-02 masks: 20.1 17.4 [wd: 1.30e-01] [lr: 8.24e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.6 ms)
+INFO:root:[25,   780] grad_stats: [1.08e-03 2.07e-04] (4.28e-05, 7.49e-03)
+INFO:root:avg. loss 7.56029799e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.072777
+INFO:root:Epoch 26
+INFO:root:[26,     0] loss: 8.363419e-02 masks: 16.0 20.0 [wd: 1.30e-01] [lr: 8.24e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (400.0 ms)
+INFO:root:[26,     0] grad_stats: [3.36e-03 1.96e-04] (3.30e-05, 4.57e-03)
+INFO:root:[26,   390] loss: 7.910114e-02 masks: 20.2 17.3 [wd: 1.33e-01] [lr: 8.16e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.7 ms)
+INFO:root:[26,   390] grad_stats: [3.43e-03 2.22e-04] (4.29e-05, 7.78e-03)
+INFO:root:[26,   780] loss: 8.024810e-02 masks: 20.2 17.3 [wd: 1.37e-01] [lr: 8.07e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.6 ms)
+INFO:root:[26,   780] grad_stats: [2.30e-03 2.21e-04] (3.99e-05, 7.77e-03)
+INFO:root:avg. loss 8.02480956e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.123390
+INFO:root:Epoch 27
+INFO:root:[27,     0] loss: 8.407100e-02 masks: 20.0 16.0 [wd: 1.37e-01] [lr: 8.07e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (417.7 ms)
+INFO:root:[27,     0] grad_stats: [2.30e-03 1.84e-04] (4.16e-05, 8.20e-03)
+INFO:root:[27,   390] loss: 8.311631e-02 masks: 20.4 17.4 [wd: 1.40e-01] [lr: 7.98e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.0 ms)
+INFO:root:[27,   390] grad_stats: [3.39e-03 2.05e-04] (4.71e-05, 7.51e-03)
+INFO:root:[27,   780] loss: 8.440016e-02 masks: 20.1 17.4 [wd: 1.43e-01] [lr: 7.89e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.5 ms)
+INFO:root:[27,   780] grad_stats: [8.00e-03 3.09e-04] (5.71e-05, 1.22e-02)
+INFO:root:avg. loss 8.44001565e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.903871
+INFO:root:Epoch 28
+INFO:root:[28,     0] loss: 8.050577e-02 masks: 25.0 16.0 [wd: 1.43e-01] [lr: 7.89e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (464.1 ms)
+INFO:root:[28,     0] grad_stats: [3.59e-03 3.78e-04] (5.30e-05, 6.84e-03)
+INFO:root:[28,   390] loss: 8.673744e-02 masks: 20.5 17.1 [wd: 1.47e-01] [lr: 7.79e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.8 ms)
+INFO:root:[28,   390] grad_stats: [4.72e-03 1.97e-04] (4.28e-05, 7.74e-03)
+INFO:root:[28,   780] loss: 8.756122e-02 masks: 20.5 17.1 [wd: 1.50e-01] [lr: 7.70e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.7 ms)
+INFO:root:[28,   780] grad_stats: [1.68e-03 3.64e-04] (7.09e-05, 1.02e-02)
+INFO:root:avg. loss 8.75612155e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.714569
+INFO:root:Epoch 29
+INFO:root:[29,     0] loss: 8.907153e-02 masks: 21.0 16.0 [wd: 1.50e-01] [lr: 7.70e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (425.1 ms)
+INFO:root:[29,     0] grad_stats: [4.25e-03 3.69e-04] (6.32e-05, 9.84e-03)
+INFO:root:[29,   390] loss: 8.990047e-02 masks: 20.9 17.1 [wd: 1.54e-01] [lr: 7.60e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (437.6 ms)
+INFO:root:[29,   390] grad_stats: [6.06e-03 2.57e-04] (5.05e-05, 1.21e-02)
+INFO:root:[29,   780] loss: 9.119602e-02 masks: 20.6 17.2 [wd: 1.57e-01] [lr: 7.50e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.6 ms)
+INFO:root:[29,   780] grad_stats: [2.01e-03 3.70e-04] (6.03e-05, 8.32e-03)
+INFO:root:avg. loss 9.11960204e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:54.110164
+INFO:root:Epoch 30
+INFO:root:[30,     0] loss: 1.034915e-01 masks: 12.0 20.0 [wd: 1.57e-01] [lr: 7.50e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (363.1 ms)
+INFO:root:[30,     0] grad_stats: [2.95e-03 3.46e-04] (6.67e-05, 1.40e-02)
+INFO:root:[30,   390] loss: 9.324322e-02 masks: 20.5 17.3 [wd: 1.61e-01] [lr: 7.40e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.7 ms)
+INFO:root:[30,   390] grad_stats: [1.98e-03 2.08e-04] (5.11e-05, 7.92e-03)
+INFO:root:[30,   780] loss: 9.406628e-02 masks: 20.4 17.2 [wd: 1.64e-01] [lr: 7.30e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.4 ms)
+INFO:root:[30,   780] grad_stats: [1.35e-03 2.65e-04] (4.81e-05, 6.86e-03)
+INFO:root:avg. loss 9.40662836e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.350338
+INFO:root:Epoch 31
+INFO:root:[31,     0] loss: 1.069685e-01 masks: 13.0 20.0 [wd: 1.64e-01] [lr: 7.30e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (376.0 ms)
+INFO:root:[31,     0] grad_stats: [1.80e-03 2.09e-04] (4.88e-05, 9.79e-03)
+INFO:root:[31,   390] loss: 9.700558e-02 masks: 20.2 17.4 [wd: 1.68e-01] [lr: 7.20e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.2 ms)
+INFO:root:[31,   390] grad_stats: [3.70e-03 3.73e-04] (7.40e-05, 9.58e-03)
+INFO:root:[31,   780] loss: 9.715665e-02 masks: 20.4 17.3 [wd: 1.72e-01] [lr: 7.10e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.7 ms)
+INFO:root:[31,   780] grad_stats: [2.97e-03 3.22e-04] (6.77e-05, 1.34e-02)
+INFO:root:avg. loss 9.71566459e-02
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.680969
+INFO:root:Epoch 32
+INFO:root:[32,     0] loss: 7.824069e-02 masks: 33.0 12.0 [wd: 1.72e-01] [lr: 7.10e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (504.2 ms)
+INFO:root:[32,     0] grad_stats: [1.89e-03 2.67e-04] (5.88e-05, 8.27e-03)
+INFO:root:[32,   390] loss: 9.999643e-02 masks: 19.9 17.4 [wd: 1.75e-01] [lr: 6.99e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.5 ms)
+INFO:root:[32,   390] grad_stats: [2.04e-03 2.61e-04] (5.84e-05, 1.32e-02)
+INFO:root:[32,   780] loss: 1.012801e-01 masks: 19.9 17.4 [wd: 1.79e-01] [lr: 6.89e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.5 ms)
+INFO:root:[32,   780] grad_stats: [1.47e-03 3.66e-04] (6.78e-05, 7.94e-03)
+INFO:root:avg. loss 1.01280069e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:49.379331
+INFO:root:Epoch 33
+INFO:root:[33,     0] loss: 9.697407e-02 masks: 20.0 16.0 [wd: 1.79e-01] [lr: 6.89e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (418.4 ms)
+INFO:root:[33,     0] grad_stats: [1.03e-03 2.36e-04] (5.72e-05, 7.68e-03)
+INFO:root:[33,   390] loss: 1.028521e-01 masks: 20.5 17.2 [wd: 1.83e-01] [lr: 6.78e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.0 ms)
+INFO:root:[33,   390] grad_stats: [1.39e-03 2.74e-04] (5.43e-05, 1.40e-02)
+INFO:root:[33,   780] loss: 1.036488e-01 masks: 20.5 17.2 [wd: 1.86e-01] [lr: 6.68e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.1 ms)
+INFO:root:[33,   780] grad_stats: [2.16e-03 3.05e-04] (7.26e-05, 1.04e-02)
+INFO:root:avg. loss 1.03648783e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:53.104029
+INFO:root:Epoch 34
+INFO:root:[34,     0] loss: 8.297469e-02 masks: 33.0 12.0 [wd: 1.86e-01] [lr: 6.68e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (503.7 ms)
+INFO:root:[34,     0] grad_stats: [1.89e-03 2.22e-04] (6.73e-05, 7.11e-03)
+INFO:root:[34,   390] loss: 1.065112e-01 masks: 20.2 17.3 [wd: 1.90e-01] [lr: 6.57e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.7 ms)
+INFO:root:[34,   390] grad_stats: [1.32e-03 3.05e-04] (7.56e-05, 6.92e-03)
+INFO:root:[34,   780] loss: 1.069209e-01 masks: 20.2 17.3 [wd: 1.94e-01] [lr: 6.46e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.1 ms)
+INFO:root:[34,   780] grad_stats: [1.32e-03 3.94e-04] (6.52e-05, 1.20e-02)
+INFO:root:avg. loss 1.06920923e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.377212
+INFO:root:Epoch 35
+INFO:root:[35,     0] loss: 1.031848e-01 masks: 24.0 16.0 [wd: 1.94e-01] [lr: 6.46e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (450.5 ms)
+INFO:root:[35,     0] grad_stats: [3.87e-03 4.10e-04] (7.81e-05, 1.85e-02)
+INFO:root:[35,   390] loss: 1.092082e-01 masks: 20.2 17.3 [wd: 1.97e-01] [lr: 6.35e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.8 ms)
+INFO:root:[35,   390] grad_stats: [2.28e-03 2.97e-04] (7.30e-05, 2.50e-02)
+INFO:root:[35,   780] loss: 1.097172e-01 masks: 20.2 17.3 [wd: 2.01e-01] [lr: 6.24e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.9 ms)
+INFO:root:[35,   780] grad_stats: [1.71e-03 3.48e-04] (6.67e-05, 1.20e-02)
+INFO:root:avg. loss 1.09717223e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.162556
+INFO:root:Epoch 36
+INFO:root:[36,     0] loss: 8.666089e-02 masks: 33.0 12.0 [wd: 2.01e-01] [lr: 6.24e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (504.2 ms)
+INFO:root:[36,     0] grad_stats: [1.34e-03 1.99e-04] (5.62e-05, 5.82e-03)
+INFO:root:[36,   390] loss: 1.125721e-01 masks: 19.9 17.4 [wd: 2.05e-01] [lr: 6.13e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.3 ms)
+INFO:root:[36,   390] grad_stats: [1.20e-03 2.96e-04] (6.75e-05, 8.92e-03)
+INFO:root:[36,   780] loss: 1.121454e-01 masks: 20.3 17.2 [wd: 2.09e-01] [lr: 6.02e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.6 ms)
+INFO:root:[36,   780] grad_stats: [7.48e-03 3.65e-04] (9.78e-05, 2.19e-02)
+INFO:root:avg. loss 1.12145438e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.938387
+INFO:root:Epoch 37
+INFO:root:[37,     0] loss: 9.999117e-02 masks: 25.0 16.0 [wd: 2.09e-01] [lr: 6.02e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (464.1 ms)
+INFO:root:[37,     0] grad_stats: [2.39e-03 2.66e-04] (8.84e-05, 1.49e-02)
+INFO:root:[37,   390] loss: 1.138958e-01 masks: 20.4 17.3 [wd: 2.12e-01] [lr: 5.91e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.1 ms)
+INFO:root:[37,   390] grad_stats: [2.26e-03 4.08e-04] (1.19e-04, 1.15e-02)
+INFO:root:[37,   780] loss: 1.146152e-01 masks: 20.2 17.3 [wd: 2.16e-01] [lr: 5.80e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.1 ms)
+INFO:root:[37,   780] grad_stats: [3.03e-03 3.73e-04] (9.83e-05, 1.01e-02)
+INFO:root:avg. loss 1.14615160e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.453956
+INFO:root:Epoch 38
+INFO:root:[38,     0] loss: 1.212512e-01 masks: 17.0 16.0 [wd: 2.16e-01] [lr: 5.80e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (391.7 ms)
+INFO:root:[38,     0] grad_stats: [2.81e-03 4.47e-04] (1.06e-04, 2.31e-02)
+INFO:root:[38,   390] loss: 1.165467e-01 masks: 20.0 17.4 [wd: 2.20e-01] [lr: 5.69e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.0 ms)
+INFO:root:[38,   390] grad_stats: [1.59e-03 4.09e-04] (9.84e-05, 2.10e-02)
+INFO:root:[38,   780] loss: 1.166877e-01 masks: 20.1 17.3 [wd: 2.24e-01] [lr: 5.57e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.1 ms)
+INFO:root:[38,   780] grad_stats: [1.56e-03 2.69e-04] (9.00e-05, 1.15e-02)
+INFO:root:avg. loss 1.16687714e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.598069
+INFO:root:Epoch 39
+INFO:root:[39,     0] loss: 1.267890e-01 masks: 15.0 20.0 [wd: 2.24e-01] [lr: 5.57e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (394.1 ms)
+INFO:root:[39,     0] grad_stats: [2.94e-03 2.87e-04] (9.94e-05, 1.36e-02)
+INFO:root:[39,   390] loss: 1.187552e-01 masks: 19.9 17.4 [wd: 2.28e-01] [lr: 5.46e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.9 ms)
+INFO:root:[39,   390] grad_stats: [8.81e-04 2.62e-04] (7.61e-05, 1.83e-02)
+INFO:root:[39,   780] loss: 1.187851e-01 masks: 20.2 17.3 [wd: 2.31e-01] [lr: 5.35e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.4 ms)
+INFO:root:[39,   780] grad_stats: [2.20e-03 3.34e-04] (1.02e-04, 1.47e-02)
+INFO:root:avg. loss 1.18785096e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.822357
+INFO:root:Epoch 40
+INFO:root:[40,     0] loss: 1.348141e-01 masks: 12.0 20.0 [wd: 2.31e-01] [lr: 5.35e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (362.6 ms)
+INFO:root:[40,     0] grad_stats: [1.85e-03 3.57e-04] (1.05e-04, 1.44e-02)
+INFO:root:[40,   390] loss: 1.209381e-01 masks: 19.8 17.6 [wd: 2.35e-01] [lr: 5.23e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.5 ms)
+INFO:root:[40,   390] grad_stats: [1.45e-03 3.48e-04] (1.14e-04, 2.12e-02)
+INFO:root:[40,   780] loss: 1.210932e-01 masks: 20.0 17.4 [wd: 2.39e-01] [lr: 5.12e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.1 ms)
+INFO:root:[40,   780] grad_stats: [1.41e-03 3.09e-04] (8.97e-05, 1.21e-02)
+INFO:root:avg. loss 1.21093236e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:49.828492
+INFO:root:Epoch 41
+INFO:root:[41,     0] loss: 1.197471e-01 masks: 20.0 16.0 [wd: 2.39e-01] [lr: 5.12e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (418.0 ms)
+INFO:root:[41,     0] grad_stats: [3.26e-03 3.69e-04] (1.00e-04, 2.24e-02)
+INFO:root:[41,   390] loss: 1.214166e-01 masks: 20.4 17.3 [wd: 2.43e-01] [lr: 5.00e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.9 ms)
+INFO:root:[41,   390] grad_stats: [1.40e-03 2.90e-04] (1.00e-04, 1.34e-02)
+INFO:root:[41,   780] loss: 1.216523e-01 masks: 20.5 17.3 [wd: 2.46e-01] [lr: 4.89e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.5 ms)
+INFO:root:[41,   780] grad_stats: [2.83e-03 3.48e-04] (1.15e-04, 1.22e-02)
+INFO:root:avg. loss 1.21652255e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:53.361018
+INFO:root:Epoch 42
+INFO:root:[42,     0] loss: 1.162190e-01 masks: 23.0 16.0 [wd: 2.46e-01] [lr: 4.89e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (444.0 ms)
+INFO:root:[42,     0] grad_stats: [3.88e-03 3.64e-04] (1.10e-04, 2.57e-02)
+INFO:root:[42,   390] loss: 1.240646e-01 masks: 19.8 17.4 [wd: 2.50e-01] [lr: 4.78e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (429.8 ms)
+INFO:root:[42,   390] grad_stats: [2.35e-03 3.21e-04] (1.09e-04, 2.49e-02)
+INFO:root:[42,   780] loss: 1.241654e-01 masks: 20.1 17.3 [wd: 2.54e-01] [lr: 4.66e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.0 ms)
+INFO:root:[42,   780] grad_stats: [1.63e-03 3.16e-04] (9.86e-05, 2.37e-02)
+INFO:root:avg. loss 1.24165437e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.673280
+INFO:root:Epoch 43
+INFO:root:[43,     0] loss: 1.278715e-01 masks: 17.0 16.0 [wd: 2.54e-01] [lr: 4.66e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (391.8 ms)
+INFO:root:[43,     0] grad_stats: [1.97e-03 3.92e-04] (1.09e-04, 1.12e-02)
+INFO:root:[43,   390] loss: 1.238990e-01 masks: 20.4 17.3 [wd: 2.57e-01] [lr: 4.55e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.4 ms)
+INFO:root:[43,   390] grad_stats: [1.42e-03 3.22e-04] (1.19e-04, 1.25e-02)
+INFO:root:[43,   780] loss: 1.241859e-01 masks: 20.5 17.3 [wd: 2.61e-01] [lr: 4.44e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.0 ms)
+INFO:root:[43,   780] grad_stats: [1.45e-03 3.59e-04] (1.30e-04, 1.20e-02)
+INFO:root:avg. loss 1.24185888e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.925983
+INFO:root:Epoch 44
+INFO:root:[44,     0] loss: 1.320834e-01 masks: 13.0 20.0 [wd: 2.61e-01] [lr: 4.44e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (375.0 ms)
+INFO:root:[44,     0] grad_stats: [1.45e-03 3.69e-04] (1.09e-04, 1.05e-02)
+INFO:root:[44,   390] loss: 1.258152e-01 masks: 20.3 17.2 [wd: 2.65e-01] [lr: 4.32e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.6 ms)
+INFO:root:[44,   390] grad_stats: [1.17e-03 3.61e-04] (1.23e-04, 1.53e-02)
+INFO:root:[44,   780] loss: 1.255224e-01 masks: 20.5 17.2 [wd: 2.68e-01] [lr: 4.21e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.3 ms)
+INFO:root:[44,   780] grad_stats: [1.72e-03 3.83e-04] (1.29e-04, 1.30e-02)
+INFO:root:avg. loss 1.25522399e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.378031
+INFO:root:Epoch 45
+INFO:root:[45,     0] loss: 1.421175e-01 masks: 12.0 20.0 [wd: 2.68e-01] [lr: 4.21e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (363.2 ms)
+INFO:root:[45,     0] grad_stats: [1.10e-03 3.41e-04] (1.10e-04, 1.33e-02)
+INFO:root:[45,   390] loss: 1.274866e-01 masks: 20.0 17.4 [wd: 2.72e-01] [lr: 4.10e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.5 ms)
+INFO:root:[45,   390] grad_stats: [1.60e-03 3.13e-04] (1.03e-04, 1.22e-02)
+INFO:root:[45,   780] loss: 1.272339e-01 masks: 20.2 17.2 [wd: 2.76e-01] [lr: 3.99e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.4 ms)
+INFO:root:[45,   780] grad_stats: [1.50e-03 3.84e-04] (1.09e-04, 1.19e-02)
+INFO:root:avg. loss 1.27233887e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.852153
+INFO:root:Epoch 46
+INFO:root:[46,     0] loss: 1.276595e-01 masks: 20.0 16.0 [wd: 2.76e-01] [lr: 3.99e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (418.0 ms)
+INFO:root:[46,     0] grad_stats: [2.46e-03 3.89e-04] (1.35e-04, 1.30e-02)
+INFO:root:[46,   390] loss: 1.274500e-01 masks: 20.5 17.2 [wd: 2.79e-01] [lr: 3.88e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.7 ms)
+INFO:root:[46,   390] grad_stats: [1.20e-03 3.37e-04] (1.08e-04, 1.48e-02)
+INFO:root:[46,   780] loss: 1.275742e-01 masks: 20.5 17.2 [wd: 2.83e-01] [lr: 3.77e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.8 ms)
+INFO:root:[46,   780] grad_stats: [1.03e-03 4.14e-04] (1.26e-04, 2.21e-02)
+INFO:root:avg. loss 1.27574179e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.705656
+INFO:root:Epoch 47
+INFO:root:[47,     0] loss: 1.324643e-01 masks: 20.0 16.0 [wd: 2.83e-01] [lr: 3.77e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (417.3 ms)
+INFO:root:[47,     0] grad_stats: [1.94e-03 4.36e-04] (1.47e-04, 2.51e-02)
+INFO:root:[47,   390] loss: 1.280578e-01 masks: 20.5 17.1 [wd: 2.86e-01] [lr: 3.66e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.5 ms)
+INFO:root:[47,   390] grad_stats: [1.20e-03 4.70e-04] (1.48e-04, 2.78e-02)
+INFO:root:[47,   780] loss: 1.287437e-01 masks: 20.4 17.2 [wd: 2.90e-01] [lr: 3.55e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.9 ms)
+INFO:root:[47,   780] grad_stats: [2.49e-03 3.50e-04] (1.16e-04, 2.08e-02)
+INFO:root:avg. loss 1.28743680e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.966919
+INFO:root:Epoch 48
+INFO:root:[48,     0] loss: 1.188204e-01 masks: 21.0 16.0 [wd: 2.90e-01] [lr: 3.55e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (424.0 ms)
+INFO:root:[48,     0] grad_stats: [9.33e-04 4.35e-04] (1.21e-04, 2.87e-02)
+INFO:root:[48,   390] loss: 1.291011e-01 masks: 20.4 17.3 [wd: 2.93e-01] [lr: 3.44e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.1 ms)
+INFO:root:[48,   390] grad_stats: [1.90e-03 3.42e-04] (1.25e-04, 2.82e-02)
+INFO:root:[48,   780] loss: 1.292343e-01 masks: 20.4 17.3 [wd: 2.97e-01] [lr: 3.33e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.5 ms)
+INFO:root:[48,   780] grad_stats: [1.31e-03 4.21e-04] (1.24e-04, 1.23e-02)
+INFO:root:avg. loss 1.29234321e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.685881
+INFO:root:Epoch 49
+INFO:root:[49,     0] loss: 1.277718e-01 masks: 21.0 16.0 [wd: 2.97e-01] [lr: 3.33e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (424.2 ms)
+INFO:root:[49,     0] grad_stats: [1.31e-03 4.73e-04] (1.49e-04, 1.24e-02)
+INFO:root:[49,   390] loss: 1.304637e-01 masks: 19.9 17.4 [wd: 3.00e-01] [lr: 3.23e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.7 ms)
+INFO:root:[49,   390] grad_stats: [2.31e-03 4.29e-04] (1.39e-04, 1.87e-02)
+INFO:root:[49,   780] loss: 1.303304e-01 masks: 20.1 17.4 [wd: 3.03e-01] [lr: 3.12e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.0 ms)
+INFO:root:[49,   780] grad_stats: [1.22e-03 4.81e-04] (1.26e-04, 3.14e-02)
+INFO:root:avg. loss 1.30330435e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.417647
+INFO:root:Epoch 50
+INFO:root:[50,     0] loss: 1.338066e-01 masks: 17.0 20.0 [wd: 3.03e-01] [lr: 3.12e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (411.7 ms)
+INFO:root:[50,     0] grad_stats: [2.16e-03 3.93e-04] (1.35e-04, 1.50e-02)
+INFO:root:[50,   390] loss: 1.305323e-01 masks: 20.3 17.2 [wd: 3.07e-01] [lr: 3.01e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.9 ms)
+INFO:root:[50,   390] grad_stats: [2.67e-03 4.43e-04] (1.18e-04, 1.67e-02)
+INFO:root:[50,   780] loss: 1.306861e-01 masks: 20.2 17.3 [wd: 3.10e-01] [lr: 2.91e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.1 ms)
+INFO:root:[50,   780] grad_stats: [1.26e-03 4.12e-04] (1.40e-04, 2.40e-02)
+INFO:root:avg. loss 1.30686111e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.646895
+INFO:root:Epoch 51
+INFO:root:[51,     0] loss: 1.353896e-01 masks: 17.0 20.0 [wd: 3.10e-01] [lr: 2.91e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (412.1 ms)
+INFO:root:[51,     0] grad_stats: [1.52e-03 3.87e-04] (1.36e-04, 1.66e-02)
+INFO:root:[51,   390] loss: 1.309611e-01 masks: 20.2 17.2 [wd: 3.13e-01] [lr: 2.81e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.1 ms)
+INFO:root:[51,   390] grad_stats: [2.54e-03 4.72e-04] (1.41e-04, 1.52e-02)
+INFO:root:[51,   780] loss: 1.307851e-01 masks: 20.3 17.2 [wd: 3.16e-01] [lr: 2.71e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.2 ms)
+INFO:root:[51,   780] grad_stats: [1.63e-03 5.22e-04] (1.65e-04, 3.72e-02)
+INFO:root:avg. loss 1.30785145e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.414445
+INFO:root:Epoch 52
+INFO:root:[52,     0] loss: 1.559768e-01 masks: 11.0 20.0 [wd: 3.16e-01] [lr: 2.71e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (356.2 ms)
+INFO:root:[52,     0] grad_stats: [1.36e-03 5.24e-04] (1.91e-04, 3.66e-02)
+INFO:root:[52,   390] loss: 1.314906e-01 masks: 20.0 17.4 [wd: 3.20e-01] [lr: 2.61e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.0 ms)
+INFO:root:[52,   390] grad_stats: [1.06e-03 4.22e-04] (1.47e-04, 1.48e-02)
+INFO:root:[52,   780] loss: 1.315752e-01 masks: 20.1 17.4 [wd: 3.23e-01] [lr: 2.51e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.7 ms)
+INFO:root:[52,   780] grad_stats: [3.20e-03 6.87e-04] (1.98e-04, 2.31e-02)
+INFO:root:avg. loss 1.31575166e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.251359
+INFO:root:Epoch 53
+INFO:root:[53,     0] loss: 1.356164e-01 masks: 18.0 16.0 [wd: 3.23e-01] [lr: 2.51e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (401.6 ms)
+INFO:root:[53,     0] grad_stats: [3.22e-03 5.63e-04] (1.66e-04, 2.32e-02)
+INFO:root:[53,   390] loss: 1.311042e-01 masks: 20.4 17.2 [wd: 3.26e-01] [lr: 2.41e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.8 ms)
+INFO:root:[53,   390] grad_stats: [3.08e-03 5.98e-04] (1.90e-04, 2.00e-02)
+INFO:root:[53,   780] loss: 1.314349e-01 masks: 20.3 17.3 [wd: 3.29e-01] [lr: 2.31e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.3 ms)
+INFO:root:[53,   780] grad_stats: [2.49e-03 5.56e-04] (1.51e-04, 2.88e-02)
+INFO:root:avg. loss 1.31434863e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.604483
+INFO:root:Epoch 54
+INFO:root:[54,     0] loss: 1.360277e-01 masks: 16.0 20.0 [wd: 3.29e-01] [lr: 2.31e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (398.6 ms)
+INFO:root:[54,     0] grad_stats: [1.80e-03 6.28e-04] (2.22e-04, 3.52e-02)
+INFO:root:[54,   390] loss: 1.329132e-01 masks: 19.7 17.6 [wd: 3.32e-01] [lr: 2.22e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (429.6 ms)
+INFO:root:[54,   390] grad_stats: [1.45e-03 4.77e-04] (1.67e-04, 2.25e-02)
+INFO:root:[54,   780] loss: 1.323048e-01 masks: 19.9 17.4 [wd: 3.35e-01] [lr: 2.12e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.1 ms)
+INFO:root:[54,   780] grad_stats: [1.19e-03 5.23e-04] (1.84e-04, 1.97e-02)
+INFO:root:avg. loss 1.32304771e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:49.877883
+INFO:root:Epoch 55
+INFO:root:[55,     0] loss: 1.241455e-01 masks: 20.0 16.0 [wd: 3.35e-01] [lr: 2.12e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (417.3 ms)
+INFO:root:[55,     0] grad_stats: [1.21e-03 5.73e-04] (1.60e-04, 1.98e-02)
+INFO:root:[55,   390] loss: 1.326202e-01 masks: 19.9 17.5 [wd: 3.38e-01] [lr: 2.03e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.8 ms)
+INFO:root:[55,   390] grad_stats: [2.19e-03 4.82e-04] (1.41e-04, 2.43e-02)
+INFO:root:[55,   780] loss: 1.324093e-01 masks: 20.0 17.4 [wd: 3.40e-01] [lr: 1.94e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.7 ms)
+INFO:root:[55,   780] grad_stats: [1.24e-03 4.97e-04] (1.65e-04, 3.06e-02)
+INFO:root:avg. loss 1.32409297e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.341707
+INFO:root:Epoch 56
+INFO:root:[56,     0] loss: 1.411309e-01 masks: 15.0 20.0 [wd: 3.40e-01] [lr: 1.94e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (393.9 ms)
+INFO:root:[56,     0] grad_stats: [1.16e-03 4.69e-04] (1.50e-04, 1.54e-02)
+INFO:root:[56,   390] loss: 1.303099e-01 masks: 21.1 16.9 [wd: 3.43e-01] [lr: 1.85e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (437.8 ms)
+INFO:root:[56,   390] grad_stats: [1.63e-03 5.14e-04] (1.67e-04, 1.91e-02)
+INFO:root:[56,   780] loss: 1.310981e-01 masks: 20.7 17.1 [wd: 3.46e-01] [lr: 1.77e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.5 ms)
+INFO:root:[56,   780] grad_stats: [3.25e-03 5.98e-04] (1.77e-04, 2.97e-02)
+INFO:root:avg. loss 1.31098080e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:53.374899
+INFO:root:Epoch 57
+INFO:root:[57,     0] loss: 1.449932e-01 masks: 13.0 20.0 [wd: 3.46e-01] [lr: 1.77e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (374.1 ms)
+INFO:root:[57,     0] grad_stats: [1.66e-03 6.67e-04] (1.89e-04, 3.43e-02)
+INFO:root:[57,   390] loss: 1.313433e-01 masks: 20.5 17.2 [wd: 3.49e-01] [lr: 1.68e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.3 ms)
+INFO:root:[57,   390] grad_stats: [1.34e-03 5.21e-04] (1.60e-04, 2.68e-02)
+INFO:root:[57,   780] loss: 1.315861e-01 masks: 20.3 17.3 [wd: 3.51e-01] [lr: 1.60e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.9 ms)
+INFO:root:[57,   780] grad_stats: [1.21e-03 5.89e-04] (1.72e-04, 2.71e-02)
+INFO:root:avg. loss 1.31586119e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.175947
+INFO:root:Epoch 58
+INFO:root:[58,     0] loss: 1.312177e-01 masks: 20.0 16.0 [wd: 3.51e-01] [lr: 1.60e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (417.4 ms)
+INFO:root:[58,     0] grad_stats: [1.84e-03 5.93e-04] (1.68e-04, 2.35e-02)
+INFO:root:[58,   390] loss: 1.319258e-01 masks: 20.3 17.3 [wd: 3.54e-01] [lr: 1.51e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.5 ms)
+INFO:root:[58,   390] grad_stats: [1.13e-03 5.04e-04] (1.58e-04, 2.42e-02)
+INFO:root:[58,   780] loss: 1.317054e-01 masks: 20.4 17.2 [wd: 3.56e-01] [lr: 1.43e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.3 ms)
+INFO:root:[58,   780] grad_stats: [9.39e-04 5.87e-04] (1.88e-04, 1.42e-02)
+INFO:root:avg. loss 1.31705388e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.518654
+INFO:root:Epoch 59
+INFO:root:[59,     0] loss: 1.440444e-01 masks: 13.0 20.0 [wd: 3.56e-01] [lr: 1.43e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (374.8 ms)
+INFO:root:[59,     0] grad_stats: [1.44e-03 6.93e-04] (2.10e-04, 2.04e-02)
+INFO:root:[59,   390] loss: 1.323683e-01 masks: 19.9 17.5 [wd: 3.59e-01] [lr: 1.35e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.1 ms)
+INFO:root:[59,   390] grad_stats: [1.53e-03 5.17e-04] (1.59e-04, 2.06e-02)
+INFO:root:[59,   780] loss: 1.321567e-01 masks: 20.1 17.4 [wd: 3.61e-01] [lr: 1.28e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.7 ms)
+INFO:root:[59,   780] grad_stats: [1.58e-03 7.90e-04] (2.16e-04, 2.85e-02)
+INFO:root:avg. loss 1.32156658e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.117792
+INFO:root:Epoch 60
+INFO:root:[60,     0] loss: 1.201260e-01 masks: 27.0 16.0 [wd: 3.61e-01] [lr: 1.28e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (475.8 ms)
+INFO:root:[60,     0] grad_stats: [1.19e-03 5.19e-04] (1.86e-04, 3.44e-02)
+INFO:root:[60,   390] loss: 1.324029e-01 masks: 20.0 17.4 [wd: 3.63e-01] [lr: 1.20e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.7 ms)
+INFO:root:[60,   390] grad_stats: [2.10e-03 6.71e-04] (2.16e-04, 2.69e-02)
+INFO:root:[60,   780] loss: 1.320458e-01 masks: 20.1 17.3 [wd: 3.66e-01] [lr: 1.13e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.8 ms)
+INFO:root:[60,   780] grad_stats: [1.76e-03 7.12e-04] (2.20e-04, 2.61e-02)
+INFO:root:avg. loss 1.32045784e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.412990
+INFO:root:Epoch 61
+INFO:root:[61,     0] loss: 1.388426e-01 masks: 17.0 16.0 [wd: 3.66e-01] [lr: 1.13e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (391.4 ms)
+INFO:root:[61,     0] grad_stats: [1.17e-03 6.24e-04] (2.29e-04, 2.72e-02)
+INFO:root:[61,   390] loss: 1.311987e-01 masks: 20.4 17.2 [wd: 3.68e-01] [lr: 1.06e-04] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.7 ms)
+INFO:root:[61,   390] grad_stats: [1.60e-03 5.02e-04] (1.84e-04, 3.14e-02)
+INFO:root:[61,   780] loss: 1.317549e-01 masks: 20.2 17.3 [wd: 3.70e-01] [lr: 9.91e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.9 ms)
+INFO:root:[61,   780] grad_stats: [1.51e-03 6.27e-04] (2.04e-04, 2.71e-02)
+INFO:root:avg. loss 1.31754925e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.493930
+INFO:root:Epoch 62
+INFO:root:[62,     0] loss: 1.369720e-01 masks: 21.0 16.0 [wd: 3.70e-01] [lr: 9.91e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (424.7 ms)
+INFO:root:[62,     0] grad_stats: [1.34e-03 7.17e-04] (2.27e-04, 4.92e-02)
+INFO:root:[62,   390] loss: 1.304080e-01 masks: 20.8 17.2 [wd: 3.72e-01] [lr: 9.24e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (437.0 ms)
+INFO:root:[62,   390] grad_stats: [1.13e-03 6.45e-04] (2.35e-04, 2.33e-02)
+INFO:root:[62,   780] loss: 1.306723e-01 masks: 20.7 17.2 [wd: 3.74e-01] [lr: 8.60e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (435.9 ms)
+INFO:root:[62,   780] grad_stats: [1.69e-03 7.15e-04] (2.28e-04, 2.74e-02)
+INFO:root:avg. loss 1.30672251e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:53.564935
+INFO:root:Epoch 63
+INFO:root:[63,     0] loss: 1.196733e-01 masks: 25.0 16.0 [wd: 3.74e-01] [lr: 8.60e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (463.3 ms)
+INFO:root:[63,     0] grad_stats: [1.82e-03 6.25e-04] (1.97e-04, 1.83e-02)
+INFO:root:[63,   390] loss: 1.315425e-01 masks: 20.2 17.3 [wd: 3.76e-01] [lr: 7.97e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.1 ms)
+INFO:root:[63,   390] grad_stats: [1.97e-03 1.15e-03] (2.72e-04, 2.16e-02)
+INFO:root:[63,   780] loss: 1.310143e-01 masks: 20.4 17.2 [wd: 3.78e-01] [lr: 7.37e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.2 ms)
+INFO:root:[63,   780] grad_stats: [1.63e-03 6.84e-04] (2.38e-04, 2.06e-02)
+INFO:root:avg. loss 1.31014270e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.529067
+INFO:root:Epoch 64
+INFO:root:[64,     0] loss: 1.241952e-01 masks: 23.0 16.0 [wd: 3.78e-01] [lr: 7.37e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (444.2 ms)
+INFO:root:[64,     0] grad_stats: [1.18e-03 6.58e-04] (2.56e-04, 2.28e-02)
+INFO:root:[64,   390] loss: 1.302998e-01 masks: 20.6 17.1 [wd: 3.80e-01] [lr: 6.79e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.6 ms)
+INFO:root:[64,   390] grad_stats: [1.18e-03 7.16e-04] (2.04e-04, 2.33e-02)
+INFO:root:[64,   780] loss: 1.307824e-01 masks: 20.4 17.2 [wd: 3.81e-01] [lr: 6.23e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.1 ms)
+INFO:root:[64,   780] grad_stats: [1.39e-03 5.85e-04] (2.51e-04, 1.80e-02)
+INFO:root:avg. loss 1.30782354e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.283377
+INFO:root:Epoch 65
+INFO:root:[65,     0] loss: 1.337267e-01 masks: 17.0 16.0 [wd: 3.81e-01] [lr: 6.23e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (390.9 ms)
+INFO:root:[65,     0] grad_stats: [1.30e-03 7.67e-04] (2.37e-04, 2.31e-02)
+INFO:root:[65,   390] loss: 1.315689e-01 masks: 19.9 17.5 [wd: 3.83e-01] [lr: 5.70e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.4 ms)
+INFO:root:[65,   390] grad_stats: [1.81e-03 5.37e-04] (1.97e-04, 2.15e-02)
+INFO:root:[65,   780] loss: 1.308428e-01 masks: 20.1 17.4 [wd: 3.84e-01] [lr: 5.19e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.0 ms)
+INFO:root:[65,   780] grad_stats: [1.59e-03 5.69e-04] (1.97e-04, 2.86e-02)
+INFO:root:avg. loss 1.30842842e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.522739
+INFO:root:Epoch 66
+INFO:root:[66,     0] loss: 1.392715e-01 masks: 17.0 20.0 [wd: 3.84e-01] [lr: 5.19e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (411.3 ms)
+INFO:root:[66,     0] grad_stats: [2.13e-03 6.13e-04] (2.28e-04, 2.09e-02)
+INFO:root:[66,   390] loss: 1.296060e-01 masks: 20.4 17.1 [wd: 3.86e-01] [lr: 4.70e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.1 ms)
+INFO:root:[66,   390] grad_stats: [1.14e-03 6.01e-04] (2.35e-04, 2.29e-02)
+INFO:root:[66,   780] loss: 1.305280e-01 masks: 20.1 17.3 [wd: 3.87e-01] [lr: 4.24e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.1 ms)
+INFO:root:[66,   780] grad_stats: [1.55e-03 7.47e-04] (3.03e-04, 1.99e-02)
+INFO:root:avg. loss 1.30527990e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:49.896503
+INFO:root:Epoch 67
+INFO:root:[67,     0] loss: 1.300948e-01 masks: 23.0 16.0 [wd: 3.87e-01] [lr: 4.23e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (443.6 ms)
+INFO:root:[67,     0] grad_stats: [1.94e-03 5.77e-04] (2.41e-04, 3.42e-02)
+INFO:root:[67,   390] loss: 1.300068e-01 masks: 20.3 17.2 [wd: 3.89e-01] [lr: 3.79e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.3 ms)
+INFO:root:[67,   390] grad_stats: [1.31e-03 5.89e-04] (2.24e-04, 3.02e-02)
+INFO:root:[67,   780] loss: 1.300126e-01 masks: 20.2 17.3 [wd: 3.90e-01] [lr: 3.38e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.1 ms)
+INFO:root:[67,   780] grad_stats: [2.41e-03 7.94e-04] (2.70e-04, 3.20e-02)
+INFO:root:avg. loss 1.30012629e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.543595
+INFO:root:Epoch 68
+INFO:root:[68,     0] loss: 1.406497e-01 masks: 11.0 20.0 [wd: 3.90e-01] [lr: 3.38e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (355.9 ms)
+INFO:root:[68,     0] grad_stats: [1.45e-03 7.88e-04] (3.63e-04, 2.37e-02)
+INFO:root:[68,   390] loss: 1.305229e-01 masks: 19.8 17.4 [wd: 3.91e-01] [lr: 2.98e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (428.5 ms)
+INFO:root:[68,   390] grad_stats: [1.80e-03 8.51e-04] (2.72e-04, 3.13e-02)
+INFO:root:[68,   780] loss: 1.297550e-01 masks: 20.2 17.2 [wd: 3.92e-01] [lr: 2.62e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.5 ms)
+INFO:root:[68,   780] grad_stats: [1.43e-03 6.30e-04] (2.57e-04, 2.21e-02)
+INFO:root:avg. loss 1.29755033e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.113003
+INFO:root:Epoch 69
+INFO:root:[69,     0] loss: 1.402956e-01 masks: 16.0 20.0 [wd: 3.92e-01] [lr: 2.61e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (399.5 ms)
+INFO:root:[69,     0] grad_stats: [1.68e-03 7.15e-04] (2.85e-04, 2.18e-02)
+INFO:root:[69,   390] loss: 1.299727e-01 masks: 20.0 17.4 [wd: 3.93e-01] [lr: 2.27e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (430.8 ms)
+INFO:root:[69,   390] grad_stats: [1.63e-03 6.45e-04] (2.62e-04, 1.96e-02)
+INFO:root:[69,   780] loss: 1.293508e-01 masks: 20.2 17.3 [wd: 3.94e-01] [lr: 1.95e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.6 ms)
+INFO:root:[69,   780] grad_stats: [1.25e-03 8.40e-04] (2.95e-04, 3.45e-02)
+INFO:root:avg. loss 1.29350849e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.800740
+INFO:root:Epoch 70
+INFO:root:[70,     0] loss: 1.182424e-01 masks: 25.0 16.0 [wd: 3.94e-01] [lr: 1.95e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (462.9 ms)
+INFO:root:[70,     0] grad_stats: [1.07e-03 5.65e-04] (2.40e-04, 2.07e-02)
+INFO:root:[70,   390] loss: 1.290336e-01 masks: 20.3 17.2 [wd: 3.95e-01] [lr: 1.66e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.5 ms)
+INFO:root:[70,   390] grad_stats: [1.16e-03 5.14e-04] (2.16e-04, 2.89e-02)
+INFO:root:[70,   780] loss: 1.284347e-01 masks: 20.5 17.2 [wd: 3.96e-01] [lr: 1.39e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.7 ms)
+INFO:root:[70,   780] grad_stats: [1.34e-03 6.65e-04] (2.58e-04, 2.18e-02)
+INFO:root:avg. loss 1.28434710e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.964121
+INFO:root:Epoch 71
+INFO:root:[71,     0] loss: 1.383129e-01 masks: 18.0 20.0 [wd: 3.96e-01] [lr: 1.39e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (419.3 ms)
+INFO:root:[71,     0] grad_stats: [1.99e-03 9.41e-04] (3.33e-04, 3.52e-02)
+INFO:root:[71,   390] loss: 1.287349e-01 masks: 20.1 17.3 [wd: 3.97e-01] [lr: 1.14e-05] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.1 ms)
+INFO:root:[71,   390] grad_stats: [1.20e-03 6.05e-04] (2.53e-04, 2.49e-02)
+INFO:root:[71,   780] loss: 1.282820e-01 masks: 20.4 17.2 [wd: 3.97e-01] [lr: 9.26e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.1 ms)
+INFO:root:[71,   780] grad_stats: [1.47e-03 6.63e-04] (2.98e-04, 2.53e-02)
+INFO:root:avg. loss 1.28282034e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.474688
+INFO:root:Epoch 72
+INFO:root:[72,     0] loss: 1.229100e-01 masks: 23.0 16.0 [wd: 3.97e-01] [lr: 9.26e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (443.8 ms)
+INFO:root:[72,     0] grad_stats: [1.03e-03 6.73e-04] (2.47e-04, 2.27e-02)
+INFO:root:[72,   390] loss: 1.280703e-01 masks: 20.4 17.3 [wd: 3.98e-01] [lr: 7.33e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.6 ms)
+INFO:root:[72,   390] grad_stats: [1.36e-03 6.60e-04] (2.33e-04, 2.52e-02)
+INFO:root:[72,   780] loss: 1.275799e-01 masks: 20.6 17.1 [wd: 3.99e-01] [lr: 5.65e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (434.6 ms)
+INFO:root:[72,   780] grad_stats: [1.37e-03 5.68e-04] (2.48e-04, 3.28e-02)
+INFO:root:avg. loss 1.27579884e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:52.462727
+INFO:root:Epoch 73
+INFO:root:[73,     0] loss: 1.358251e-01 masks: 17.0 16.0 [wd: 3.99e-01] [lr: 5.65e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (390.8 ms)
+INFO:root:[73,     0] grad_stats: [1.69e-03 1.02e-03] (3.52e-04, 3.75e-02)
+INFO:root:[73,   390] loss: 1.274404e-01 masks: 20.4 17.1 [wd: 3.99e-01] [lr: 4.23e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.7 ms)
+INFO:root:[73,   390] grad_stats: [2.15e-03 8.51e-04] (3.99e-04, 3.54e-02)
+INFO:root:[73,   780] loss: 1.276052e-01 masks: 20.4 17.2 [wd: 3.99e-01] [lr: 3.07e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (433.2 ms)
+INFO:root:[73,   780] grad_stats: [1.22e-03 8.77e-04] (3.34e-04, 2.70e-02)
+INFO:root:avg. loss 1.27605192e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.644344
+INFO:root:Epoch 74
+INFO:root:[74,     0] loss: 1.276349e-01 masks: 19.0 20.0 [wd: 3.99e-01] [lr: 3.07e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.8 ms)
+INFO:root:[74,     0] grad_stats: [1.35e-03 6.29e-04] (2.73e-04, 2.67e-02)
+INFO:root:[74,   390] loss: 1.278930e-01 masks: 20.2 17.2 [wd: 4.00e-01] [lr: 2.16e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.8 ms)
+INFO:root:[74,   390] grad_stats: [1.42e-03 7.94e-04] (2.90e-04, 2.54e-02)
+INFO:root:[74,   780] loss: 1.279303e-01 masks: 20.1 17.3 [wd: 4.00e-01] [lr: 1.52e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (431.4 ms)
+INFO:root:[74,   780] grad_stats: [1.53e-03 6.61e-04] (2.82e-04, 3.26e-02)
+INFO:root:avg. loss 1.27930317e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:50.087090
+INFO:root:Epoch 75
+INFO:root:[75,     0] loss: 1.313409e-01 masks: 16.0 20.0 [wd: 4.00e-01] [lr: 1.52e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (398.7 ms)
+INFO:root:[75,     0] grad_stats: [1.38e-03 6.86e-04] (2.87e-04, 2.86e-02)
+INFO:root:[75,   390] loss: 1.277166e-01 masks: 20.4 17.2 [wd: 4.00e-01] [lr: 1.13e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.8 ms)
+INFO:root:[75,   390] grad_stats: [2.63e-03 7.64e-04] (3.31e-04, 3.28e-02)
+INFO:root:[75,   780] loss: 1.277564e-01 masks: 20.3 17.3 [wd: 4.00e-01] [lr: 1.00e-06] [mem: 1.33e+04] cross mse: 0.000000e+00 loss itself: 0.000000e+00 (432.8 ms)
+INFO:root:[75,   780] grad_stats: [1.59e-03 6.90e-04] (2.62e-04, 2.78e-02)
+INFO:root:avg. loss 1.27756408e-01
+INFO:root:avg. cross sim matrix mse 0.00000000e+00 , avg. loss itself 0.000000e+00
+INFO:root:time taken for epoch 0:05:51.045953
+INFO:root:Total pretraining time 7:19:12.719163

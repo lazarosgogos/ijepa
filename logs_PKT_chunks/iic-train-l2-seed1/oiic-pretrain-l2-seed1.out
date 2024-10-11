@@ -1,0 +1,48 @@
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+Epoch 1
+[1,     0] loss: 4.869237e-01 masks: 23.0 16.0 [wd: 4.00e-02] [lr: 2.00e-04] [mem: 5.33e+03] loss l2: 0.000000e+00 loss pkt: 0.000000e+00 cross mse: 0.000000e+00 (999.7 ms)
+[1,     0] grad_stats: [3.18e-02 1.58e-02] (1.56e-02, 3.98e-02)
+[1,    58] loss: 1.796100e-01 masks: 21.6 17.4 [wd: 4.00e-02] [lr: 2.10e-04] [mem: 7.12e+03] loss l2: 0.000000e+00 loss pkt: 0.000000e+00 cross mse: 0.000000e+00 (440.9 ms)
+[1,    58] grad_stats: [4.02e-02 1.81e-03] (1.81e-03, 6.51e-02)
+avg. loss 1.68455742e-01
+avg. loss L2: 0.000000e+00 avg. loss PKT 0.000000e+00 avg. cross sim matrix mse; 0.000000e+00 
+time taken for epoch 0:01:10.740110
+Epoch 2
+[2,     0] loss: 1.666887e-01 masks: 21.0 16.0 [wd: 4.00e-02] [lr: 2.20e-04] [mem: 7.37e+03] loss l2: 0.000000e+00 loss pkt: 0.000000e+00 cross mse: 0.000000e+00 (456.5 ms)
+[2,     0] grad_stats: [5.60e-02 1.85e-03] (1.85e-03, 7.10e-02)
+[2,    58] loss: 1.473345e-01 masks: 22.3 17.4 [wd: 4.00e-02] [lr: 2.30e-04] [mem: 7.37e+03] loss l2: 0.000000e+00 loss pkt: 0.000000e+00 cross mse: 0.000000e+00 (438.7 ms)
+[2,    58] grad_stats: [1.04e-01 2.52e-03] (2.52e-03, 1.73e-01)
+avg. loss 1.43270493e-01
+avg. loss L2: 0.000000e+00 avg. loss PKT 0.000000e+00 avg. cross sim matrix mse; 0.000000e+00 
+time taken for epoch 0:01:24.543554
+Epoch 3

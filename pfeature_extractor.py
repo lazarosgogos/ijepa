@@ -149,7 +149,7 @@ class LinearProbe():
         os.makedirs(_classifiers_dir, exist_ok=True)
         
         logger.info(f'Directory {self.save_path} for saving the classifiers is now present')
-        self.log_file = os.path.join(self.log_dir, log_file)
+        self.log_file = os.path.join(self.log_dir, self.log_file)
         self.train_features_file_path = os.path.join(self.log_dir, 'train_features_and_labels.pt')
         self.val_features_file_path = os.path.join(self.log_dir, 'val_features_and_labels.pt')
 
@@ -410,11 +410,6 @@ def process_main(fname, devices=['cuda:0']):
         logger.info('\n')
 
 
-    # Για καθε αρχειο, εκτυπωσε σε αλλο output file τα αποτελεσματα
-    # ωστε μετα να μπορεις να κανεις την αντιπαραβολη.
-    # ή! μαζεψε τις καλυτερες επιδοσεις, αποθηκευσε τες σε ενα dictionary/output file
-    # και επιστρεψε τες για plotting. Η δευτερη εναλλακτικη δεν αφήνει χώρο για μελλοντικές χρήσεις
-    # και ίσως χρειαστεί να τρέξεις τα tests => πολυς χρονος χαμένος !
 
 if __name__ == '__main__':
     """ No support for distributed training as of yet.

@@ -377,7 +377,7 @@ def main(args, resume_preempt=False):
                         loss = AllReduce.apply(loss_pkt+mse)
                     else: 
                         loss = AllReduce.apply(final_loss)
-                        mse = None
+                        mse = 0
                     assert not np.isnan(loss.detach().cpu()), 'NaN loss, abort'
                     return loss, loss_pkt, mse
 

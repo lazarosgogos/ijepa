@@ -149,7 +149,7 @@ class LinearProbe():
         os.makedirs(_classifiers_dir, exist_ok=True)
         
         logger.info(f'Directory {self.save_path} for saving the classifiers is now present')
-        self.log_file = os.path.join(self.log_dir, log_file)
+        self.log_file = os.path.join(self.log_dir, self.log_file)
         self.train_features_file_path = os.path.join(self.log_dir, 'train_features_and_labels.pt')
         self.val_features_file_path = os.path.join(self.log_dir, 'val_features_and_labels.pt')
 

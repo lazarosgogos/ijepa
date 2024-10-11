@@ -7,14 +7,14 @@ data:
   batch_size: 128
   patch_size: 15
   probe_checkpoints: true
-  probe_prefix: jepa-iic-L2-PKT-chunks-scale10e-2-seed43
+  probe_prefix: jepa-iic-l2-seed43
 logging:
-  log_dir: logs_PKT_chunks/iic-train-L2-PKT-chunks-scale10e-2-seed43/
+  log_dir: logs_PKT_chunks/iic-train-l2-seed43/
   # pretrained_model_path: jepa_iic_l2-seed-43-latest.pth.tar # omit this, 1st try
-  save_path: classifiers/jepa-iic-L2-seed43-classifier-pretrained-vitb-normalized
+  save_path: classifiers/jepa-iic-L2-lr.10-seed43-classifier-pretrained-vitb-normalized
   checkpoint_freq: 1000
-  log_file: iic-stats-l2-pkt-chunks-scale10e-2-cls-norm-seed43.csv # the .csv file
-  eval_output: ocls-jepa-iic-l2-pkt-chunks-scale10e-2-cls-norm-seed43.out # the .out file
+  log_file: iic-stats-l2-lr.10-cls-norm-seed43.csv # the .csv file
+  eval_output: ocls-jepa-iic-l2-lr.10-cls-norm-seed43.out # the .out file
 optimization:
   lr: 0.001
   epochs: 200
@@ -22,4 +22,4 @@ optimization:
   use_normalization: true # use layer_norm and dropout layer
 meta:
   device: cuda:1
-message: "ViT-B backbone pretrained on L2+PKT chunks scaled 1.e-2 seed 43"
+message: "ViT-B backbone pretrained on L2 scaled 10e-1 seed 43"

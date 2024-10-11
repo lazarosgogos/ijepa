@@ -64,7 +64,7 @@ log_freq = 10
 
 # rng = np.random.Generator(np.random.PCG64()) 
 
-_GLOBAL_SEED = 1 # 
+_GLOBAL_SEED = 2 # 
 # seed is logged later on
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
@@ -194,8 +194,9 @@ def main(args, resume_preempt=False):
         loss_file_logger = CSVLogger(loss_file, 
                                     ('%d', 'epoch'),
                                     ('%e', 'loss'), 
+                                    ('%e', 'loss_L2'),
+                                    ('%e', 'loss_PKT'),
                                     ('%e', 'cross_mse'),
-                                    ('%e', 'loss_itself'),
                                     )
 
     # -- init model
@@ -329,6 +330,7 @@ def main(args, resume_preempt=False):
         time_meter = AverageMeter()
         mse_meter = AverageMeter()
         loss_pkt_meter = AverageMeter()
+        loss_l2_meter = AverageMeter()
 
         for itr, (udata, masks_enc, masks_pred) in enumerate(unsupervised_loader):
 
@@ -370,25 +372,27 @@ def main(args, resume_preempt=False):
                     # this should be fully functional, as proven by L2 
                     final_loss = which_loss.__dict__[loss_function](z,h, **kwargs)
 
-                    loss_pkt = 0
                     if isinstance(final_loss, tuple): # if more than one loss was returned
-                        loss_pkt = final_loss[0]
-                        mse = final_loss[1]
-                        loss = AllReduce.apply(loss_pkt+mse)
+                        loss_l2 = final_loss[0]
+                        loss_pkt = final_loss[1]
+                        mse = final_loss[2]
+                        loss = AllReduce.apply(loss_l2 + loss_pkt + mse)
                     else: 
                         loss = AllReduce.apply(final_loss)
+                        loss_l2 = 0
+                        loss_pkt = 0
                         mse = 0
                     assert not np.isnan(loss.detach().cpu()), 'NaN loss, abort'
-                    return loss, loss_pkt, mse
+                    return loss, loss_l2, loss_pkt, mse
 
                 # Step 1. Forward
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):
                     h = forward_target()
                     z = forward_context()
                     if not use_pkt_scheduler:
-                        loss, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale) # pkt scale default to 1
+                        loss, loss_l2, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale) # pkt scale default to 1
                     else: 
-                        loss, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha)
+                        loss, loss_l2, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha)
                     # gathered_losses = all_losses(z,h) # this contains all loss functions
 
                 #  Step 2. Backward & step
@@ -408,13 +412,14 @@ def main(args, resume_preempt=False):
                     for param_q, param_k in zip(encoder.parameters(), target_encoder.parameters()):
                         param_k.data.mul_(m).add_((1.-m) * param_q.detach().data)
 
-                return (float(loss), _new_lr, _new_wd, grad_stats, mse, loss_pkt) #, gathered_losses)
-            (loss, _new_lr, _new_wd, grad_stats, mse, loss_pkt), etime = gpu_timer(train_step)
+                return (float(loss), _new_lr, _new_wd, grad_stats, loss_l2, loss_pkt, mse,) #, gathered_losses)
+            (loss, _new_lr, _new_wd, grad_stats, loss_l2, loss_pkt, mse), etime = gpu_timer(train_step)
             # neg_var could be None
             loss_meter.update(loss)
             time_meter.update(etime)
-            mse_meter.update(mse)
+            loss_l2_meter.update(loss_l2)
             loss_pkt_meter.update(loss_pkt)
+            mse_meter.update(mse)
             # -- Logging
             def log_stats():
                 csv_logger.log(epoch + 1, itr, loss, maskA_meter.val, maskB_meter.val, etime)
@@ -425,8 +430,9 @@ def main(args, resume_preempt=False):
                                 'masks: %.1f %.1f '
                                 '[wd: %.2e] [lr: %.2e] '
                                 '[mem: %.2e] '
+                                'loss l2: %e '
+                                'loss pkt: %e '
                                 'cross mse: %e '
-                                'loss itself: %e '
                                 '(%.1f ms)'
                                 % (epoch + 1, itr,
                                    loss_meter.avg,
@@ -435,8 +441,9 @@ def main(args, resume_preempt=False):
                                    _new_wd,
                                    _new_lr,
                                    torch.cuda.max_memory_allocated() / 1024.**2,
-                                   mse_meter.avg,
+                                   loss_l2_meter.avg,
                                    loss_pkt_meter.avg,
+                                   mse_meter.avg,
                                    time_meter.avg))
 
                     if grad_stats is not None:
@@ -454,15 +461,18 @@ def main(args, resume_preempt=False):
         if rank == 0:
             loss_file_logger.log(epoch+1,
                                  loss_meter.avg,
+                                 loss_l2_meter.avg,
+                                 loss_pkt_meter.avg,
                                  mse_meter.avg,
-                                 loss_pkt_meter.avg)
-            writer.add_scalar('Loss', loss_meter.avg, epoch+1) 
-            writer.add_scalar('Cross sim matrix mse', mse_meter.avg, epoch+1)
-            writer.add_scalar('Loss itself', loss_pkt_meter.avg, epoch+1)
+                                 )
+            writer.add_scalar('Loss', loss_meter.avg, epoch+1)
+            writer.add_scalar('Loss L2', loss_l2_meter.avg, epoch+1)
+            writer.add_scalar('Loss PKT', loss_pkt_meter.avg, epoch+1)
+            writer.add_scalar('Cross sim matrix MSE', mse_meter.avg, epoch+1)
             
         # -- Save Checkpoint after every epoch
         logger.info('avg. loss %.8e' % loss_meter.avg)
-        logger.info('avg. cross sim matrix mse %.8e , avg. loss itself %e' % (mse_meter.avg, loss_pkt_meter.avg))
+        logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
         save_checkpoint(epoch+1)
         time_epoch = time.perf_counter() - start_time_epoch
         logger.info('time taken for epoch %s' % str(datetime.timedelta(seconds=time_epoch)))

@@ -14,7 +14,12 @@ def L2(z,h, **kwargs):
   :param h: the representation of the patches after being passed through
    the Target Encoder """
   loss_l2 = F.smooth_l1_loss(z,h)
-  return loss_l2
+  # emb_size = z.size(-1) # get last layer dimensionality
+  # z_ = z.view(-1, emb_size)
+  # vsize = z_.size(0) # get dimensionality/number of toooootal patches
+  # step = 512
+  # quotient = vsize/step
+  return loss_l2 #/quotient
 
 def PKT(z_init,h_init, **kwargs):
   """ Calculate the PKT loss. WIP
@@ -104,16 +109,16 @@ def PKT_full(z,h, **kwargs):
   # we can view it as [256*20, 768] = [5120, 768]
   # and then perform PKT there
   # or take mean of second dimension and perform PKT over [256, 768]
-  logger = logging.getLogger()
+  # logger = logging.getLogger()
 
   w = kwargs.get('variance_weight', 1.)
 
   emb_size = z.size(-1)
   z_ = z.view(-1, emb_size) # [5120, 768]
   h_ = h.view(-1, emb_size)
-  loss_pkt_full, neg_variance = PKTClass.cosine_similarity_loss_max_var(z_, h_)
+  loss_pkt_full = PKTClass.cosine_similarity_loss(z_, h_)
   # logger.info('neg variance: %e, \n loss w/o max_var %e' % (neg_variance.item(), loss_pkt_full.item()))
-  return loss_pkt_full + w*neg_variance
+  return loss_pkt_full
 
 def L2_PKT_batch(z,h, **kwargs):
   alpha = kwargs.get('alpha', -1)
@@ -190,11 +195,12 @@ def L2_PKT_cross(z,h, **kwargs):
     loss_pkt += loss_pkt_
     mse += mse_
   
+  loss_L2 /= vsize/step
   loss_pkt /= (vsize/step)
   mse /= (vsize/step)
     
  
-  return (loss_pkt + loss_L2)/(vsize/step), mse
+  return loss_L2, loss_pkt, mse
   
 
 """

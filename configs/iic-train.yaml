@@ -13,11 +13,11 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_PKT_cross/iic-train-l2-pkt-cross-seed43
-  write_tag: jepa-iic-l2-pkt-cross-seed43
+  folder: logs_PKT_chunks/iic-train-l2-seed2
+  write_tag: jepa-iic-l2-seed2
   checkpoint_freq: 100 # new addition
   logging_frequency: 2 # defaults to 3, for more concise logs
-  output_file: oiic-pretrain-l2-pkt-cross-seed43.out
+  output_file: oiic-pretrain-l2-seed2.out
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -35,7 +35,7 @@ mask:
   - 0.2                     # default: 0.2
 meta:
   copy_data: false          # default: false
-  load_checkpoint: true    # default: true
+  load_checkpoint: false    # default: true
   model_name: vit_base
   pred_depth: 12
   pred_emb_dim: 384
@@ -53,7 +53,7 @@ optimization:
   start_lr: 0.0002          # default: 2e-4
   warmup: 40
   weight_decay: 0.04        # default: 0.04
-  loss_function: L2_PKT_cross       # this function name must exist in the which_loss.py file
+  loss_function: L2       # this function name must exist in the which_loss.py file
   pkt_scale: 1.0e+0         # perform grid search over this, no default value yet
   variance_weight: 0.0      # variance factor weight, use 0 to deactivate
 pkt:
@@ -63,5 +63,5 @@ pkt:
   ref_alpha: 1.
   T_max: 200
   final_alpha: 0.
-message: "L2 + PKT cross seed 43 to see if it works better" 
+message: "L2 seed 2"
 # message is unused, only for printing info out

@@ -2,7 +2,10 @@ import torch
 
 import logging
 
+# logger = logging.getLogger()
+
 def cosine_similarity_loss(output_net, target_net, eps=0.0000001):
+    
 
     # Normalize each vector by its norm
     output_net_norm = torch.sqrt(torch.sum(output_net ** 2, dim=1, keepdim=True))
@@ -12,7 +15,7 @@ def cosine_similarity_loss(output_net, target_net, eps=0.0000001):
     target_net_norm = torch.sqrt(torch.sum(target_net ** 2, dim=1, keepdim=True))
     target_net = target_net / (target_net_norm + eps)
     target_net[target_net != target_net] = 0
-
+    
     # Calculate the cosine similarity
     model_similarity = torch.mm(output_net, output_net.transpose(0, 1)) 
     target_similarity = torch.mm(target_net, target_net.transpose(0, 1))
@@ -50,14 +53,15 @@ def cosine_similarity_loss_cross_diag(output_net, target_net, eps=0.0000001):
     target_net = target_net / (target_net_norm + eps)
     target_net[target_net != target_net] = 0
 
+    cross = torch.mm(output_net, target_net) # cross sim matrix
+
     # Calculate the cosine similarity
     model_similarity = torch.mm(output_net, output_net.transpose(0, 1)) 
     target_similarity = torch.mm(target_net, target_net.transpose(0, 1))
 
-    cross = torch.mm(model_similarity, target_similarity) # cross sim matrix
-    
+
     sdiag = cross.diag() # <- tend to 1
-    # sltri = cross.tril().sum()  # <- tend to 0 
+    # sltri = cross.tril().sum()  # <- tend to 0
     ones_v = torch.ones_like(sdiag)
 
     mse = torch.nn.functional.mse_loss(sdiag, ones_v) 
@@ -146,6 +150,8 @@ def get_similarity_matrices(output_net, target_net, eps=0.0000001):
     target_net_norm = torch.sqrt(torch.sum(target_net ** 2, dim=1, keepdim=True))
     target_net = target_net / (target_net_norm + eps)
     target_net[target_net != target_net] = 0
+    
+    cross = torch.mm(output_net, target_net) # cross sim matrix
 
     # Calculate the cosine similarity
     # print('katw',output_net)
@@ -155,12 +161,14 @@ def get_similarity_matrices(output_net, target_net, eps=0.0000001):
     # Scale cosine similarity to 0..1
     model_similarity = (model_similarity + 1.0) / 2.0
     target_similarity = (target_similarity + 1.0) / 2.0
+    # cross = (cross + 1.) / 2.
+
 
     # # Transform them into probabilities
     # model_similarity = model_similarity / torch.sum(model_similarity, dim=1, keepdim=True)
     # target_similarity = target_similarity / torch.sum(target_similarity, dim=1, keepdim=True)
 
-    return model_similarity, target_similarity
+    return model_similarity, target_similarity, cross
 
 
 def get_similarity_distribution(output_net, target_net, eps=0.0000001):

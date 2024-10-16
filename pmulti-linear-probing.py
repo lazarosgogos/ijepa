@@ -133,7 +133,7 @@ class LinearProbe():
         _classifiers_dir = os.path.join(self.log_dir, 'classifiers')
         os.makedirs(_classifiers_dir, exist_ok=True)
         
-        logger.info(f'Directory {self.save_path} for saving the classifiers is now present')
+        logger.info(f'Directory {_classifiers_dir} for saving the classifiers is now present')
         self.log_file = os.path.join(self.log_dir, self.log_file)
         self.train_features_file_path = os.path.join(self.log_dir, 'train_features_and_labels.pt')
         self.val_features_file_path = os.path.join(self.log_dir, 'val_features_and_labels.pt')
@@ -387,7 +387,8 @@ def process_main(fname, devices=['cuda:0']):
             # keep info about what epoch this current run corresponds to
             temp_params['pretrain_checkpoint_epoch'] = epoch 
 
-            eval_output = os.path.join(log_dir, eval_output) # + f'-ep{epoch}.out') 
+            basename = os.path.basename(os.path.normpath(log_dir))
+            eval_output = os.path.join(log_dir, 'ocls-jepa-' + basename + '.out') # + f'-ep{epoch}.out') 
             # # do not alter evalout name
             logger.addHandler(logging.StreamHandler())
             logger.addHandler(logging.FileHandler(eval_output))
@@ -395,7 +396,6 @@ def process_main(fname, devices=['cuda:0']):
             temp_params['logging']['save_path'] += f'-ep{epoch}' 
             # temp_params['logging']['log_file'] += f'-ep{epoch}'  # do not create another log file, print them all in
             # get basename of current folder
-            basename = os.path.basename(log_dir)
             temp_params['logging']['log_file'] = 'stats-' + basename + '.csv'
             
             linear_prober = LinearProbe(temp_params, logger)

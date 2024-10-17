@@ -352,7 +352,7 @@ def process_main(fname, devices=['cuda:0']):
 
     dirs = params.get('multi_probing', list())
     
-    assert len(dirs) != 0, 'No directories were found, exiting.'
+    assert len(dirs) != 0, 'No directories were found.'
     
     for log_dir in dirs:
 
@@ -395,7 +395,7 @@ def process_main(fname, devices=['cuda:0']):
             temp_params['logging']['save_path'] += f'-ep{epoch}' 
             # temp_params['logging']['log_file'] += f'-ep{epoch}'  # do not create another log file, print them all in
             # get basename of current folder
-            basename = os.path.basename(log_dir)
+            basename = os.path.basename(os.path.normpath(log_dir))
             temp_params['logging']['log_file'] = 'stats-' + basename + '.csv'
             
             linear_prober = LinearProbe(temp_params, logger)

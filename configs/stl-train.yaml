@@ -13,11 +13,11 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_STL/stl-l2-pkt-chunks-seed1
-  write_tag: jepa-stl-l2-pkt-chunks-seed1
+  folder: logs_STL/stl-l2-seed3
+  write_tag: jepa-stl-l2-seed3
   checkpoint_freq: 10 # new addition
   logging_frequency: 2 # defaults to 3, for more concise logs
-  output_file: ostl-pretrain-l2-pkt-chunks-seed1.out
+  output_file: ostl-pretrain-l2-seed3.out
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -53,7 +53,7 @@ optimization:
   start_lr: 0.0002          # default: 2e-4
   warmup: 6
   weight_decay: 0.04        # default: 0.04
-  loss_function: L2_PKT_chunks       # this function name must exist in the which_loss.py file
+  loss_function: L2       # this function name must exist in the which_loss.py file
   pkt_scale: 1.0e+0         # perform grid search over this, no default value yet
   variance_weight: 0.0      # variance factor weight, use 0 to deactivate
 pkt:
@@ -63,7 +63,7 @@ pkt:
   ref_alpha: 1.
   T_max: 200
   final_alpha: 0.
-message: "L2+PKT chunks on stl seed 1" 
+message: "L2 on stl seed 3" 
 # message is unused, only for printing info out
 
 

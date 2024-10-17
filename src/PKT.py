@@ -53,11 +53,11 @@ def cosine_similarity_loss_cross_diag(output_net, target_net, eps=0.0000001):
     target_net = target_net / (target_net_norm + eps)
     target_net[target_net != target_net] = 0
 
-    cross = torch.mm(output_net, target_net) # cross sim matrix
+    cross = torch.mm(output_net, target_net.transpose(0,1)) # cross sim matrix
 
     # Calculate the cosine similarity
-    model_similarity = torch.mm(output_net, output_net.transpose(0, 1)) 
-    target_similarity = torch.mm(target_net, target_net.transpose(0, 1))
+    # model_similarity = torch.mm(output_net, output_net.transpose(0, 1)) 
+    # target_similarity = torch.mm(target_net, target_net.transpose(0, 1))
 
 
     sdiag = cross.diag() # <- tend to 1
@@ -67,17 +67,17 @@ def cosine_similarity_loss_cross_diag(output_net, target_net, eps=0.0000001):
     mse = torch.nn.functional.mse_loss(sdiag, ones_v) 
 
     # Scale cosine similarity to 0..1
-    model_similarity = (model_similarity + 1.0) / 2.0
-    target_similarity = (target_similarity + 1.0) / 2.0
+    # model_similarity = (model_similarity + 1.0) / 2.0
+    # target_similarity = (target_similarity + 1.0) / 2.0
 
-    # Transform them into probabilities
-    model_similarity = model_similarity / torch.sum(model_similarity, dim=1, keepdim=True)
-    target_similarity = target_similarity / torch.sum(target_similarity, dim=1, keepdim=True)
+    # # Transform them into probabilities
+    # model_similarity = model_similarity / torch.sum(model_similarity, dim=1, keepdim=True)
+    # target_similarity = target_similarity / torch.sum(target_similarity, dim=1, keepdim=True)
 
-    # Calculate the KL-divergence
-    loss = torch.mean(target_similarity * torch.log((target_similarity + eps) / (model_similarity + eps)))
+    # # Calculate the KL-divergence
+    # loss = torch.mean(target_similarity * torch.log((target_similarity + eps) / (model_similarity + eps)))
 
-    return loss, mse
+    return 0, mse
 
 
 def cross_similarity_loss(output_net, target_net, eps=0.0000001):

@@ -289,7 +289,7 @@ def main(args, resume_preempt=False):
 
 
     
-    all_model_sims, all_target_sims = [], []
+    all_model_sims, all_target_sims, cross_sims = [], [], []
     for itr, (udata, masks_enc, masks_pred) in enumerate(unsupervised_loader):
         logger.info('Iteration: %d' % itr)
         if itr == 1: break
@@ -344,13 +344,14 @@ def main(args, resume_preempt=False):
                 z = z.view(-1, 768)
                 h = h.view(-1, 768)
                 
-                model_sim, target_sim = PKT.get_similarity_matrices(z, h)
+                model_sim, target_sim, cross = PKT.get_similarity_matrices(z, h)
 
-            return model_sim, target_sim
-        (model_sim, target_sim), etime = gpu_timer(train_step)
+            return model_sim, target_sim, cross
+        (model_sim, target_sim, cross_sim), etime = gpu_timer(train_step)
 
         all_model_sims. append(model_sim.detach().cpu().numpy())
         all_target_sims.append(target_sim.detach().cpu().numpy())
+        cross_sims.append(cross_sim.detach().cpu().numpy())
 
     # logger.info('All model similarities: %s', str(all_model_sims[:5000]))
     # logger.info('All target similarities: %s',str(all_target_sims[:5000]))
@@ -374,31 +375,31 @@ def main(args, resume_preempt=False):
         all_params.extend(param.view(-1).detach().cpu().numpy())
         writer.add_histogram(name, param, 
                              global_step=idx, bins=1000)
-
-    outfile_params = os.path.join(folder, f'params-ep{ep}.png')
-    ub = max(all_params)
-    lb = min(all_params)
-    plt.figure(figsize=(10,10),dpi=300)
-    plt.yscale('log')
-    plt.hist(all_params, bins=1000, range=(lb, ub))
-    # plt.hist(all_params,)
-    plt.title('Params')
-    plt.ylabel('param count')
-    plt.xlabel('param value')
-    # plt.savefig(outfile_params)
-    plt.close()
-    del all_params
-    writer.close()
-
+    """
+        outfile_params = os.path.join(folder, f'params-ep{ep}.png')
+        ub = max(all_params)
+        lb = min(all_params)
+        plt.figure(figsize=(10,10),dpi=300)
+        plt.yscale('log')
+        plt.hist(all_params, bins=1000, range=(lb, ub))
+        # plt.hist(all_params,)
+        plt.title('Params')
+        plt.ylabel('param count')
+        plt.xlabel('param value')
+        # plt.savefig(outfile_params)
+        plt.close()
+        del all_params
+        writer.close()
+    """
     if plot_matrices:
         ri = torch.randint(0, len(all_model_sims), (1,)) # pick a random image from the batch
-        lb = min(all_model_sims[ri].min(), all_target_sims[ri].min()) # lower bound
-        ub = max(all_model_sims[ri].max(), all_target_sims[ri].max()) # upper bound
+        lb = min(all_model_sims[ri].min(), all_target_sims[ri].min(), cross_sims[ri].min()) # lower bound
+        ub = max(all_model_sims[ri].max(), all_target_sims[ri].max(), cross_sims[ri].max()) # upper bound
         lb = 0.
         ub = 1.
-        fig = plt.figure(figsize=(20,10),dpi=300)
-        data = (all_model_sims[ri], all_target_sims[ri])
-        titles = ('Predictions', 'Targets')
+        fig = plt.figure(figsize=(21,7),dpi=300)
+        data = (all_model_sims[ri], all_target_sims[ri], cross_sims[ri])
+        titles = ('Predictions', 'Targets', 'Cross')
         for idx, datum in enumerate(data):
             plt.subplot(1,2,idx+1)
             img = plt.imshow(datum, interpolation='nearest', vmin=lb, vmax=ub)
@@ -407,7 +408,7 @@ def main(args, resume_preempt=False):
         plt.show()
         plt.suptitle('Evaluation of %s' % (r_file))
         # outfile = os.path.join(folder, f'sims-PKT-ep{ep}.png')
-        outfile = os.path.join(folder, f'matrices-inbefore-1ims-1-16-test-PKT-maxvar100-ep{ep}.png')
+        outfile = os.path.join(folder, f'sim_matrices_cross{ep}.png')
         plt.savefig(outfile)
         fig.clear()
         plt.close()

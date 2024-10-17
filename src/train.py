@@ -64,7 +64,7 @@ log_freq = 10
 
 # rng = np.random.Generator(np.random.PCG64()) 
 
-_GLOBAL_SEED = 3 # 
+_GLOBAL_SEED = 0 # 
 # seed is logged later on
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
@@ -132,7 +132,6 @@ def main(args, resume_preempt=False):
     final_lr = args['optimization']['final_lr']
     loss_function = args['optimization'].get('loss_function', 'L2') # get the loss function, use L2 if no loss fn definition was found in the config file
     evaluate = args['optimization'].get('evaluate', False) # print sim distributions only, do NOT pretrain
-    pkt_scale = args['optimization'].get('pkt_scale', 1.0)
 
     # -- LOGGING
     folder = args['logging']['folder']
@@ -141,14 +140,15 @@ def main(args, resume_preempt=False):
     logging_frequency = args['logging'].get('logging_frequency', 3) # default to 3
     output_file = args['logging'].get('output_file', tag)
 
-    # -- PKT scheduling
+    # -- PKT 
     use_pkt_scheduler = args['pkt'].get('use_pkt_scheduler', 1.)
     start_alpha = args['pkt'].get('start_alpha', 1.)
     warmup_steps_alpha = args['pkt'].get('warmup_steps_alpha', 100)
     ref_alpha = args['pkt'].get('ref_alpha', 1.)
     T_max_alpha = args['pkt'].get('T_max', 200)
     final_alpha = args['pkt'].get('final_alpha', 0.)
-    
+    pkt_scale = args['pkt'].get('pkt_scale', 1.0)
+    chunks_step = args['pkt'].get('chunks_step', 512)
 
     # force_cudnn_initialization()
     writer_dest = os.path.join(folder, f'tensorboard-{tag}')
@@ -390,9 +390,9 @@ def main(args, resume_preempt=False):
                     h = forward_target()
                     z = forward_context()
                     if not use_pkt_scheduler:
-                        loss, loss_l2, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale) # pkt scale default to 1
+                        loss, loss_l2, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale, chunks_step=chunks_step) # pkt scale default to 1
                     else: 
-                        loss, loss_l2, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha)
+                        loss, loss_l2, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha, chunks_step=chunks_step)
                     # gathered_losses = all_losses(z,h) # this contains all loss functions
 
                 #  Step 2. Backward & step

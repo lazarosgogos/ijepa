@@ -1,0 +1,166 @@
+nohup: ignoring input
+INFO:root:called-params configs/iic-eval.yaml
+INFO:root:loaded params...
+{   'data': {   'batch_size': 64,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 150,
+                'image_folder': 'intel-image-classification/',
+                'num_workers': 0,
+                'pin_mem': True,
+                'root_path': 'datasets',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 100,
+                   'folder': 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43',
+                   'logging_frequency': 1,
+                   'output_file': 'oiic-evaluate-l2-pkt-chunks-MSE-seed43-matrices.out',
+                   'plot_matrices': True,
+                   'tensorboard_dir': 'eval_tb/',
+                   'use_tensorboard': True,
+                   'write_tag': 'jepa_iic_PKT_seed-0-ep____.pth.tar'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 1,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 15,
+                'pred_mask_scale': [0.15, 0.2]},
+    'meta': {   'copy_data': False,
+                'load_checkpoint': True,
+                'model_name': 'vit_base',
+                'pred_depth': 12,
+                'pred_emb_dim': 384,
+                'read_checkpoint': 'jepa-iic-l2-pkt-cross-seed43',
+                'use_bfloat16': False},
+    'optimization': {   'ema': [0.996, 1.0],
+                        'epochs': 500,
+                        'evaluate': True,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'PKT',
+                        'lr': 0.001,
+                        'start_lr': 0.0002,
+                        'warmup': 40,
+                        'weight_decay': 0.04}}
+INFO:root:Running... (rank: 0/1)
+CRITICAL:root:EVALUATING
+INFO:root:tarfiles: ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']
+INFO:root:working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+INFO:root:Initialized (rank/world-size) 0/1
+INFO:root:train.py: _GLOBAL_SEED=0
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/intel-image-classification/train/
+INFO:root:Initialized ImageNet
+INFO:root:ImageNet dataset created
+INFO:root:ImageNet unsupervised data loader created
+INFO:root:Using AdamW
+INFO:root:loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+INFO:root:loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+['encoder', 'predictor', 'target_encoder', 'opt', 'scaler', 'epoch', 'loss', 'batch_size', 'world_size', 'lr']
+INFO:root:loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+INFO:root:loaded optimizers from epoch 99
+INFO:root:read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar
+INFO:root:Starting
+INFO:root:Iteration: 0
+CRITICAL:root:z[:100] values: tensor([[[ 23.7126, -22.5902,  -0.4155,  ..., -14.4794,  -3.5487, -25.5933],
+         [ 23.7123, -22.5903,  -0.4155,  ..., -14.4795,  -3.5488, -25.5934],
+         [ 23.7123, -22.5904,  -0.4155,  ..., -14.4795,  -3.5489, -25.5934],
+         ...,
+         [ 23.7125, -22.5903,  -0.4154,  ..., -14.4795,  -3.5486, -25.5933],
+         [ 23.7123, -22.5904,  -0.4154,  ..., -14.4795,  -3.5487, -25.5933],
+         [ 23.7124, -22.5905,  -0.4154,  ..., -14.4795,  -3.5487, -25.5933]],
+
+        [[ 10.0686,  19.8881,   3.8852,  ...,  17.9879,  22.9635,  16.9424],
+         [ 10.0580,  19.8906,   3.8840,  ...,  17.9890,  22.9591,  16.9469],
+         [ 10.0503,  19.8922,   3.8832,  ...,  17.9898,  22.9560,  16.9501],
+         ...,
+         [  7.7058,  20.4227,   3.6012,  ...,  18.1806,  21.9572,  17.9094],
+         [ 10.0736,  19.8868,   3.8862,  ...,  17.9873,  22.9657,  16.9403],
+         [ 10.0669,  19.8882,   3.8854,  ...,  17.9880,  22.9629,  16.9431]],
+
+        [[ 23.7116, -22.6066,  -0.4264,  ..., -14.4696,  -3.5645, -25.6014],
+         [ 23.7113, -22.6068,  -0.4264,  ..., -14.4698,  -3.5648, -25.6015],
+         [ 23.7110, -22.6069,  -0.4264,  ..., -14.4699,  -3.5650, -25.6016],
+         ...,
+         [ 23.7111, -22.6068,  -0.4265,  ..., -14.4698,  -3.5648, -25.6015],
+         [ 23.7107, -22.6069,  -0.4265,  ..., -14.4700,  -3.5651, -25.6016],
+         [ 23.7105, -22.6071,  -0.4265,  ..., -14.4701,  -3.5653, -25.6016]],
+
+        ...,
+
+        [[-33.4380,   7.2015,  -2.5153,  ...,   0.2504, -15.3844,  12.8513],
+         [-33.4399,   7.1936,  -2.5163,  ...,   0.2434, -15.3923,  12.8441],
+         [-33.4423,   7.1832,  -2.5176,  ...,   0.2343, -15.4025,  12.8347],
+         ...,
+         [-33.4413,   7.1856,  -2.5173,  ...,   0.2363, -15.4001,  12.8368],
+         [-33.4439,   7.1744,  -2.5187,  ...,   0.2265, -15.4111,  12.8267],
+         [-33.4461,   7.1647,  -2.5200,  ...,   0.2181, -15.4206,  12.8180]],
+
+        [[  8.6738,  20.2495,   3.7404,  ...,  18.1189,  22.4178,  17.5455],
+         [  8.6648,  20.2512,   3.7394,  ...,  18.1195,  22.4138,  17.5490],
+         [  8.6634,  20.2513,   3.7392,  ...,  18.1197,  22.4131,  17.5495],
+         ...,
+         [  8.6906,  20.2459,   3.7428,  ...,  18.1175,  22.4253,  17.5388],
+         [  8.6826,  20.2474,   3.7418,  ...,  18.1181,  22.4217,  17.5419],
+         [  8.6803,  20.2477,   3.7415,  ...,  18.1183,  22.4206,  17.5428]],
+
+        [[ 23.6967, -22.6041,  -0.4249,  ..., -14.4813,  -3.5717, -25.6018],
+         [ 23.6967, -22.6042,  -0.4249,  ..., -14.4813,  -3.5717, -25.6018],
+         [ 23.6969, -22.6042,  -0.4249,  ..., -14.4812,  -3.5716, -25.6017],
+         ...,
+         [ 23.6965, -22.6043,  -0.4250,  ..., -14.4813,  -3.5718, -25.6018],
+         [ 23.6967, -22.6042,  -0.4250,  ..., -14.4812,  -3.5716, -25.6017],
+         [ 23.6969, -22.6042,  -0.4250,  ..., -14.4811,  -3.5714, -25.6017]]],
+       device='cuda:0')
+INFO:root:torch.Size([64, 4, 16, 768])
+INFO:root:torch.Size([4, 16, 768])
+Process Process-1:
+Traceback (most recent call last):
+  File "/media/data/lazarosg/miniconda3/envs/ijepa/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/media/data/lazarosg/miniconda3/envs/ijepa/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/media/data/lazarosg/ijepa/main.py", line 98, in process_main
+    evall(args=temp_params)
+  File "/media/data/lazarosg/ijepa/src/eval.py", line 350, in main
+    (model_sim, target_sim, cross_sim), etime = gpu_timer(train_step)
+                                                ^^^^^^^^^^^^^^^^^^^^^
+  File "/media/data/lazarosg/ijepa/src/utils/logging.py", line 21, in gpu_timer
+    result = closure()
+             ^^^^^^^^^
+  File "/media/data/lazarosg/ijepa/src/eval.py", line 347, in train_step
+    model_sim, target_sim, cross = PKT.get_similarity_matrices(z, h)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/data/lazarosg/ijepa/src/PKT.py", line 150, in get_similarity_matrices
+    cross = torch.mm(model_similarity, target_similarity) # cross sim matrix
+                     ^^^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'model_similarity' where it is not associated with a value

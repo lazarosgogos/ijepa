@@ -1,0 +1,3290 @@
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+loaded optimizers from epoch 99
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar
+Starting
+Iteration: 0
+z[:100] values: tensor([[[ 23.7126, -22.5902,  -0.4155,  ..., -14.4794,  -3.5487, -25.5933],
+         [ 23.7123, -22.5903,  -0.4155,  ..., -14.4795,  -3.5488, -25.5934],
+         [ 23.7123, -22.5904,  -0.4155,  ..., -14.4795,  -3.5489, -25.5934],
+         ...,
+         [ 23.7125, -22.5903,  -0.4154,  ..., -14.4795,  -3.5486, -25.5933],
+         [ 23.7123, -22.5904,  -0.4154,  ..., -14.4795,  -3.5487, -25.5933],
+         [ 23.7124, -22.5905,  -0.4154,  ..., -14.4795,  -3.5487, -25.5933]],
+
+        [[ 10.0686,  19.8881,   3.8852,  ...,  17.9879,  22.9635,  16.9424],
+         [ 10.0580,  19.8906,   3.8840,  ...,  17.9890,  22.9591,  16.9469],
+         [ 10.0503,  19.8922,   3.8832,  ...,  17.9898,  22.9560,  16.9501],
+         ...,
+         [  7.7058,  20.4227,   3.6012,  ...,  18.1806,  21.9572,  17.9094],
+         [ 10.0736,  19.8868,   3.8862,  ...,  17.9873,  22.9657,  16.9403],
+         [ 10.0669,  19.8882,   3.8854,  ...,  17.9880,  22.9629,  16.9431]],
+
+        [[ 23.7116, -22.6066,  -0.4264,  ..., -14.4696,  -3.5645, -25.6014],
+         [ 23.7113, -22.6068,  -0.4264,  ..., -14.4698,  -3.5648, -25.6015],
+         [ 23.7110, -22.6069,  -0.4264,  ..., -14.4699,  -3.5650, -25.6016],
+         ...,
+         [ 23.7111, -22.6068,  -0.4265,  ..., -14.4698,  -3.5648, -25.6015],
+         [ 23.7107, -22.6069,  -0.4265,  ..., -14.4700,  -3.5651, -25.6016],
+         [ 23.7105, -22.6071,  -0.4265,  ..., -14.4701,  -3.5653, -25.6016]],
+
+        ...,
+
+        [[-33.4380,   7.2015,  -2.5153,  ...,   0.2504, -15.3844,  12.8513],
+         [-33.4399,   7.1936,  -2.5163,  ...,   0.2434, -15.3923,  12.8441],
+         [-33.4423,   7.1832,  -2.5176,  ...,   0.2343, -15.4025,  12.8347],
+         ...,
+         [-33.4413,   7.1856,  -2.5173,  ...,   0.2363, -15.4001,  12.8368],
+         [-33.4439,   7.1744,  -2.5187,  ...,   0.2265, -15.4111,  12.8267],
+         [-33.4461,   7.1647,  -2.5200,  ...,   0.2181, -15.4206,  12.8180]],
+
+        [[  8.6738,  20.2495,   3.7404,  ...,  18.1189,  22.4178,  17.5455],
+         [  8.6648,  20.2512,   3.7394,  ...,  18.1195,  22.4138,  17.5490],
+         [  8.6634,  20.2513,   3.7392,  ...,  18.1197,  22.4131,  17.5495],
+         ...,
+         [  8.6906,  20.2459,   3.7428,  ...,  18.1175,  22.4253,  17.5388],
+         [  8.6826,  20.2474,   3.7418,  ...,  18.1181,  22.4217,  17.5419],
+         [  8.6803,  20.2477,   3.7415,  ...,  18.1183,  22.4206,  17.5428]],
+
+        [[ 23.6967, -22.6041,  -0.4249,  ..., -14.4813,  -3.5717, -25.6018],
+         [ 23.6967, -22.6042,  -0.4249,  ..., -14.4813,  -3.5717, -25.6018],
+         [ 23.6969, -22.6042,  -0.4249,  ..., -14.4812,  -3.5716, -25.6017],
+         ...,
+         [ 23.6965, -22.6043,  -0.4250,  ..., -14.4813,  -3.5718, -25.6018],
+         [ 23.6967, -22.6042,  -0.4250,  ..., -14.4812,  -3.5716, -25.6017],
+         [ 23.6969, -22.6042,  -0.4250,  ..., -14.4811,  -3.5714, -25.6017]]],
+       device='cuda:0')
+torch.Size([64, 4, 16, 768])
+torch.Size([4, 16, 768])
+Iteration: 1
+time taken for epoch 0:00:07.430004
+Total pretraining time 0:00:07.433393
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+Initialized (rank/world-size) 0/1
+train.py: _GLOBAL_SEED=0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+Initialized ImageNet
+ImageNet dataset created
+ImageNet dataset created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+Using AdamW
+Using AdamW
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded optimizers from epoch 199
+loaded optimizers from epoch 199
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar
+Starting
+Starting
+Iteration: 0
+Iteration: 0
+z[:100] values: tensor([[[-12.7414,   9.2210,   8.4444,  ...,  -6.1206, -11.2617,   7.1394],
+         [-12.6131,   9.3731,   8.8044,  ...,  -6.2711, -11.2551,   7.2633],
+         [-12.1113,   9.9554,  10.1895,  ...,  -6.8483, -11.2235,   7.7382],
+         ...,
+         [-13.2318, -18.0069, -42.2998,  ...,  19.3431,   0.7344, -14.8424],
+         [ -4.0999, -14.8545, -31.2916,  ...,  15.9810,   4.9528, -12.1505],
+         [  5.7526, -12.7519, -22.3858,  ...,  13.0541,  10.4745, -10.4614]],
+
+        [[-12.4664,   9.9826,   9.9315,  ...,  -6.9128, -11.4364,   7.7473],
+         [-13.1267,   9.2035,   8.0849,  ...,  -6.1382, -11.4689,   7.1121],
+         [-13.1138,   9.2188,   8.1210,  ...,  -6.1534, -11.4682,   7.1245],
+         ...,
+         [ 17.6480,  -1.4870,   6.6210,  ...,   0.9999,  11.8411,  -1.0722],
+         [ 17.6153,  -1.5254,   6.5251,  ...,   1.0415,  11.8427,  -1.1043],
+         [ 17.5829,  -1.5633,   6.4306,  ...,   1.0824,  11.8440,  -1.1360]],
+
+        [[-11.9147,   9.0284,   8.4011,  ...,  -5.6257, -10.4326,   7.0026],
+         [-11.6181,   9.3768,   9.2223,  ...,  -5.9705, -10.4137,   7.2871],
+         [-17.2421,  -3.0550, -17.1806,  ...,   5.9113,  -8.4549,  -2.7248],
+         ...,
+         [  9.4998, -10.0077, -14.9843,  ...,  10.2628,  11.6307,  -8.1520],
+         [ 14.8368,  -4.9019,  -1.8303,  ...,   4.7893,  12.1868,  -3.8970],
+         [ 15.2311,  -4.4926,  -0.7847,  ...,   4.3456,  12.2011,  -3.5547]],
+
+        ...,
+
+        [[-16.7540,   5.5675,  -0.2672,  ...,  -3.0855, -12.3013,   4.2113],
+         [-16.4883,   5.9716,   0.6383,  ...,  -3.4788, -12.3288,   4.5388],
+         [-16.3733,   6.1433,   1.0247,  ...,  -3.6463, -12.3394,   4.6780],
+         ...,
+         [ -4.0103, -16.5429, -34.9427,  ...,  16.6413,   5.2551, -13.7243],
+         [ -3.4460, -16.2309, -34.0104,  ...,  16.3138,   5.4486, -13.4610],
+         [ -3.5274, -16.2767, -34.1463,  ...,  16.3616,   5.4210, -13.4996]],
+
+        [[-10.0412, -19.5859, -44.7452,  ...,  21.4870,   4.9406, -16.1205],
+         [-10.0223, -19.5774, -44.7192,  ...,  21.4792,   4.9496, -16.1133],
+         [ 14.4965,  -5.6629,  -3.7752,  ...,   5.9784,  13.0327,  -4.4937],
+         ...,
+         [ 23.1660,   4.8091,  22.7909,  ...,  -5.6198,  11.9228,   4.2946],
+         [ 23.1615,   4.8022,  22.7741,  ...,  -5.6119,  11.9245,   4.2889],
+         [ 23.1550,   4.7917,  22.7489,  ...,  -5.6001,  11.9269,   4.2801]],
+
+        [[ 23.5203,   5.1425,  23.7060,  ...,  -5.9007,  12.0832,   4.6046],
+         [ 23.5236,   5.1462,  23.7158,  ...,  -5.9054,  12.0826,   4.6077],
+         [ 23.5231,   5.1456,  23.7141,  ...,  -5.9045,  12.0829,   4.6072],
+         ...,
+         [ 23.9747,   5.2970,  24.4520,  ...,  -6.2897,  12.0975,   4.7487],
+         [ 23.9641,   5.3111,  24.4654,  ...,  -6.2944,  12.0910,   4.7595],
+         [ 23.9617,   5.3123,  24.4649,  ...,  -6.2939,  12.0903,   4.7603]]],
+       device='cuda:0')
+z[:100] values: tensor([[[-12.7414,   9.2210,   8.4444,  ...,  -6.1206, -11.2617,   7.1394],
+         [-12.6131,   9.3731,   8.8044,  ...,  -6.2711, -11.2551,   7.2633],
+         [-12.1113,   9.9554,  10.1895,  ...,  -6.8483, -11.2235,   7.7382],
+         ...,
+         [-13.2318, -18.0069, -42.2998,  ...,  19.3431,   0.7344, -14.8424],
+         [ -4.0999, -14.8545, -31.2916,  ...,  15.9810,   4.9528, -12.1505],
+         [  5.7526, -12.7519, -22.3858,  ...,  13.0541,  10.4745, -10.4614]],
+
+        [[-12.4664,   9.9826,   9.9315,  ...,  -6.9128, -11.4364,   7.7473],
+         [-13.1267,   9.2035,   8.0849,  ...,  -6.1382, -11.4689,   7.1121],
+         [-13.1138,   9.2188,   8.1210,  ...,  -6.1534, -11.4682,   7.1245],
+         ...,
+         [ 17.6480,  -1.4870,   6.6210,  ...,   0.9999,  11.8411,  -1.0722],
+         [ 17.6153,  -1.5254,   6.5251,  ...,   1.0415,  11.8427,  -1.1043],
+         [ 17.5829,  -1.5633,   6.4306,  ...,   1.0824,  11.8440,  -1.1360]],
+
+        [[-11.9147,   9.0284,   8.4011,  ...,  -5.6257, -10.4326,   7.0026],
+         [-11.6181,   9.3768,   9.2223,  ...,  -5.9705, -10.4137,   7.2871],
+         [-17.2421,  -3.0550, -17.1806,  ...,   5.9113,  -8.4549,  -2.7248],
+         ...,
+         [  9.4998, -10.0077, -14.9843,  ...,  10.2628,  11.6307,  -8.1520],
+         [ 14.8368,  -4.9019,  -1.8303,  ...,   4.7893,  12.1868,  -3.8970],
+         [ 15.2311,  -4.4926,  -0.7847,  ...,   4.3456,  12.2011,  -3.5547]],
+
+        ...,
+
+        [[-16.7540,   5.5675,  -0.2672,  ...,  -3.0855, -12.3013,   4.2113],
+         [-16.4883,   5.9716,   0.6383,  ...,  -3.4788, -12.3288,   4.5388],
+         [-16.3733,   6.1433,   1.0247,  ...,  -3.6463, -12.3394,   4.6780],
+         ...,
+         [ -4.0103, -16.5429, -34.9427,  ...,  16.6413,   5.2551, -13.7243],
+         [ -3.4460, -16.2309, -34.0104,  ...,  16.3138,   5.4486, -13.4610],
+         [ -3.5274, -16.2767, -34.1463,  ...,  16.3616,   5.4210, -13.4996]],
+
+        [[-10.0412, -19.5859, -44.7452,  ...,  21.4870,   4.9406, -16.1205],
+         [-10.0223, -19.5774, -44.7192,  ...,  21.4792,   4.9496, -16.1133],
+         [ 14.4965,  -5.6629,  -3.7752,  ...,   5.9784,  13.0327,  -4.4937],
+         ...,
+         [ 23.1660,   4.8091,  22.7909,  ...,  -5.6198,  11.9228,   4.2946],
+         [ 23.1615,   4.8022,  22.7741,  ...,  -5.6119,  11.9245,   4.2889],
+         [ 23.1550,   4.7917,  22.7489,  ...,  -5.6001,  11.9269,   4.2801]],
+
+        [[ 23.5203,   5.1425,  23.7060,  ...,  -5.9007,  12.0832,   4.6046],
+         [ 23.5236,   5.1462,  23.7158,  ...,  -5.9054,  12.0826,   4.6077],
+         [ 23.5231,   5.1456,  23.7141,  ...,  -5.9045,  12.0829,   4.6072],
+         ...,
+         [ 23.9747,   5.2970,  24.4520,  ...,  -6.2897,  12.0975,   4.7487],
+         [ 23.9641,   5.3111,  24.4654,  ...,  -6.2944,  12.0910,   4.7595],
+         [ 23.9617,   5.3123,  24.4649,  ...,  -6.2939,  12.0903,   4.7603]]],
+       device='cuda:0')
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+Iteration: 1
+Iteration: 1
+time taken for epoch 0:00:06.653918
+time taken for epoch 0:00:06.653918
+Total pretraining time 0:00:06.654043
+Total pretraining time 0:00:06.654043
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+Using AdamW
+Using AdamW
+Using AdamW
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded optimizers from epoch 299
+loaded optimizers from epoch 299
+loaded optimizers from epoch 299
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar
+Starting
+Starting
+Starting
+Iteration: 0
+Iteration: 0
+Iteration: 0
+z[:100] values: tensor([[[ -1.8392,  -4.5005, -10.3334,  ...,   5.1862,   0.4037,  -3.6544],
+         [ -1.9019,  -8.2456, -15.7059,  ...,   9.3871,   2.0724,  -7.0034],
+         [ -2.0120,  -8.9436, -16.8106,  ...,  10.1408,   2.2703,  -7.6211],
+         ...,
+         [  4.9666,   3.6745,  14.5605,  ...,  -5.0079,   2.2840,   2.7685],
+         [  4.8731,   4.1171,  14.8452,  ...,  -5.4130,   2.0333,   3.1746],
+         [  4.6577,   4.7302,  15.0677,  ...,  -5.9602,   1.6115,   3.7446]],
+
+        [[ -1.6246,  -9.6041, -16.6321,  ...,  10.6184,   2.9327,  -8.2411],
+         [ -1.6131,  -9.3621, -16.3333,  ...,  10.3722,   2.8513,  -8.0289],
+         [ -1.6175,  -9.3723, -16.3629,  ...,  10.3864,   2.8574,  -8.0383],
+         ...,
+         [  4.7727,   4.6410,  15.3806,  ...,  -6.0117,   1.8555,   3.6496],
+         [  4.4386,   5.3014,  15.4304,  ...,  -6.5977,   1.3432,   4.2731],
+         [  3.7929,   5.9837,  14.8474,  ...,  -7.1353,   0.5711,   4.9446]],
+
+        [[ -1.5768,  -9.3691, -16.2437,  ...,  10.3712,   2.8823,  -8.0370],
+         [ -1.6272,  -9.8270, -16.8807,  ...,  10.8405,   3.0220,  -8.4365],
+         [ -1.6301,  -9.7864, -16.8443,  ...,  10.8005,   3.0066,  -8.4005],
+         ...,
+         [  4.9306,   4.2156,  15.2592,  ...,  -5.6339,   2.1348,   3.2530],
+         [  4.8357,   4.5278,  15.4112,  ...,  -5.9230,   1.9488,   3.5433],
+         [  4.4626,   5.3054,  15.5146,  ...,  -6.6186,   1.3666,   4.2771]],
+
+        ...,
+
+        [[ -2.4237,  -3.8179, -10.5004,  ...,   4.6803,  -0.6920,  -2.9873],
+         [ -2.4693,  -4.4700, -11.4739,  ...,   5.3906,  -0.4296,  -3.5547],
+         [ -2.5559,  -5.8765, -13.5329,  ...,   6.9073,   0.1223,  -4.7812],
+         ...,
+         [  4.8252,   1.6013,  11.9364,  ...,  -2.8539,   2.8632,   0.9529],
+         [  4.8240,   1.6148,  11.9508,  ...,  -2.8663,   2.8552,   0.9654],
+         [  4.8236,   1.6313,  11.9687,  ...,  -2.8818,   2.8463,   0.9804]],
+
+        [[ -2.0718,  -8.9775, -16.9788,  ...,  10.1998,   2.2208,  -7.6441],
+         [ -1.9320,  -7.9732, -15.4129,  ...,   9.1119,   1.9008,  -6.7493],
+         [ -1.8916,  -7.5721, -14.8064,  ...,   8.6748,   1.7683,  -6.3934],
+         ...,
+         [  4.9914,   3.3894,  14.3089,  ...,  -4.7353,   2.3973,   2.5122],
+         [  4.9797,   3.4794,  14.3805,  ...,  -4.8181,   2.3525,   2.5945],
+         [  4.9344,   3.7568,  14.5851,  ...,  -5.0731,   2.2057,   2.8483]],
+
+        [[ -1.5823,  -9.3775, -16.2667,  ...,  10.3821,   2.8809,  -8.0440],
+         [ -1.6327,  -9.8354, -16.9031,  ...,  10.8512,   3.0205,  -8.4435],
+         [ -1.6360,  -9.7979, -16.8712,  ...,  10.8142,   3.0060,  -8.4101],
+         ...,
+         [  4.9329,   4.2109,  15.2588,  ...,  -5.6294,   2.1375,   3.2485],
+         [  4.8390,   4.5215,  15.4112,  ...,  -5.9170,   1.9530,   3.5373],
+         [  4.4687,   5.2990,  15.5201,  ...,  -6.6129,   1.3730,   4.2709]]],
+       device='cuda:0')
+z[:100] values: tensor([[[ -1.8392,  -4.5005, -10.3334,  ...,   5.1862,   0.4037,  -3.6544],
+         [ -1.9019,  -8.2456, -15.7059,  ...,   9.3871,   2.0724,  -7.0034],
+         [ -2.0120,  -8.9436, -16.8106,  ...,  10.1408,   2.2703,  -7.6211],
+         ...,
+         [  4.9666,   3.6745,  14.5605,  ...,  -5.0079,   2.2840,   2.7685],
+         [  4.8731,   4.1171,  14.8452,  ...,  -5.4130,   2.0333,   3.1746],
+         [  4.6577,   4.7302,  15.0677,  ...,  -5.9602,   1.6115,   3.7446]],
+
+        [[ -1.6246,  -9.6041, -16.6321,  ...,  10.6184,   2.9327,  -8.2411],
+         [ -1.6131,  -9.3621, -16.3333,  ...,  10.3722,   2.8513,  -8.0289],
+         [ -1.6175,  -9.3723, -16.3629,  ...,  10.3864,   2.8574,  -8.0383],
+         ...,
+         [  4.7727,   4.6410,  15.3806,  ...,  -6.0117,   1.8555,   3.6496],
+         [  4.4386,   5.3014,  15.4304,  ...,  -6.5977,   1.3432,   4.2731],
+         [  3.7929,   5.9837,  14.8474,  ...,  -7.1353,   0.5711,   4.9446]],
+
+        [[ -1.5768,  -9.3691, -16.2437,  ...,  10.3712,   2.8823,  -8.0370],
+         [ -1.6272,  -9.8270, -16.8807,  ...,  10.8405,   3.0220,  -8.4365],
+         [ -1.6301,  -9.7864, -16.8443,  ...,  10.8005,   3.0066,  -8.4005],
+         ...,
+         [  4.9306,   4.2156,  15.2592,  ...,  -5.6339,   2.1348,   3.2530],
+         [  4.8357,   4.5278,  15.4112,  ...,  -5.9230,   1.9488,   3.5433],
+         [  4.4626,   5.3054,  15.5146,  ...,  -6.6186,   1.3666,   4.2771]],
+
+        ...,
+
+        [[ -2.4237,  -3.8179, -10.5004,  ...,   4.6803,  -0.6920,  -2.9873],
+         [ -2.4693,  -4.4700, -11.4739,  ...,   5.3906,  -0.4296,  -3.5547],
+         [ -2.5559,  -5.8765, -13.5329,  ...,   6.9073,   0.1223,  -4.7812],
+         ...,
+         [  4.8252,   1.6013,  11.9364,  ...,  -2.8539,   2.8632,   0.9529],
+         [  4.8240,   1.6148,  11.9508,  ...,  -2.8663,   2.8552,   0.9654],
+         [  4.8236,   1.6313,  11.9687,  ...,  -2.8818,   2.8463,   0.9804]],
+
+        [[ -2.0718,  -8.9775, -16.9788,  ...,  10.1998,   2.2208,  -7.6441],
+         [ -1.9320,  -7.9732, -15.4129,  ...,   9.1119,   1.9008,  -6.7493],
+         [ -1.8916,  -7.5721, -14.8064,  ...,   8.6748,   1.7683,  -6.3934],
+         ...,
+         [  4.9914,   3.3894,  14.3089,  ...,  -4.7353,   2.3973,   2.5122],
+         [  4.9797,   3.4794,  14.3805,  ...,  -4.8181,   2.3525,   2.5945],
+         [  4.9344,   3.7568,  14.5851,  ...,  -5.0731,   2.2057,   2.8483]],
+
+        [[ -1.5823,  -9.3775, -16.2667,  ...,  10.3821,   2.8809,  -8.0440],
+         [ -1.6327,  -9.8354, -16.9031,  ...,  10.8512,   3.0205,  -8.4435],
+         [ -1.6360,  -9.7979, -16.8712,  ...,  10.8142,   3.0060,  -8.4101],
+         ...,
+         [  4.9329,   4.2109,  15.2588,  ...,  -5.6294,   2.1375,   3.2485],
+         [  4.8390,   4.5215,  15.4112,  ...,  -5.9170,   1.9530,   3.5373],
+         [  4.4687,   5.2990,  15.5201,  ...,  -6.6129,   1.3730,   4.2709]]],
+       device='cuda:0')
+z[:100] values: tensor([[[ -1.8392,  -4.5005, -10.3334,  ...,   5.1862,   0.4037,  -3.6544],
+         [ -1.9019,  -8.2456, -15.7059,  ...,   9.3871,   2.0724,  -7.0034],
+         [ -2.0120,  -8.9436, -16.8106,  ...,  10.1408,   2.2703,  -7.6211],
+         ...,
+         [  4.9666,   3.6745,  14.5605,  ...,  -5.0079,   2.2840,   2.7685],
+         [  4.8731,   4.1171,  14.8452,  ...,  -5.4130,   2.0333,   3.1746],
+         [  4.6577,   4.7302,  15.0677,  ...,  -5.9602,   1.6115,   3.7446]],
+
+        [[ -1.6246,  -9.6041, -16.6321,  ...,  10.6184,   2.9327,  -8.2411],
+         [ -1.6131,  -9.3621, -16.3333,  ...,  10.3722,   2.8513,  -8.0289],
+         [ -1.6175,  -9.3723, -16.3629,  ...,  10.3864,   2.8574,  -8.0383],
+         ...,
+         [  4.7727,   4.6410,  15.3806,  ...,  -6.0117,   1.8555,   3.6496],
+         [  4.4386,   5.3014,  15.4304,  ...,  -6.5977,   1.3432,   4.2731],
+         [  3.7929,   5.9837,  14.8474,  ...,  -7.1353,   0.5711,   4.9446]],
+
+        [[ -1.5768,  -9.3691, -16.2437,  ...,  10.3712,   2.8823,  -8.0370],
+         [ -1.6272,  -9.8270, -16.8807,  ...,  10.8405,   3.0220,  -8.4365],
+         [ -1.6301,  -9.7864, -16.8443,  ...,  10.8005,   3.0066,  -8.4005],
+         ...,
+         [  4.9306,   4.2156,  15.2592,  ...,  -5.6339,   2.1348,   3.2530],
+         [  4.8357,   4.5278,  15.4112,  ...,  -5.9230,   1.9488,   3.5433],
+         [  4.4626,   5.3054,  15.5146,  ...,  -6.6186,   1.3666,   4.2771]],
+
+        ...,
+
+        [[ -2.4237,  -3.8179, -10.5004,  ...,   4.6803,  -0.6920,  -2.9873],
+         [ -2.4693,  -4.4700, -11.4739,  ...,   5.3906,  -0.4296,  -3.5547],
+         [ -2.5559,  -5.8765, -13.5329,  ...,   6.9073,   0.1223,  -4.7812],
+         ...,
+         [  4.8252,   1.6013,  11.9364,  ...,  -2.8539,   2.8632,   0.9529],
+         [  4.8240,   1.6148,  11.9508,  ...,  -2.8663,   2.8552,   0.9654],
+         [  4.8236,   1.6313,  11.9687,  ...,  -2.8818,   2.8463,   0.9804]],
+
+        [[ -2.0718,  -8.9775, -16.9788,  ...,  10.1998,   2.2208,  -7.6441],
+         [ -1.9320,  -7.9732, -15.4129,  ...,   9.1119,   1.9008,  -6.7493],
+         [ -1.8916,  -7.5721, -14.8064,  ...,   8.6748,   1.7683,  -6.3934],
+         ...,
+         [  4.9914,   3.3894,  14.3089,  ...,  -4.7353,   2.3973,   2.5122],
+         [  4.9797,   3.4794,  14.3805,  ...,  -4.8181,   2.3525,   2.5945],
+         [  4.9344,   3.7568,  14.5851,  ...,  -5.0731,   2.2057,   2.8483]],
+
+        [[ -1.5823,  -9.3775, -16.2667,  ...,  10.3821,   2.8809,  -8.0440],
+         [ -1.6327,  -9.8354, -16.9031,  ...,  10.8512,   3.0205,  -8.4435],
+         [ -1.6360,  -9.7979, -16.8712,  ...,  10.8142,   3.0060,  -8.4101],
+         ...,
+         [  4.9329,   4.2109,  15.2588,  ...,  -5.6294,   2.1375,   3.2485],
+         [  4.8390,   4.5215,  15.4112,  ...,  -5.9170,   1.9530,   3.5373],
+         [  4.4687,   5.2990,  15.5201,  ...,  -6.6129,   1.3730,   4.2709]]],
+       device='cuda:0')
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+Iteration: 1
+Iteration: 1
+Iteration: 1
+time taken for epoch 0:00:06.349620
+time taken for epoch 0:00:06.349620
+time taken for epoch 0:00:06.349620
+Total pretraining time 0:00:06.349815
+Total pretraining time 0:00:06.349815
+Total pretraining time 0:00:06.349815
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+Using AdamW
+Using AdamW
+Using AdamW
+Using AdamW
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded optimizers from epoch 399
+loaded optimizers from epoch 399
+loaded optimizers from epoch 399
+loaded optimizers from epoch 399
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar
+Starting
+Starting
+Starting
+Starting
+Iteration: 0
+Iteration: 0
+Iteration: 0
+Iteration: 0
+z[:100] values: tensor([[[-0.8568, -4.0930, -7.9617,  ...,  4.8285, -1.0499, -3.4159],
+         [-0.8406, -4.0517, -7.9213,  ...,  4.7854, -1.0363, -3.3789],
+         [-0.8332, -4.0374, -7.9116,  ...,  4.7713, -1.0286, -3.3664],
+         ...,
+         [-1.0473,  0.0909,  6.8810,  ..., -1.2465, -1.0672, -0.0932],
+         [-1.0503,  0.0875,  6.8819,  ..., -1.2448, -1.0688, -0.0969],
+         [-1.0513,  0.0867,  6.8827,  ..., -1.2444, -1.0687, -0.0979]],
+
+        [[-0.9312, -4.1132, -7.8488,  ...,  4.8192, -1.1637, -3.4252],
+         [-0.9912, -4.2834, -8.0387,  ...,  4.9982, -1.2093, -3.5786],
+         [-1.0518, -4.4639, -8.2447,  ...,  5.1882, -1.2514, -3.7425],
+         ...,
+         [-1.0372,  0.1693,  7.0008,  ..., -1.3420, -1.0823, -0.0194],
+         [-1.0384,  0.1684,  7.0032,  ..., -1.3424, -1.0825, -0.0208],
+         [-1.0367,  0.1716,  7.0065,  ..., -1.3455, -1.0804, -0.0182]],
+
+        [[-0.4937, -3.2328, -6.8234,  ...,  3.9061, -0.6262, -2.6898],
+         [-0.5013, -3.2526, -6.8472,  ...,  3.9281, -0.6318, -2.7072],
+         [-0.5312, -3.3282, -6.9316,  ...,  4.0085, -0.6604, -2.7730],
+         ...,
+         [-1.1689, -0.2872,  6.2920,  ..., -0.8079, -1.1327, -0.4270],
+         [-1.2181, -0.3801,  6.2166,  ..., -0.7272, -1.1818, -0.5096],
+         [-1.2093, -0.3649,  6.2283,  ..., -0.7398, -1.1734, -0.4959]],
+
+        ...,
+
+        [[-0.2846, -2.8954, -6.6468,  ...,  3.6020, -0.3952, -2.3959],
+         [-0.3872, -3.1577, -6.9521,  ...,  3.8796, -0.4978, -2.6232],
+         [-0.4661, -3.3593, -7.1843,  ...,  4.0920, -0.5748, -2.7989],
+         ...,
+         [-1.1848, -0.3359,  6.2621,  ..., -0.7640, -1.1390, -0.4732],
+         [-1.1511, -0.2739,  6.3143,  ..., -0.8176, -1.1046, -0.4182],
+         [-1.0567, -0.0802,  6.4877,  ..., -0.9927, -1.0058, -0.2483]],
+
+        [[-0.6137, -3.5033, -7.3030,  ...,  4.2108, -0.8081, -2.8994],
+         [-0.5954, -3.4601, -7.2578,  ...,  4.1656, -0.7915, -2.8615],
+         [-0.5581, -3.3662, -7.1540,  ...,  4.0671, -0.7562, -2.7793],
+         ...,
+         [-1.1008, -0.0693,  6.6608,  ..., -1.0693, -1.0971, -0.2364],
+         [-1.0989, -0.0661,  6.6626,  ..., -1.0719, -1.0952, -0.2336],
+         [-1.0985, -0.0656,  6.6630,  ..., -1.0722, -1.0943, -0.2333]],
+
+        [[-0.5426, -3.3334, -7.0522,  ...,  4.0236, -0.7227, -2.7595],
+         [-0.5066, -3.2418, -6.9495,  ...,  3.9276, -0.6859, -2.6801],
+         [-0.4934, -3.2083, -6.9112,  ...,  3.8930, -0.6716, -2.6511],
+         ...,
+         [-1.1569, -0.2053,  6.4730,  ..., -0.9224, -1.1407, -0.3556],
+         [-1.1530, -0.1999,  6.4759,  ..., -0.9263, -1.1368, -0.3507],
+         [-1.1415, -0.1806,  6.4887,  ..., -0.9417, -1.1260, -0.3330]]],
+       device='cuda:0')
+z[:100] values: tensor([[[-0.8568, -4.0930, -7.9617,  ...,  4.8285, -1.0499, -3.4159],
+         [-0.8406, -4.0517, -7.9213,  ...,  4.7854, -1.0363, -3.3789],
+         [-0.8332, -4.0374, -7.9116,  ...,  4.7713, -1.0286, -3.3664],
+         ...,
+         [-1.0473,  0.0909,  6.8810,  ..., -1.2465, -1.0672, -0.0932],
+         [-1.0503,  0.0875,  6.8819,  ..., -1.2448, -1.0688, -0.0969],
+         [-1.0513,  0.0867,  6.8827,  ..., -1.2444, -1.0687, -0.0979]],
+
+        [[-0.9312, -4.1132, -7.8488,  ...,  4.8192, -1.1637, -3.4252],
+         [-0.9912, -4.2834, -8.0387,  ...,  4.9982, -1.2093, -3.5786],
+         [-1.0518, -4.4639, -8.2447,  ...,  5.1882, -1.2514, -3.7425],
+         ...,
+         [-1.0372,  0.1693,  7.0008,  ..., -1.3420, -1.0823, -0.0194],
+         [-1.0384,  0.1684,  7.0032,  ..., -1.3424, -1.0825, -0.0208],
+         [-1.0367,  0.1716,  7.0065,  ..., -1.3455, -1.0804, -0.0182]],
+
+        [[-0.4937, -3.2328, -6.8234,  ...,  3.9061, -0.6262, -2.6898],
+         [-0.5013, -3.2526, -6.8472,  ...,  3.9281, -0.6318, -2.7072],
+         [-0.5312, -3.3282, -6.9316,  ...,  4.0085, -0.6604, -2.7730],
+         ...,
+         [-1.1689, -0.2872,  6.2920,  ..., -0.8079, -1.1327, -0.4270],
+         [-1.2181, -0.3801,  6.2166,  ..., -0.7272, -1.1818, -0.5096],
+         [-1.2093, -0.3649,  6.2283,  ..., -0.7398, -1.1734, -0.4959]],
+
+        ...,
+
+        [[-0.2846, -2.8954, -6.6468,  ...,  3.6020, -0.3952, -2.3959],
+         [-0.3872, -3.1577, -6.9521,  ...,  3.8796, -0.4978, -2.6232],
+         [-0.4661, -3.3593, -7.1843,  ...,  4.0920, -0.5748, -2.7989],
+         ...,
+         [-1.1848, -0.3359,  6.2621,  ..., -0.7640, -1.1390, -0.4732],
+         [-1.1511, -0.2739,  6.3143,  ..., -0.8176, -1.1046, -0.4182],
+         [-1.0567, -0.0802,  6.4877,  ..., -0.9927, -1.0058, -0.2483]],
+
+        [[-0.6137, -3.5033, -7.3030,  ...,  4.2108, -0.8081, -2.8994],
+         [-0.5954, -3.4601, -7.2578,  ...,  4.1656, -0.7915, -2.8615],
+         [-0.5581, -3.3662, -7.1540,  ...,  4.0671, -0.7562, -2.7793],
+         ...,
+         [-1.1008, -0.0693,  6.6608,  ..., -1.0693, -1.0971, -0.2364],
+         [-1.0989, -0.0661,  6.6626,  ..., -1.0719, -1.0952, -0.2336],
+         [-1.0985, -0.0656,  6.6630,  ..., -1.0722, -1.0943, -0.2333]],
+
+        [[-0.5426, -3.3334, -7.0522,  ...,  4.0236, -0.7227, -2.7595],
+         [-0.5066, -3.2418, -6.9495,  ...,  3.9276, -0.6859, -2.6801],
+         [-0.4934, -3.2083, -6.9112,  ...,  3.8930, -0.6716, -2.6511],
+         ...,
+         [-1.1569, -0.2053,  6.4730,  ..., -0.9224, -1.1407, -0.3556],
+         [-1.1530, -0.1999,  6.4759,  ..., -0.9263, -1.1368, -0.3507],
+         [-1.1415, -0.1806,  6.4887,  ..., -0.9417, -1.1260, -0.3330]]],
+       device='cuda:0')
+z[:100] values: tensor([[[-0.8568, -4.0930, -7.9617,  ...,  4.8285, -1.0499, -3.4159],
+         [-0.8406, -4.0517, -7.9213,  ...,  4.7854, -1.0363, -3.3789],
+         [-0.8332, -4.0374, -7.9116,  ...,  4.7713, -1.0286, -3.3664],
+         ...,
+         [-1.0473,  0.0909,  6.8810,  ..., -1.2465, -1.0672, -0.0932],
+         [-1.0503,  0.0875,  6.8819,  ..., -1.2448, -1.0688, -0.0969],
+         [-1.0513,  0.0867,  6.8827,  ..., -1.2444, -1.0687, -0.0979]],
+
+        [[-0.9312, -4.1132, -7.8488,  ...,  4.8192, -1.1637, -3.4252],
+         [-0.9912, -4.2834, -8.0387,  ...,  4.9982, -1.2093, -3.5786],
+         [-1.0518, -4.4639, -8.2447,  ...,  5.1882, -1.2514, -3.7425],
+         ...,
+         [-1.0372,  0.1693,  7.0008,  ..., -1.3420, -1.0823, -0.0194],
+         [-1.0384,  0.1684,  7.0032,  ..., -1.3424, -1.0825, -0.0208],
+         [-1.0367,  0.1716,  7.0065,  ..., -1.3455, -1.0804, -0.0182]],
+
+        [[-0.4937, -3.2328, -6.8234,  ...,  3.9061, -0.6262, -2.6898],
+         [-0.5013, -3.2526, -6.8472,  ...,  3.9281, -0.6318, -2.7072],
+         [-0.5312, -3.3282, -6.9316,  ...,  4.0085, -0.6604, -2.7730],
+         ...,
+         [-1.1689, -0.2872,  6.2920,  ..., -0.8079, -1.1327, -0.4270],
+         [-1.2181, -0.3801,  6.2166,  ..., -0.7272, -1.1818, -0.5096],
+         [-1.2093, -0.3649,  6.2283,  ..., -0.7398, -1.1734, -0.4959]],
+
+        ...,
+
+        [[-0.2846, -2.8954, -6.6468,  ...,  3.6020, -0.3952, -2.3959],
+         [-0.3872, -3.1577, -6.9521,  ...,  3.8796, -0.4978, -2.6232],
+         [-0.4661, -3.3593, -7.1843,  ...,  4.0920, -0.5748, -2.7989],
+         ...,
+         [-1.1848, -0.3359,  6.2621,  ..., -0.7640, -1.1390, -0.4732],
+         [-1.1511, -0.2739,  6.3143,  ..., -0.8176, -1.1046, -0.4182],
+         [-1.0567, -0.0802,  6.4877,  ..., -0.9927, -1.0058, -0.2483]],
+
+        [[-0.6137, -3.5033, -7.3030,  ...,  4.2108, -0.8081, -2.8994],
+         [-0.5954, -3.4601, -7.2578,  ...,  4.1656, -0.7915, -2.8615],
+         [-0.5581, -3.3662, -7.1540,  ...,  4.0671, -0.7562, -2.7793],
+         ...,
+         [-1.1008, -0.0693,  6.6608,  ..., -1.0693, -1.0971, -0.2364],
+         [-1.0989, -0.0661,  6.6626,  ..., -1.0719, -1.0952, -0.2336],
+         [-1.0985, -0.0656,  6.6630,  ..., -1.0722, -1.0943, -0.2333]],
+
+        [[-0.5426, -3.3334, -7.0522,  ...,  4.0236, -0.7227, -2.7595],
+         [-0.5066, -3.2418, -6.9495,  ...,  3.9276, -0.6859, -2.6801],
+         [-0.4934, -3.2083, -6.9112,  ...,  3.8930, -0.6716, -2.6511],
+         ...,
+         [-1.1569, -0.2053,  6.4730,  ..., -0.9224, -1.1407, -0.3556],
+         [-1.1530, -0.1999,  6.4759,  ..., -0.9263, -1.1368, -0.3507],
+         [-1.1415, -0.1806,  6.4887,  ..., -0.9417, -1.1260, -0.3330]]],
+       device='cuda:0')
+z[:100] values: tensor([[[-0.8568, -4.0930, -7.9617,  ...,  4.8285, -1.0499, -3.4159],
+         [-0.8406, -4.0517, -7.9213,  ...,  4.7854, -1.0363, -3.3789],
+         [-0.8332, -4.0374, -7.9116,  ...,  4.7713, -1.0286, -3.3664],
+         ...,
+         [-1.0473,  0.0909,  6.8810,  ..., -1.2465, -1.0672, -0.0932],
+         [-1.0503,  0.0875,  6.8819,  ..., -1.2448, -1.0688, -0.0969],
+         [-1.0513,  0.0867,  6.8827,  ..., -1.2444, -1.0687, -0.0979]],
+
+        [[-0.9312, -4.1132, -7.8488,  ...,  4.8192, -1.1637, -3.4252],
+         [-0.9912, -4.2834, -8.0387,  ...,  4.9982, -1.2093, -3.5786],
+         [-1.0518, -4.4639, -8.2447,  ...,  5.1882, -1.2514, -3.7425],
+         ...,
+         [-1.0372,  0.1693,  7.0008,  ..., -1.3420, -1.0823, -0.0194],
+         [-1.0384,  0.1684,  7.0032,  ..., -1.3424, -1.0825, -0.0208],
+         [-1.0367,  0.1716,  7.0065,  ..., -1.3455, -1.0804, -0.0182]],
+
+        [[-0.4937, -3.2328, -6.8234,  ...,  3.9061, -0.6262, -2.6898],
+         [-0.5013, -3.2526, -6.8472,  ...,  3.9281, -0.6318, -2.7072],
+         [-0.5312, -3.3282, -6.9316,  ...,  4.0085, -0.6604, -2.7730],
+         ...,
+         [-1.1689, -0.2872,  6.2920,  ..., -0.8079, -1.1327, -0.4270],
+         [-1.2181, -0.3801,  6.2166,  ..., -0.7272, -1.1818, -0.5096],
+         [-1.2093, -0.3649,  6.2283,  ..., -0.7398, -1.1734, -0.4959]],
+
+        ...,
+
+        [[-0.2846, -2.8954, -6.6468,  ...,  3.6020, -0.3952, -2.3959],
+         [-0.3872, -3.1577, -6.9521,  ...,  3.8796, -0.4978, -2.6232],
+         [-0.4661, -3.3593, -7.1843,  ...,  4.0920, -0.5748, -2.7989],
+         ...,
+         [-1.1848, -0.3359,  6.2621,  ..., -0.7640, -1.1390, -0.4732],
+         [-1.1511, -0.2739,  6.3143,  ..., -0.8176, -1.1046, -0.4182],
+         [-1.0567, -0.0802,  6.4877,  ..., -0.9927, -1.0058, -0.2483]],
+
+        [[-0.6137, -3.5033, -7.3030,  ...,  4.2108, -0.8081, -2.8994],
+         [-0.5954, -3.4601, -7.2578,  ...,  4.1656, -0.7915, -2.8615],
+         [-0.5581, -3.3662, -7.1540,  ...,  4.0671, -0.7562, -2.7793],
+         ...,
+         [-1.1008, -0.0693,  6.6608,  ..., -1.0693, -1.0971, -0.2364],
+         [-1.0989, -0.0661,  6.6626,  ..., -1.0719, -1.0952, -0.2336],
+         [-1.0985, -0.0656,  6.6630,  ..., -1.0722, -1.0943, -0.2333]],
+
+        [[-0.5426, -3.3334, -7.0522,  ...,  4.0236, -0.7227, -2.7595],
+         [-0.5066, -3.2418, -6.9495,  ...,  3.9276, -0.6859, -2.6801],
+         [-0.4934, -3.2083, -6.9112,  ...,  3.8930, -0.6716, -2.6511],
+         ...,
+         [-1.1569, -0.2053,  6.4730,  ..., -0.9224, -1.1407, -0.3556],
+         [-1.1530, -0.1999,  6.4759,  ..., -0.9263, -1.1368, -0.3507],
+         [-1.1415, -0.1806,  6.4887,  ..., -0.9417, -1.1260, -0.3330]]],
+       device='cuda:0')
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+Iteration: 1
+Iteration: 1
+Iteration: 1
+Iteration: 1
+time taken for epoch 0:00:06.625495
+time taken for epoch 0:00:06.625495
+time taken for epoch 0:00:06.625495
+time taken for epoch 0:00:06.625495
+Total pretraining time 0:00:06.625652
+Total pretraining time 0:00:06.625652
+Total pretraining time 0:00:06.625652
+Total pretraining time 0:00:06.625652
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+Using AdamW
+Using AdamW
+Using AdamW
+Using AdamW
+Using AdamW
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded optimizers from epoch 499
+loaded optimizers from epoch 499
+loaded optimizers from epoch 499
+loaded optimizers from epoch 499
+loaded optimizers from epoch 499
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+Starting
+Starting
+Starting
+Starting
+Starting
+Iteration: 0
+Iteration: 0
+Iteration: 0
+Iteration: 0
+Iteration: 0
+z[:100] values: tensor([[[-1.0500e+00, -4.0914e+00, -6.6261e+00,  ...,  4.5747e+00,
+          -1.0805e+00, -3.4938e+00],
+         [-1.0703e+00, -4.1596e+00, -6.7038e+00,  ...,  4.6444e+00,
+          -1.0954e+00, -3.5562e+00],
+         [-1.0677e+00, -4.1449e+00, -6.6799e+00,  ...,  4.6290e+00,
+          -1.0943e+00, -3.5425e+00],
+         ...,
+         [-6.7077e-01, -6.4534e-02,  5.6577e+00,  ..., -8.7405e-01,
+          -6.2922e-01, -2.0188e-01],
+         [-6.5208e-01, -2.2812e-02,  5.6860e+00,  ..., -9.1049e-01,
+          -6.1363e-01, -1.6357e-01],
+         [-6.4446e-01, -5.1070e-03,  5.6979e+00,  ..., -9.2624e-01,
+          -6.0795e-01, -1.4721e-01]],
+
+        [[-1.1278e+00, -4.2093e+00, -6.6048e+00,  ...,  4.6722e+00,
+          -1.1813e+00, -3.5962e+00],
+         [-1.1491e+00, -4.2870e+00, -6.7177e+00,  ...,  4.7521e+00,
+          -1.1992e+00, -3.6662e+00],
+         [-1.1634e+00, -4.3439e+00, -6.8148e+00,  ...,  4.8117e+00,
+          -1.2121e+00, -3.7168e+00],
+         ...,
+         [-6.3354e-01,  5.8762e-02,  5.8158e+00,  ..., -1.0109e+00,
+          -6.2948e-01, -8.6227e-02],
+         [-6.2579e-01,  7.5839e-02,  5.8272e+00,  ..., -1.0261e+00,
+          -6.2264e-01, -7.0744e-02],
+         [-6.0047e-01,  1.3190e-01,  5.8641e+00,  ..., -1.0759e+00,
+          -6.0153e-01, -1.9629e-02]],
+
+        [[-9.7950e-01, -4.0111e+00, -6.7226e+00,  ...,  4.5229e+00,
+          -9.9499e-01, -3.4223e+00],
+         [-9.9489e-01, -4.0574e+00, -6.7691e+00,  ...,  4.5696e+00,
+          -1.0065e+00, -3.4647e+00],
+         [-9.9959e-01, -4.0664e+00, -6.7732e+00,  ...,  4.5781e+00,
+          -1.0110e+00, -3.4726e+00],
+         ...,
+         [-6.7257e-01, -7.4169e-02,  5.6622e+00,  ..., -8.6778e-01,
+          -6.1332e-01, -2.1574e-01],
+         [-6.6236e-01, -5.2281e-02,  5.6768e+00,  ..., -8.8637e-01,
+          -6.0448e-01, -1.9550e-01],
+         [-6.5743e-01, -4.1003e-02,  5.6846e+00,  ..., -8.9626e-01,
+          -6.0079e-01, -1.8501e-01]],
+
+        ...,
+
+        [[-1.0604e+00, -4.0880e+00, -6.5679e+00,  ...,  4.5625e+00,
+          -1.0969e+00, -3.4904e+00],
+         [-1.0728e+00, -4.1348e+00, -6.6246e+00,  ...,  4.6113e+00,
+          -1.1044e+00, -3.5336e+00],
+         [-1.0736e+00, -4.1369e+00, -6.6247e+00,  ...,  4.6139e+00,
+          -1.1048e+00, -3.5355e+00],
+         ...,
+         [-6.7927e-01, -8.5237e-02,  5.6314e+00,  ..., -8.5233e-01,
+          -6.4082e-01, -2.1904e-01],
+         [-6.6064e-01, -4.4357e-02,  5.6587e+00,  ..., -8.8774e-01,
+          -6.2480e-01, -1.8161e-01],
+         [-6.3724e-01,  7.7905e-03,  5.6937e+00,  ..., -9.3386e-01,
+          -6.0520e-01, -1.3397e-01]],
+
+        [[-1.1567e+00, -4.2314e+00, -6.5242e+00,  ...,  4.6752e+00,
+          -1.2148e+00, -3.6174e+00],
+         [-1.1794e+00, -4.3239e+00, -6.6646e+00,  ...,  4.7722e+00,
+          -1.2323e+00, -3.7009e+00],
+         [-1.1811e+00, -4.3347e+00, -6.6848e+00,  ...,  4.7846e+00,
+          -1.2329e+00, -3.7108e+00],
+         ...,
+         [-6.5607e-01, -5.4300e-03,  5.7106e+00,  ..., -9.3452e-01,
+          -6.5464e-01, -1.3954e-01],
+         [-6.2127e-01,  7.1019e-02,  5.7583e+00,  ..., -1.0021e+00,
+          -6.2640e-01, -6.9616e-02],
+         [-5.8941e-01,  1.3972e-01,  5.7974e+00,  ..., -1.0628e+00,
+          -6.0092e-01, -6.6858e-03]],
+
+        [[-8.7898e-01, -3.8281e+00, -6.7082e+00,  ...,  4.3632e+00,
+          -8.9107e-01, -3.2555e+00],
+         [-9.1286e-01, -3.9271e+00, -6.7993e+00,  ...,  4.4624e+00,
+          -9.1701e-01, -3.3464e+00],
+         [-9.1401e-01, -3.9325e+00, -6.8077e+00,  ...,  4.4680e+00,
+          -9.1756e-01, -3.3515e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6343e+00,  ..., -8.3891e-01,
+          -6.0901e-01, -2.4516e-01],
+         [-6.7483e-01, -8.4635e-02,  5.6472e+00,  ..., -8.5502e-01,
+          -6.0065e-01, -2.2803e-01],
+         [-6.5803e-01, -4.8438e-02,  5.6740e+00,  ..., -8.8664e-01,
+          -5.8442e-01, -1.9538e-01]]], device='cuda:0')
+z[:100] values: tensor([[[-1.0500e+00, -4.0914e+00, -6.6261e+00,  ...,  4.5747e+00,
+          -1.0805e+00, -3.4938e+00],
+         [-1.0703e+00, -4.1596e+00, -6.7038e+00,  ...,  4.6444e+00,
+          -1.0954e+00, -3.5562e+00],
+         [-1.0677e+00, -4.1449e+00, -6.6799e+00,  ...,  4.6290e+00,
+          -1.0943e+00, -3.5425e+00],
+         ...,
+         [-6.7077e-01, -6.4534e-02,  5.6577e+00,  ..., -8.7405e-01,
+          -6.2922e-01, -2.0188e-01],
+         [-6.5208e-01, -2.2812e-02,  5.6860e+00,  ..., -9.1049e-01,
+          -6.1363e-01, -1.6357e-01],
+         [-6.4446e-01, -5.1070e-03,  5.6979e+00,  ..., -9.2624e-01,
+          -6.0795e-01, -1.4721e-01]],
+
+        [[-1.1278e+00, -4.2093e+00, -6.6048e+00,  ...,  4.6722e+00,
+          -1.1813e+00, -3.5962e+00],
+         [-1.1491e+00, -4.2870e+00, -6.7177e+00,  ...,  4.7521e+00,
+          -1.1992e+00, -3.6662e+00],
+         [-1.1634e+00, -4.3439e+00, -6.8148e+00,  ...,  4.8117e+00,
+          -1.2121e+00, -3.7168e+00],
+         ...,
+         [-6.3354e-01,  5.8762e-02,  5.8158e+00,  ..., -1.0109e+00,
+          -6.2948e-01, -8.6227e-02],
+         [-6.2579e-01,  7.5839e-02,  5.8272e+00,  ..., -1.0261e+00,
+          -6.2264e-01, -7.0744e-02],
+         [-6.0047e-01,  1.3190e-01,  5.8641e+00,  ..., -1.0759e+00,
+          -6.0153e-01, -1.9629e-02]],
+
+        [[-9.7950e-01, -4.0111e+00, -6.7226e+00,  ...,  4.5229e+00,
+          -9.9499e-01, -3.4223e+00],
+         [-9.9489e-01, -4.0574e+00, -6.7691e+00,  ...,  4.5696e+00,
+          -1.0065e+00, -3.4647e+00],
+         [-9.9959e-01, -4.0664e+00, -6.7732e+00,  ...,  4.5781e+00,
+          -1.0110e+00, -3.4726e+00],
+         ...,
+         [-6.7257e-01, -7.4169e-02,  5.6622e+00,  ..., -8.6778e-01,
+          -6.1332e-01, -2.1574e-01],
+         [-6.6236e-01, -5.2281e-02,  5.6768e+00,  ..., -8.8637e-01,
+          -6.0448e-01, -1.9550e-01],
+         [-6.5743e-01, -4.1003e-02,  5.6846e+00,  ..., -8.9626e-01,
+          -6.0079e-01, -1.8501e-01]],
+
+        ...,
+
+        [[-1.0604e+00, -4.0880e+00, -6.5679e+00,  ...,  4.5625e+00,
+          -1.0969e+00, -3.4904e+00],
+         [-1.0728e+00, -4.1348e+00, -6.6246e+00,  ...,  4.6113e+00,
+          -1.1044e+00, -3.5336e+00],
+         [-1.0736e+00, -4.1369e+00, -6.6247e+00,  ...,  4.6139e+00,
+          -1.1048e+00, -3.5355e+00],
+         ...,
+         [-6.7927e-01, -8.5237e-02,  5.6314e+00,  ..., -8.5233e-01,
+          -6.4082e-01, -2.1904e-01],
+         [-6.6064e-01, -4.4357e-02,  5.6587e+00,  ..., -8.8774e-01,
+          -6.2480e-01, -1.8161e-01],
+         [-6.3724e-01,  7.7905e-03,  5.6937e+00,  ..., -9.3386e-01,
+          -6.0520e-01, -1.3397e-01]],
+
+        [[-1.1567e+00, -4.2314e+00, -6.5242e+00,  ...,  4.6752e+00,
+          -1.2148e+00, -3.6174e+00],
+         [-1.1794e+00, -4.3239e+00, -6.6646e+00,  ...,  4.7722e+00,
+          -1.2323e+00, -3.7009e+00],
+         [-1.1811e+00, -4.3347e+00, -6.6848e+00,  ...,  4.7846e+00,
+          -1.2329e+00, -3.7108e+00],
+         ...,
+         [-6.5607e-01, -5.4300e-03,  5.7106e+00,  ..., -9.3452e-01,
+          -6.5464e-01, -1.3954e-01],
+         [-6.2127e-01,  7.1019e-02,  5.7583e+00,  ..., -1.0021e+00,
+          -6.2640e-01, -6.9616e-02],
+         [-5.8941e-01,  1.3972e-01,  5.7974e+00,  ..., -1.0628e+00,
+          -6.0092e-01, -6.6858e-03]],
+
+        [[-8.7898e-01, -3.8281e+00, -6.7082e+00,  ...,  4.3632e+00,
+          -8.9107e-01, -3.2555e+00],
+         [-9.1286e-01, -3.9271e+00, -6.7993e+00,  ...,  4.4624e+00,
+          -9.1701e-01, -3.3464e+00],
+         [-9.1401e-01, -3.9325e+00, -6.8077e+00,  ...,  4.4680e+00,
+          -9.1756e-01, -3.3515e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6343e+00,  ..., -8.3891e-01,
+          -6.0901e-01, -2.4516e-01],
+         [-6.7483e-01, -8.4635e-02,  5.6472e+00,  ..., -8.5502e-01,
+          -6.0065e-01, -2.2803e-01],
+         [-6.5803e-01, -4.8438e-02,  5.6740e+00,  ..., -8.8664e-01,
+          -5.8442e-01, -1.9538e-01]]], device='cuda:0')
+z[:100] values: tensor([[[-1.0500e+00, -4.0914e+00, -6.6261e+00,  ...,  4.5747e+00,
+          -1.0805e+00, -3.4938e+00],
+         [-1.0703e+00, -4.1596e+00, -6.7038e+00,  ...,  4.6444e+00,
+          -1.0954e+00, -3.5562e+00],
+         [-1.0677e+00, -4.1449e+00, -6.6799e+00,  ...,  4.6290e+00,
+          -1.0943e+00, -3.5425e+00],
+         ...,
+         [-6.7077e-01, -6.4534e-02,  5.6577e+00,  ..., -8.7405e-01,
+          -6.2922e-01, -2.0188e-01],
+         [-6.5208e-01, -2.2812e-02,  5.6860e+00,  ..., -9.1049e-01,
+          -6.1363e-01, -1.6357e-01],
+         [-6.4446e-01, -5.1070e-03,  5.6979e+00,  ..., -9.2624e-01,
+          -6.0795e-01, -1.4721e-01]],
+
+        [[-1.1278e+00, -4.2093e+00, -6.6048e+00,  ...,  4.6722e+00,
+          -1.1813e+00, -3.5962e+00],
+         [-1.1491e+00, -4.2870e+00, -6.7177e+00,  ...,  4.7521e+00,
+          -1.1992e+00, -3.6662e+00],
+         [-1.1634e+00, -4.3439e+00, -6.8148e+00,  ...,  4.8117e+00,
+          -1.2121e+00, -3.7168e+00],
+         ...,
+         [-6.3354e-01,  5.8762e-02,  5.8158e+00,  ..., -1.0109e+00,
+          -6.2948e-01, -8.6227e-02],
+         [-6.2579e-01,  7.5839e-02,  5.8272e+00,  ..., -1.0261e+00,
+          -6.2264e-01, -7.0744e-02],
+         [-6.0047e-01,  1.3190e-01,  5.8641e+00,  ..., -1.0759e+00,
+          -6.0153e-01, -1.9629e-02]],
+
+        [[-9.7950e-01, -4.0111e+00, -6.7226e+00,  ...,  4.5229e+00,
+          -9.9499e-01, -3.4223e+00],
+         [-9.9489e-01, -4.0574e+00, -6.7691e+00,  ...,  4.5696e+00,
+          -1.0065e+00, -3.4647e+00],
+         [-9.9959e-01, -4.0664e+00, -6.7732e+00,  ...,  4.5781e+00,
+          -1.0110e+00, -3.4726e+00],
+         ...,
+         [-6.7257e-01, -7.4169e-02,  5.6622e+00,  ..., -8.6778e-01,
+          -6.1332e-01, -2.1574e-01],
+         [-6.6236e-01, -5.2281e-02,  5.6768e+00,  ..., -8.8637e-01,
+          -6.0448e-01, -1.9550e-01],
+         [-6.5743e-01, -4.1003e-02,  5.6846e+00,  ..., -8.9626e-01,
+          -6.0079e-01, -1.8501e-01]],
+
+        ...,
+
+        [[-1.0604e+00, -4.0880e+00, -6.5679e+00,  ...,  4.5625e+00,
+          -1.0969e+00, -3.4904e+00],
+         [-1.0728e+00, -4.1348e+00, -6.6246e+00,  ...,  4.6113e+00,
+          -1.1044e+00, -3.5336e+00],
+         [-1.0736e+00, -4.1369e+00, -6.6247e+00,  ...,  4.6139e+00,
+          -1.1048e+00, -3.5355e+00],
+         ...,
+         [-6.7927e-01, -8.5237e-02,  5.6314e+00,  ..., -8.5233e-01,
+          -6.4082e-01, -2.1904e-01],
+         [-6.6064e-01, -4.4357e-02,  5.6587e+00,  ..., -8.8774e-01,
+          -6.2480e-01, -1.8161e-01],
+         [-6.3724e-01,  7.7905e-03,  5.6937e+00,  ..., -9.3386e-01,
+          -6.0520e-01, -1.3397e-01]],
+
+        [[-1.1567e+00, -4.2314e+00, -6.5242e+00,  ...,  4.6752e+00,
+          -1.2148e+00, -3.6174e+00],
+         [-1.1794e+00, -4.3239e+00, -6.6646e+00,  ...,  4.7722e+00,
+          -1.2323e+00, -3.7009e+00],
+         [-1.1811e+00, -4.3347e+00, -6.6848e+00,  ...,  4.7846e+00,
+          -1.2329e+00, -3.7108e+00],
+         ...,
+         [-6.5607e-01, -5.4300e-03,  5.7106e+00,  ..., -9.3452e-01,
+          -6.5464e-01, -1.3954e-01],
+         [-6.2127e-01,  7.1019e-02,  5.7583e+00,  ..., -1.0021e+00,
+          -6.2640e-01, -6.9616e-02],
+         [-5.8941e-01,  1.3972e-01,  5.7974e+00,  ..., -1.0628e+00,
+          -6.0092e-01, -6.6858e-03]],
+
+        [[-8.7898e-01, -3.8281e+00, -6.7082e+00,  ...,  4.3632e+00,
+          -8.9107e-01, -3.2555e+00],
+         [-9.1286e-01, -3.9271e+00, -6.7993e+00,  ...,  4.4624e+00,
+          -9.1701e-01, -3.3464e+00],
+         [-9.1401e-01, -3.9325e+00, -6.8077e+00,  ...,  4.4680e+00,
+          -9.1756e-01, -3.3515e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6343e+00,  ..., -8.3891e-01,
+          -6.0901e-01, -2.4516e-01],
+         [-6.7483e-01, -8.4635e-02,  5.6472e+00,  ..., -8.5502e-01,
+          -6.0065e-01, -2.2803e-01],
+         [-6.5803e-01, -4.8438e-02,  5.6740e+00,  ..., -8.8664e-01,
+          -5.8442e-01, -1.9538e-01]]], device='cuda:0')
+z[:100] values: tensor([[[-1.0500e+00, -4.0914e+00, -6.6261e+00,  ...,  4.5747e+00,
+          -1.0805e+00, -3.4938e+00],
+         [-1.0703e+00, -4.1596e+00, -6.7038e+00,  ...,  4.6444e+00,
+          -1.0954e+00, -3.5562e+00],
+         [-1.0677e+00, -4.1449e+00, -6.6799e+00,  ...,  4.6290e+00,
+          -1.0943e+00, -3.5425e+00],
+         ...,
+         [-6.7077e-01, -6.4534e-02,  5.6577e+00,  ..., -8.7405e-01,
+          -6.2922e-01, -2.0188e-01],
+         [-6.5208e-01, -2.2812e-02,  5.6860e+00,  ..., -9.1049e-01,
+          -6.1363e-01, -1.6357e-01],
+         [-6.4446e-01, -5.1070e-03,  5.6979e+00,  ..., -9.2624e-01,
+          -6.0795e-01, -1.4721e-01]],
+
+        [[-1.1278e+00, -4.2093e+00, -6.6048e+00,  ...,  4.6722e+00,
+          -1.1813e+00, -3.5962e+00],
+         [-1.1491e+00, -4.2870e+00, -6.7177e+00,  ...,  4.7521e+00,
+          -1.1992e+00, -3.6662e+00],
+         [-1.1634e+00, -4.3439e+00, -6.8148e+00,  ...,  4.8117e+00,
+          -1.2121e+00, -3.7168e+00],
+         ...,
+         [-6.3354e-01,  5.8762e-02,  5.8158e+00,  ..., -1.0109e+00,
+          -6.2948e-01, -8.6227e-02],
+         [-6.2579e-01,  7.5839e-02,  5.8272e+00,  ..., -1.0261e+00,
+          -6.2264e-01, -7.0744e-02],
+         [-6.0047e-01,  1.3190e-01,  5.8641e+00,  ..., -1.0759e+00,
+          -6.0153e-01, -1.9629e-02]],
+
+        [[-9.7950e-01, -4.0111e+00, -6.7226e+00,  ...,  4.5229e+00,
+          -9.9499e-01, -3.4223e+00],
+         [-9.9489e-01, -4.0574e+00, -6.7691e+00,  ...,  4.5696e+00,
+          -1.0065e+00, -3.4647e+00],
+         [-9.9959e-01, -4.0664e+00, -6.7732e+00,  ...,  4.5781e+00,
+          -1.0110e+00, -3.4726e+00],
+         ...,
+         [-6.7257e-01, -7.4169e-02,  5.6622e+00,  ..., -8.6778e-01,
+          -6.1332e-01, -2.1574e-01],
+         [-6.6236e-01, -5.2281e-02,  5.6768e+00,  ..., -8.8637e-01,
+          -6.0448e-01, -1.9550e-01],
+         [-6.5743e-01, -4.1003e-02,  5.6846e+00,  ..., -8.9626e-01,
+          -6.0079e-01, -1.8501e-01]],
+
+        ...,
+
+        [[-1.0604e+00, -4.0880e+00, -6.5679e+00,  ...,  4.5625e+00,
+          -1.0969e+00, -3.4904e+00],
+         [-1.0728e+00, -4.1348e+00, -6.6246e+00,  ...,  4.6113e+00,
+          -1.1044e+00, -3.5336e+00],
+         [-1.0736e+00, -4.1369e+00, -6.6247e+00,  ...,  4.6139e+00,
+          -1.1048e+00, -3.5355e+00],
+         ...,
+         [-6.7927e-01, -8.5237e-02,  5.6314e+00,  ..., -8.5233e-01,
+          -6.4082e-01, -2.1904e-01],
+         [-6.6064e-01, -4.4357e-02,  5.6587e+00,  ..., -8.8774e-01,
+          -6.2480e-01, -1.8161e-01],
+         [-6.3724e-01,  7.7905e-03,  5.6937e+00,  ..., -9.3386e-01,
+          -6.0520e-01, -1.3397e-01]],
+
+        [[-1.1567e+00, -4.2314e+00, -6.5242e+00,  ...,  4.6752e+00,
+          -1.2148e+00, -3.6174e+00],
+         [-1.1794e+00, -4.3239e+00, -6.6646e+00,  ...,  4.7722e+00,
+          -1.2323e+00, -3.7009e+00],
+         [-1.1811e+00, -4.3347e+00, -6.6848e+00,  ...,  4.7846e+00,
+          -1.2329e+00, -3.7108e+00],
+         ...,
+         [-6.5607e-01, -5.4300e-03,  5.7106e+00,  ..., -9.3452e-01,
+          -6.5464e-01, -1.3954e-01],
+         [-6.2127e-01,  7.1019e-02,  5.7583e+00,  ..., -1.0021e+00,
+          -6.2640e-01, -6.9616e-02],
+         [-5.8941e-01,  1.3972e-01,  5.7974e+00,  ..., -1.0628e+00,
+          -6.0092e-01, -6.6858e-03]],
+
+        [[-8.7898e-01, -3.8281e+00, -6.7082e+00,  ...,  4.3632e+00,
+          -8.9107e-01, -3.2555e+00],
+         [-9.1286e-01, -3.9271e+00, -6.7993e+00,  ...,  4.4624e+00,
+          -9.1701e-01, -3.3464e+00],
+         [-9.1401e-01, -3.9325e+00, -6.8077e+00,  ...,  4.4680e+00,
+          -9.1756e-01, -3.3515e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6343e+00,  ..., -8.3891e-01,
+          -6.0901e-01, -2.4516e-01],
+         [-6.7483e-01, -8.4635e-02,  5.6472e+00,  ..., -8.5502e-01,
+          -6.0065e-01, -2.2803e-01],
+         [-6.5803e-01, -4.8438e-02,  5.6740e+00,  ..., -8.8664e-01,
+          -5.8442e-01, -1.9538e-01]]], device='cuda:0')
+z[:100] values: tensor([[[-1.0500e+00, -4.0914e+00, -6.6261e+00,  ...,  4.5747e+00,
+          -1.0805e+00, -3.4938e+00],
+         [-1.0703e+00, -4.1596e+00, -6.7038e+00,  ...,  4.6444e+00,
+          -1.0954e+00, -3.5562e+00],
+         [-1.0677e+00, -4.1449e+00, -6.6799e+00,  ...,  4.6290e+00,
+          -1.0943e+00, -3.5425e+00],
+         ...,
+         [-6.7077e-01, -6.4534e-02,  5.6577e+00,  ..., -8.7405e-01,
+          -6.2922e-01, -2.0188e-01],
+         [-6.5208e-01, -2.2812e-02,  5.6860e+00,  ..., -9.1049e-01,
+          -6.1363e-01, -1.6357e-01],
+         [-6.4446e-01, -5.1070e-03,  5.6979e+00,  ..., -9.2624e-01,
+          -6.0795e-01, -1.4721e-01]],
+
+        [[-1.1278e+00, -4.2093e+00, -6.6048e+00,  ...,  4.6722e+00,
+          -1.1813e+00, -3.5962e+00],
+         [-1.1491e+00, -4.2870e+00, -6.7177e+00,  ...,  4.7521e+00,
+          -1.1992e+00, -3.6662e+00],
+         [-1.1634e+00, -4.3439e+00, -6.8148e+00,  ...,  4.8117e+00,
+          -1.2121e+00, -3.7168e+00],
+         ...,
+         [-6.3354e-01,  5.8762e-02,  5.8158e+00,  ..., -1.0109e+00,
+          -6.2948e-01, -8.6227e-02],
+         [-6.2579e-01,  7.5839e-02,  5.8272e+00,  ..., -1.0261e+00,
+          -6.2264e-01, -7.0744e-02],
+         [-6.0047e-01,  1.3190e-01,  5.8641e+00,  ..., -1.0759e+00,
+          -6.0153e-01, -1.9629e-02]],
+
+        [[-9.7950e-01, -4.0111e+00, -6.7226e+00,  ...,  4.5229e+00,
+          -9.9499e-01, -3.4223e+00],
+         [-9.9489e-01, -4.0574e+00, -6.7691e+00,  ...,  4.5696e+00,
+          -1.0065e+00, -3.4647e+00],
+         [-9.9959e-01, -4.0664e+00, -6.7732e+00,  ...,  4.5781e+00,
+          -1.0110e+00, -3.4726e+00],
+         ...,
+         [-6.7257e-01, -7.4169e-02,  5.6622e+00,  ..., -8.6778e-01,
+          -6.1332e-01, -2.1574e-01],
+         [-6.6236e-01, -5.2281e-02,  5.6768e+00,  ..., -8.8637e-01,
+          -6.0448e-01, -1.9550e-01],
+         [-6.5743e-01, -4.1003e-02,  5.6846e+00,  ..., -8.9626e-01,
+          -6.0079e-01, -1.8501e-01]],
+
+        ...,
+
+        [[-1.0604e+00, -4.0880e+00, -6.5679e+00,  ...,  4.5625e+00,
+          -1.0969e+00, -3.4904e+00],
+         [-1.0728e+00, -4.1348e+00, -6.6246e+00,  ...,  4.6113e+00,
+          -1.1044e+00, -3.5336e+00],
+         [-1.0736e+00, -4.1369e+00, -6.6247e+00,  ...,  4.6139e+00,
+          -1.1048e+00, -3.5355e+00],
+         ...,
+         [-6.7927e-01, -8.5237e-02,  5.6314e+00,  ..., -8.5233e-01,
+          -6.4082e-01, -2.1904e-01],
+         [-6.6064e-01, -4.4357e-02,  5.6587e+00,  ..., -8.8774e-01,
+          -6.2480e-01, -1.8161e-01],
+         [-6.3724e-01,  7.7905e-03,  5.6937e+00,  ..., -9.3386e-01,
+          -6.0520e-01, -1.3397e-01]],
+
+        [[-1.1567e+00, -4.2314e+00, -6.5242e+00,  ...,  4.6752e+00,
+          -1.2148e+00, -3.6174e+00],
+         [-1.1794e+00, -4.3239e+00, -6.6646e+00,  ...,  4.7722e+00,
+          -1.2323e+00, -3.7009e+00],
+         [-1.1811e+00, -4.3347e+00, -6.6848e+00,  ...,  4.7846e+00,
+          -1.2329e+00, -3.7108e+00],
+         ...,
+         [-6.5607e-01, -5.4300e-03,  5.7106e+00,  ..., -9.3452e-01,
+          -6.5464e-01, -1.3954e-01],
+         [-6.2127e-01,  7.1019e-02,  5.7583e+00,  ..., -1.0021e+00,
+          -6.2640e-01, -6.9616e-02],
+         [-5.8941e-01,  1.3972e-01,  5.7974e+00,  ..., -1.0628e+00,
+          -6.0092e-01, -6.6858e-03]],
+
+        [[-8.7898e-01, -3.8281e+00, -6.7082e+00,  ...,  4.3632e+00,
+          -8.9107e-01, -3.2555e+00],
+         [-9.1286e-01, -3.9271e+00, -6.7993e+00,  ...,  4.4624e+00,
+          -9.1701e-01, -3.3464e+00],
+         [-9.1401e-01, -3.9325e+00, -6.8077e+00,  ...,  4.4680e+00,
+          -9.1756e-01, -3.3515e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6343e+00,  ..., -8.3891e-01,
+          -6.0901e-01, -2.4516e-01],
+         [-6.7483e-01, -8.4635e-02,  5.6472e+00,  ..., -8.5502e-01,
+          -6.0065e-01, -2.2803e-01],
+         [-6.5803e-01, -4.8438e-02,  5.6740e+00,  ..., -8.8664e-01,
+          -5.8442e-01, -1.9538e-01]]], device='cuda:0')
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+Iteration: 1
+Iteration: 1
+Iteration: 1
+Iteration: 1
+Iteration: 1
+time taken for epoch 0:00:06.311480
+time taken for epoch 0:00:06.311480
+time taken for epoch 0:00:06.311480
+time taken for epoch 0:00:06.311480
+time taken for epoch 0:00:06.311480
+Total pretraining time 0:00:06.314924
+Total pretraining time 0:00:06.314924
+Total pretraining time 0:00:06.314924
+Total pretraining time 0:00:06.314924
+Total pretraining time 0:00:06.314924
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+loaded optimizers from epoch 99
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar
+Starting
+Iteration: 0
+z[:100] values: tensor([[[ 23.7126, -22.5902,  -0.4155,  ..., -14.4794,  -3.5487, -25.5933],
+         [ 23.7123, -22.5903,  -0.4155,  ..., -14.4795,  -3.5488, -25.5934],
+         [ 23.7123, -22.5904,  -0.4155,  ..., -14.4795,  -3.5489, -25.5934],
+         ...,
+         [ 23.7125, -22.5903,  -0.4154,  ..., -14.4795,  -3.5486, -25.5933],
+         [ 23.7123, -22.5904,  -0.4154,  ..., -14.4795,  -3.5487, -25.5933],
+         [ 23.7124, -22.5905,  -0.4154,  ..., -14.4795,  -3.5487, -25.5933]],
+
+        [[ 10.0686,  19.8881,   3.8852,  ...,  17.9879,  22.9635,  16.9424],
+         [ 10.0580,  19.8906,   3.8840,  ...,  17.9890,  22.9591,  16.9469],
+         [ 10.0503,  19.8922,   3.8832,  ...,  17.9898,  22.9560,  16.9501],
+         ...,
+         [  7.7058,  20.4227,   3.6012,  ...,  18.1806,  21.9572,  17.9094],
+         [ 10.0736,  19.8868,   3.8862,  ...,  17.9873,  22.9657,  16.9403],
+         [ 10.0669,  19.8882,   3.8854,  ...,  17.9880,  22.9629,  16.9431]],
+
+        [[ 23.7116, -22.6066,  -0.4264,  ..., -14.4696,  -3.5645, -25.6014],
+         [ 23.7113, -22.6068,  -0.4264,  ..., -14.4698,  -3.5648, -25.6015],
+         [ 23.7110, -22.6069,  -0.4264,  ..., -14.4699,  -3.5650, -25.6016],
+         ...,
+         [ 23.7111, -22.6068,  -0.4265,  ..., -14.4698,  -3.5648, -25.6015],
+         [ 23.7107, -22.6069,  -0.4265,  ..., -14.4700,  -3.5651, -25.6016],
+         [ 23.7105, -22.6071,  -0.4265,  ..., -14.4701,  -3.5653, -25.6016]],
+
+        ...,
+
+        [[-33.4380,   7.2015,  -2.5153,  ...,   0.2504, -15.3844,  12.8513],
+         [-33.4399,   7.1936,  -2.5163,  ...,   0.2434, -15.3923,  12.8441],
+         [-33.4423,   7.1832,  -2.5176,  ...,   0.2343, -15.4025,  12.8347],
+         ...,
+         [-33.4413,   7.1856,  -2.5173,  ...,   0.2363, -15.4001,  12.8368],
+         [-33.4439,   7.1744,  -2.5187,  ...,   0.2265, -15.4111,  12.8267],
+         [-33.4461,   7.1647,  -2.5200,  ...,   0.2181, -15.4206,  12.8180]],
+
+        [[  8.6738,  20.2495,   3.7404,  ...,  18.1189,  22.4178,  17.5455],
+         [  8.6648,  20.2512,   3.7394,  ...,  18.1195,  22.4138,  17.5490],
+         [  8.6634,  20.2513,   3.7392,  ...,  18.1197,  22.4131,  17.5495],
+         ...,
+         [  8.6906,  20.2459,   3.7428,  ...,  18.1175,  22.4253,  17.5388],
+         [  8.6826,  20.2474,   3.7418,  ...,  18.1181,  22.4217,  17.5419],
+         [  8.6803,  20.2477,   3.7415,  ...,  18.1183,  22.4206,  17.5428]],
+
+        [[ 23.6967, -22.6041,  -0.4249,  ..., -14.4813,  -3.5717, -25.6018],
+         [ 23.6967, -22.6042,  -0.4249,  ..., -14.4813,  -3.5717, -25.6018],
+         [ 23.6969, -22.6042,  -0.4249,  ..., -14.4812,  -3.5716, -25.6017],
+         ...,
+         [ 23.6965, -22.6043,  -0.4250,  ..., -14.4813,  -3.5718, -25.6018],
+         [ 23.6967, -22.6042,  -0.4250,  ..., -14.4812,  -3.5716, -25.6017],
+         [ 23.6969, -22.6042,  -0.4250,  ..., -14.4811,  -3.5714, -25.6017]]],
+       device='cuda:0')
+torch.Size([64, 4, 16, 768])
+torch.Size([4, 16, 768])
+Iteration: 1
+time taken for epoch 0:00:10.309182
+Total pretraining time 0:00:10.309321
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+Initialized (rank/world-size) 0/1
+train.py: _GLOBAL_SEED=0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+Initialized ImageNet
+ImageNet dataset created
+ImageNet dataset created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+Using AdamW
+Using AdamW
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 199 with msg: <All keys matched successfully>
+loaded optimizers from epoch 199
+loaded optimizers from epoch 199
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar
+Starting
+Starting
+Iteration: 0
+Iteration: 0
+z[:100] values: tensor([[[ 23.5324,   5.1633,  23.7562,  ...,  -5.9249,  12.0761,   4.6218],
+         [ 23.5357,   5.1671,  23.7661,  ...,  -5.9296,  12.0755,   4.6249],
+         [ 23.5352,   5.1664,  23.7643,  ...,  -5.9287,  12.0758,   4.6244],
+         ...,
+         [ 23.9843,   5.3103,  24.4868,  ...,  -6.3067,  12.0923,   4.7599],
+         [ 23.9738,   5.3247,  24.5007,  ...,  -6.3117,  12.0857,   4.7708],
+         [ 23.9714,   5.3259,  24.5004,  ...,  -6.3112,  12.0851,   4.7717]],
+
+        [[ -7.1750, -18.9219, -41.9743,  ...,  20.6836,   6.4487, -15.5910],
+         [ -7.1575, -18.9140, -41.9494,  ...,  20.6755,   6.4563, -15.5843],
+         [ -7.2164, -18.9425, -42.0350,  ...,  20.7032,   6.4302, -15.6083],
+         ...,
+         [ 12.9664,  -6.9911,  -7.3315,  ...,   7.4576,  12.8375,  -5.6299],
+         [ 12.9377,  -7.0195,  -7.4042,  ...,   7.4880,  12.8352,  -5.6536],
+         [ 12.9264,  -7.0307,  -7.4328,  ...,   7.4998,  12.8341,  -5.6629]],
+
+        [[-19.7884,   1.2981, -10.0896,  ...,   0.7917, -12.1968,   0.7481],
+         [-19.8024,   1.2698, -10.1497,  ...,   0.8184, -12.1927,   0.7253],
+         [-19.8261,   1.2210, -10.2527,  ...,   0.8645, -12.1853,   0.6859],
+         ...,
+         [ -7.9028,  17.3002,  25.9931,  ..., -15.0063, -12.2733,  13.6989],
+         [ -8.3272,  16.9364,  25.0630,  ..., -14.6323, -12.3558,  13.4003],
+         [-10.7687,  14.7252,  19.4479,  ..., -12.3499, -12.7457,  11.5847]],
+
+        ...,
+
+        [[-12.4575,   9.3158,   8.7557,  ...,  -6.1525, -11.0896,   7.2197],
+         [-11.9212,   9.9328,  10.2262,  ...,  -6.7641, -11.0530,   7.7231],
+         [-11.3290,  10.5893,  11.8049,  ...,  -7.4172, -11.0016,   8.2593],
+         ...,
+         [ -3.5436, -14.6968, -30.7089,  ...,  15.8484,   5.3043, -12.0132],
+         [  6.1086, -12.5575, -21.8270,  ...,  12.8643,  10.6364, -10.2954],
+         [  6.0968, -12.5642, -21.8462,  ...,  12.8720,  10.6329, -10.3010]],
+
+        [[-15.0637,   7.8292,   4.6698,  ...,  -5.0972, -12.1701,   6.0262],
+         [-15.0642,   7.8284,   4.6680,  ...,  -5.0965, -12.1701,   6.0256],
+         [-15.0806,   7.8065,   4.6174,  ...,  -5.0751, -12.1697,   6.0078],
+         ...,
+         [  6.0513, -11.5371, -20.1395,  ...,  11.6063,   9.8001,  -9.5254],
+         [  0.9357, -14.8873, -29.5894,  ...,  15.1763,   8.3151, -12.3338],
+         [  0.8765, -14.9162, -29.6777,  ...,  15.2081,   8.2928, -12.3579]],
+
+        [[-20.1162,   0.6889, -11.4026,  ...,   1.3277, -12.1552,   0.2516],
+         [-20.0869,   0.7505, -11.2726,  ...,   1.2696, -12.1650,   0.3014],
+         [-20.0799,   0.7643, -11.2430,  ...,   1.2564, -12.1672,   0.3125],
+         ...,
+         [-13.8303,  11.1731,  11.2110,  ...,  -8.8862, -13.0336,   8.7029],
+         [-13.8309,  11.1714,  11.2083,  ...,  -8.8846, -13.0335,   8.7015],
+         [-13.8524,  11.1461,  11.1482,  ...,  -8.8595, -13.0346,   8.6809]]],
+       device='cuda:0')
+z[:100] values: tensor([[[ 23.5324,   5.1633,  23.7562,  ...,  -5.9249,  12.0761,   4.6218],
+         [ 23.5357,   5.1671,  23.7661,  ...,  -5.9296,  12.0755,   4.6249],
+         [ 23.5352,   5.1664,  23.7643,  ...,  -5.9287,  12.0758,   4.6244],
+         ...,
+         [ 23.9843,   5.3103,  24.4868,  ...,  -6.3067,  12.0923,   4.7599],
+         [ 23.9738,   5.3247,  24.5007,  ...,  -6.3117,  12.0857,   4.7708],
+         [ 23.9714,   5.3259,  24.5004,  ...,  -6.3112,  12.0851,   4.7717]],
+
+        [[ -7.1750, -18.9219, -41.9743,  ...,  20.6836,   6.4487, -15.5910],
+         [ -7.1575, -18.9140, -41.9494,  ...,  20.6755,   6.4563, -15.5843],
+         [ -7.2164, -18.9425, -42.0350,  ...,  20.7032,   6.4302, -15.6083],
+         ...,
+         [ 12.9664,  -6.9911,  -7.3315,  ...,   7.4576,  12.8375,  -5.6299],
+         [ 12.9377,  -7.0195,  -7.4042,  ...,   7.4880,  12.8352,  -5.6536],
+         [ 12.9264,  -7.0307,  -7.4328,  ...,   7.4998,  12.8341,  -5.6629]],
+
+        [[-19.7884,   1.2981, -10.0896,  ...,   0.7917, -12.1968,   0.7481],
+         [-19.8024,   1.2698, -10.1497,  ...,   0.8184, -12.1927,   0.7253],
+         [-19.8261,   1.2210, -10.2527,  ...,   0.8645, -12.1853,   0.6859],
+         ...,
+         [ -7.9028,  17.3002,  25.9931,  ..., -15.0063, -12.2733,  13.6989],
+         [ -8.3272,  16.9364,  25.0630,  ..., -14.6323, -12.3558,  13.4003],
+         [-10.7687,  14.7252,  19.4479,  ..., -12.3499, -12.7457,  11.5847]],
+
+        ...,
+
+        [[-12.4575,   9.3158,   8.7557,  ...,  -6.1525, -11.0896,   7.2197],
+         [-11.9212,   9.9328,  10.2262,  ...,  -6.7641, -11.0530,   7.7231],
+         [-11.3290,  10.5893,  11.8049,  ...,  -7.4172, -11.0016,   8.2593],
+         ...,
+         [ -3.5436, -14.6968, -30.7089,  ...,  15.8484,   5.3043, -12.0132],
+         [  6.1086, -12.5575, -21.8270,  ...,  12.8643,  10.6364, -10.2954],
+         [  6.0968, -12.5642, -21.8462,  ...,  12.8720,  10.6329, -10.3010]],
+
+        [[-15.0637,   7.8292,   4.6698,  ...,  -5.0972, -12.1701,   6.0262],
+         [-15.0642,   7.8284,   4.6680,  ...,  -5.0965, -12.1701,   6.0256],
+         [-15.0806,   7.8065,   4.6174,  ...,  -5.0751, -12.1697,   6.0078],
+         ...,
+         [  6.0513, -11.5371, -20.1395,  ...,  11.6063,   9.8001,  -9.5254],
+         [  0.9357, -14.8873, -29.5894,  ...,  15.1763,   8.3151, -12.3338],
+         [  0.8765, -14.9162, -29.6777,  ...,  15.2081,   8.2928, -12.3579]],
+
+        [[-20.1162,   0.6889, -11.4026,  ...,   1.3277, -12.1552,   0.2516],
+         [-20.0869,   0.7505, -11.2726,  ...,   1.2696, -12.1650,   0.3014],
+         [-20.0799,   0.7643, -11.2430,  ...,   1.2564, -12.1672,   0.3125],
+         ...,
+         [-13.8303,  11.1731,  11.2110,  ...,  -8.8862, -13.0336,   8.7029],
+         [-13.8309,  11.1714,  11.2083,  ...,  -8.8846, -13.0335,   8.7015],
+         [-13.8524,  11.1461,  11.1482,  ...,  -8.8595, -13.0346,   8.6809]]],
+       device='cuda:0')
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+Iteration: 1
+Iteration: 1
+time taken for epoch 0:00:10.429838
+time taken for epoch 0:00:10.429838
+Total pretraining time 0:00:10.430032
+Total pretraining time 0:00:10.430032
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+Using AdamW
+Using AdamW
+Using AdamW
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 299 with msg: <All keys matched successfully>
+loaded optimizers from epoch 299
+loaded optimizers from epoch 299
+loaded optimizers from epoch 299
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar
+Starting
+Starting
+Starting
+Iteration: 0
+Iteration: 0
+Iteration: 0
+z[:100] values: tensor([[[ -1.8514,  -8.9792, -16.4837,  ...,  10.1067,   2.4596,  -7.6703],
+         [ -1.8591,  -9.0600, -16.5965,  ...,  10.1898,   2.4883,  -7.7408],
+         [ -1.8607,  -9.0734, -16.6178,  ...,  10.2041,   2.4939,  -7.7527],
+         ...,
+         [  4.9326,   4.0683,  14.9769,  ...,  -5.4208,   2.1467,   3.1212],
+         [  4.6101,   4.9764,  15.3140,  ...,  -6.2412,   1.5341,   3.9659],
+         [  3.8418,   5.9476,  14.7795,  ...,  -7.0230,   0.5369,   4.9071]],
+
+        [[ -1.7338, -10.0743, -17.4063,  ...,  11.1348,   3.0288,  -8.6458],
+         [ -1.7302,  -9.9885, -17.3009,  ...,  11.0465,   2.9966,  -8.5696],
+         [ -1.7337,  -9.9745, -17.2939,  ...,  11.0327,   2.9896,  -8.5569],
+         ...,
+         [  4.6872,   4.9452,  15.5974,  ...,  -6.3021,   1.6590,   3.9364],
+         [  4.8999,   4.4020,  15.4206,  ...,  -5.8083,   2.0276,   3.4259],
+         [  4.9710,   4.1674,  15.3031,  ...,  -5.5930,   2.1664,   3.2058]],
+
+        [[ -1.8564,  -8.9851, -16.5017,  ...,  10.1149,   2.4573,  -7.6750],
+         [ -1.8642,  -9.0677, -16.6167,  ...,  10.1998,   2.4867,  -7.7471],
+         [ -1.8661,  -9.0837, -16.6415,  ...,  10.2167,   2.4932,  -7.7612],
+         ...,
+         [  4.9347,   4.0619,  14.9751,  ...,  -5.4148,   2.1499,   3.1154],
+         [  4.6194,   4.9591,  15.3152,  ...,  -6.2259,   1.5472,   3.9498],
+         [  3.8747,   5.9224,  14.8219,  ...,  -7.0052,   0.5715,   4.8818]],
+
+        ...,
+
+        [[ -1.9736,  -3.1999,  -8.8972,  ...,   3.8646,  -0.3539,  -2.4940],
+         [ -2.0769,  -4.9140, -11.4249,  ...,   5.7430,   0.3272,  -3.9918],
+         [ -2.1031,  -7.2484, -14.7658,  ...,   8.3678,   1.3826,  -6.0745],
+         ...,
+         [  4.9615,   3.2616,  14.1011,  ...,  -4.5845,   2.3858,   2.4069],
+         [  4.8503,   3.8350,  14.4941,  ...,  -5.1066,   2.0550,   2.9343],
+         [  4.6943,   4.3177,  14.6958,  ...,  -5.5354,   1.7239,   3.3831]],
+
+        [[ -1.8531,  -4.0169,  -9.6945,  ...,   4.6678,   0.1706,  -3.2230],
+         [ -1.9288,  -8.0759, -15.5419,  ...,   9.2200,   1.9673,  -6.8453],
+         [ -2.0571,  -9.0102, -16.9856,  ...,  10.2253,   2.2626,  -7.6750],
+         ...,
+         [  4.9699,   3.7084,  14.6269,  ...,  -5.0458,   2.2650,   2.7997],
+         [  4.8606,   4.2090,  14.9419,  ...,  -5.5025,   1.9791,   3.2602],
+         [  4.5318,   5.0175,  15.1415,  ...,  -6.2128,   1.3871,   4.0170]],
+
+        [[ -1.8441,  -4.0484,  -9.7194,  ...,   4.6987,   0.1960,  -3.2519],
+         [ -1.9315,  -8.1626, -15.6607,  ...,   9.3120,   2.0058,  -6.9239],
+         [ -2.0490,  -9.0097, -16.9682,  ...,  10.2218,   2.2713,  -7.6755],
+         ...,
+         [  4.9698,   3.7213,  14.6407,  ...,  -5.0592,   2.2625,   2.8110],
+         [  4.8553,   4.2368,  14.9614,  ...,  -5.5294,   1.9667,   3.2853],
+         [  4.4923,   5.0929,  15.1423,  ...,  -6.2789,   1.3280,   4.0879]]],
+       device='cuda:0')
+z[:100] values: tensor([[[ -1.8514,  -8.9792, -16.4837,  ...,  10.1067,   2.4596,  -7.6703],
+         [ -1.8591,  -9.0600, -16.5965,  ...,  10.1898,   2.4883,  -7.7408],
+         [ -1.8607,  -9.0734, -16.6178,  ...,  10.2041,   2.4939,  -7.7527],
+         ...,
+         [  4.9326,   4.0683,  14.9769,  ...,  -5.4208,   2.1467,   3.1212],
+         [  4.6101,   4.9764,  15.3140,  ...,  -6.2412,   1.5341,   3.9659],
+         [  3.8418,   5.9476,  14.7795,  ...,  -7.0230,   0.5369,   4.9071]],
+
+        [[ -1.7338, -10.0743, -17.4063,  ...,  11.1348,   3.0288,  -8.6458],
+         [ -1.7302,  -9.9885, -17.3009,  ...,  11.0465,   2.9966,  -8.5696],
+         [ -1.7337,  -9.9745, -17.2939,  ...,  11.0327,   2.9896,  -8.5569],
+         ...,
+         [  4.6872,   4.9452,  15.5974,  ...,  -6.3021,   1.6590,   3.9364],
+         [  4.8999,   4.4020,  15.4206,  ...,  -5.8083,   2.0276,   3.4259],
+         [  4.9710,   4.1674,  15.3031,  ...,  -5.5930,   2.1664,   3.2058]],
+
+        [[ -1.8564,  -8.9851, -16.5017,  ...,  10.1149,   2.4573,  -7.6750],
+         [ -1.8642,  -9.0677, -16.6167,  ...,  10.1998,   2.4867,  -7.7471],
+         [ -1.8661,  -9.0837, -16.6415,  ...,  10.2167,   2.4932,  -7.7612],
+         ...,
+         [  4.9347,   4.0619,  14.9751,  ...,  -5.4148,   2.1499,   3.1154],
+         [  4.6194,   4.9591,  15.3152,  ...,  -6.2259,   1.5472,   3.9498],
+         [  3.8747,   5.9224,  14.8219,  ...,  -7.0052,   0.5715,   4.8818]],
+
+        ...,
+
+        [[ -1.9736,  -3.1999,  -8.8972,  ...,   3.8646,  -0.3539,  -2.4940],
+         [ -2.0769,  -4.9140, -11.4249,  ...,   5.7430,   0.3272,  -3.9918],
+         [ -2.1031,  -7.2484, -14.7658,  ...,   8.3678,   1.3826,  -6.0745],
+         ...,
+         [  4.9615,   3.2616,  14.1011,  ...,  -4.5845,   2.3858,   2.4069],
+         [  4.8503,   3.8350,  14.4941,  ...,  -5.1066,   2.0550,   2.9343],
+         [  4.6943,   4.3177,  14.6958,  ...,  -5.5354,   1.7239,   3.3831]],
+
+        [[ -1.8531,  -4.0169,  -9.6945,  ...,   4.6678,   0.1706,  -3.2230],
+         [ -1.9288,  -8.0759, -15.5419,  ...,   9.2200,   1.9673,  -6.8453],
+         [ -2.0571,  -9.0102, -16.9856,  ...,  10.2253,   2.2626,  -7.6750],
+         ...,
+         [  4.9699,   3.7084,  14.6269,  ...,  -5.0458,   2.2650,   2.7997],
+         [  4.8606,   4.2090,  14.9419,  ...,  -5.5025,   1.9791,   3.2602],
+         [  4.5318,   5.0175,  15.1415,  ...,  -6.2128,   1.3871,   4.0170]],
+
+        [[ -1.8441,  -4.0484,  -9.7194,  ...,   4.6987,   0.1960,  -3.2519],
+         [ -1.9315,  -8.1626, -15.6607,  ...,   9.3120,   2.0058,  -6.9239],
+         [ -2.0490,  -9.0097, -16.9682,  ...,  10.2218,   2.2713,  -7.6755],
+         ...,
+         [  4.9698,   3.7213,  14.6407,  ...,  -5.0592,   2.2625,   2.8110],
+         [  4.8553,   4.2368,  14.9614,  ...,  -5.5294,   1.9667,   3.2853],
+         [  4.4923,   5.0929,  15.1423,  ...,  -6.2789,   1.3280,   4.0879]]],
+       device='cuda:0')
+z[:100] values: tensor([[[ -1.8514,  -8.9792, -16.4837,  ...,  10.1067,   2.4596,  -7.6703],
+         [ -1.8591,  -9.0600, -16.5965,  ...,  10.1898,   2.4883,  -7.7408],
+         [ -1.8607,  -9.0734, -16.6178,  ...,  10.2041,   2.4939,  -7.7527],
+         ...,
+         [  4.9326,   4.0683,  14.9769,  ...,  -5.4208,   2.1467,   3.1212],
+         [  4.6101,   4.9764,  15.3140,  ...,  -6.2412,   1.5341,   3.9659],
+         [  3.8418,   5.9476,  14.7795,  ...,  -7.0230,   0.5369,   4.9071]],
+
+        [[ -1.7338, -10.0743, -17.4063,  ...,  11.1348,   3.0288,  -8.6458],
+         [ -1.7302,  -9.9885, -17.3009,  ...,  11.0465,   2.9966,  -8.5696],
+         [ -1.7337,  -9.9745, -17.2939,  ...,  11.0327,   2.9896,  -8.5569],
+         ...,
+         [  4.6872,   4.9452,  15.5974,  ...,  -6.3021,   1.6590,   3.9364],
+         [  4.8999,   4.4020,  15.4206,  ...,  -5.8083,   2.0276,   3.4259],
+         [  4.9710,   4.1674,  15.3031,  ...,  -5.5930,   2.1664,   3.2058]],
+
+        [[ -1.8564,  -8.9851, -16.5017,  ...,  10.1149,   2.4573,  -7.6750],
+         [ -1.8642,  -9.0677, -16.6167,  ...,  10.1998,   2.4867,  -7.7471],
+         [ -1.8661,  -9.0837, -16.6415,  ...,  10.2167,   2.4932,  -7.7612],
+         ...,
+         [  4.9347,   4.0619,  14.9751,  ...,  -5.4148,   2.1499,   3.1154],
+         [  4.6194,   4.9591,  15.3152,  ...,  -6.2259,   1.5472,   3.9498],
+         [  3.8747,   5.9224,  14.8219,  ...,  -7.0052,   0.5715,   4.8818]],
+
+        ...,
+
+        [[ -1.9736,  -3.1999,  -8.8972,  ...,   3.8646,  -0.3539,  -2.4940],
+         [ -2.0769,  -4.9140, -11.4249,  ...,   5.7430,   0.3272,  -3.9918],
+         [ -2.1031,  -7.2484, -14.7658,  ...,   8.3678,   1.3826,  -6.0745],
+         ...,
+         [  4.9615,   3.2616,  14.1011,  ...,  -4.5845,   2.3858,   2.4069],
+         [  4.8503,   3.8350,  14.4941,  ...,  -5.1066,   2.0550,   2.9343],
+         [  4.6943,   4.3177,  14.6958,  ...,  -5.5354,   1.7239,   3.3831]],
+
+        [[ -1.8531,  -4.0169,  -9.6945,  ...,   4.6678,   0.1706,  -3.2230],
+         [ -1.9288,  -8.0759, -15.5419,  ...,   9.2200,   1.9673,  -6.8453],
+         [ -2.0571,  -9.0102, -16.9856,  ...,  10.2253,   2.2626,  -7.6750],
+         ...,
+         [  4.9699,   3.7084,  14.6269,  ...,  -5.0458,   2.2650,   2.7997],
+         [  4.8606,   4.2090,  14.9419,  ...,  -5.5025,   1.9791,   3.2602],
+         [  4.5318,   5.0175,  15.1415,  ...,  -6.2128,   1.3871,   4.0170]],
+
+        [[ -1.8441,  -4.0484,  -9.7194,  ...,   4.6987,   0.1960,  -3.2519],
+         [ -1.9315,  -8.1626, -15.6607,  ...,   9.3120,   2.0058,  -6.9239],
+         [ -2.0490,  -9.0097, -16.9682,  ...,  10.2218,   2.2713,  -7.6755],
+         ...,
+         [  4.9698,   3.7213,  14.6407,  ...,  -5.0592,   2.2625,   2.8110],
+         [  4.8553,   4.2368,  14.9614,  ...,  -5.5294,   1.9667,   3.2853],
+         [  4.4923,   5.0929,  15.1423,  ...,  -6.2789,   1.3280,   4.0879]]],
+       device='cuda:0')
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+Iteration: 1
+Iteration: 1
+Iteration: 1
+time taken for epoch 0:00:09.188954
+time taken for epoch 0:00:09.188954
+time taken for epoch 0:00:09.188954
+Total pretraining time 0:00:09.189081
+Total pretraining time 0:00:09.189081
+Total pretraining time 0:00:09.189081
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+Using AdamW
+Using AdamW
+Using AdamW
+Using AdamW
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 399 with msg: <All keys matched successfully>
+loaded optimizers from epoch 399
+loaded optimizers from epoch 399
+loaded optimizers from epoch 399
+loaded optimizers from epoch 399
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar
+Starting
+Starting
+Starting
+Starting
+Iteration: 0
+Iteration: 0
+Iteration: 0
+Iteration: 0
+z[:100] values: tensor([[[-0.3958, -2.9907, -6.6094,  ...,  3.6616, -0.5462, -2.4725],
+         [-0.4452, -3.1156, -6.7524,  ...,  3.7944, -0.5946, -2.5806],
+         [-0.4895, -3.2244, -6.8731,  ...,  3.9091, -0.6391, -2.6748],
+         ...,
+         [-1.1787, -0.2890,  6.3458,  ..., -0.8262, -1.1515, -0.4300],
+         [-1.1626, -0.2603,  6.3675,  ..., -0.8500, -1.1361, -0.4040],
+         [-1.1463, -0.2299,  6.3918,  ..., -0.8763, -1.1207, -0.3767]],
+
+        [[-0.7138, -3.3579, -6.7789,  ...,  3.9690, -0.9984, -2.7590],
+         [-0.8540, -3.7378, -7.2103,  ...,  4.3752, -1.1190, -3.0944],
+         [-0.9073, -3.8838, -7.3734,  ...,  4.5311, -1.1634, -3.2240],
+         ...,
+         [-1.1186, -0.0431,  6.7139,  ..., -1.1116, -1.1594, -0.2037],
+         [-1.1153, -0.0382,  6.7141,  ..., -1.1148, -1.1579, -0.1985],
+         [-1.1215, -0.0480,  6.7091,  ..., -1.1069, -1.1631, -0.2075]],
+
+        [[-1.0057, -3.9866, -7.4310,  ...,  4.6248, -1.3160, -3.2996],
+         [-1.1842, -4.5130, -8.0184,  ...,  5.1825, -1.4417, -3.7761],
+         [-1.3280, -4.9652, -8.5267,  ...,  5.6561, -1.5293, -4.1913],
+         ...,
+         [-1.0265,  0.2672,  7.1475,  ..., -1.4632, -1.1145,  0.0757],
+         [-1.0275,  0.2668,  7.1506,  ..., -1.4640, -1.1139,  0.0747],
+         [-1.0186,  0.2810,  7.1556,  ..., -1.4752, -1.1084,  0.0886]],
+
+        ...,
+
+        [[-0.4919, -3.1886, -6.7119,  ...,  3.8467, -0.6255, -2.6531],
+         [-0.5040, -3.2203, -6.7496,  ...,  3.8814, -0.6356, -2.6809],
+         [-0.5296, -3.2847, -6.8217,  ...,  3.9501, -0.6602, -2.7367],
+         ...,
+         [-1.1773, -0.3060,  6.2644,  ..., -0.7883, -1.1415, -0.4430],
+         [-1.2259, -0.3995,  6.1878,  ..., -0.7066, -1.1903, -0.5261],
+         [-1.2169, -0.3838,  6.2000,  ..., -0.7197, -1.1816, -0.5120]],
+
+        [[-0.4084, -3.1118, -6.9063,  ...,  3.8202, -0.5630, -2.5696],
+         [-0.4839, -3.3077, -7.1358,  ...,  4.0275, -0.6374, -2.7399],
+         [-0.5063, -3.3682, -7.2091,  ...,  4.0916, -0.6588, -2.7928],
+         ...,
+         [-1.1485, -0.2139,  6.4559,  ..., -0.9074, -1.1208, -0.3658],
+         [-1.1402, -0.2009,  6.4641,  ..., -0.9178, -1.1131, -0.3538],
+         [-1.1212, -0.1677,  6.4885,  ..., -0.9454, -1.0946, -0.3239]],
+
+        [[-0.5411, -3.3918, -7.1786,  ...,  4.1010, -0.7142, -2.8104],
+         [-0.5104, -3.3136, -7.0927,  ...,  4.0189, -0.6832, -2.7424],
+         [-0.4587, -3.1822, -6.9429,  ...,  3.8806, -0.6315, -2.6283],
+         ...,
+         [-1.1406, -0.1802,  6.5013,  ..., -0.9457, -1.1222, -0.3343],
+         [-1.1295, -0.1623,  6.5129,  ..., -0.9600, -1.1115, -0.3181],
+         [-1.1295, -0.1631,  6.5120,  ..., -0.9589, -1.1111, -0.3189]]],
+       device='cuda:0')
+z[:100] values: tensor([[[-0.3958, -2.9907, -6.6094,  ...,  3.6616, -0.5462, -2.4725],
+         [-0.4452, -3.1156, -6.7524,  ...,  3.7944, -0.5946, -2.5806],
+         [-0.4895, -3.2244, -6.8731,  ...,  3.9091, -0.6391, -2.6748],
+         ...,
+         [-1.1787, -0.2890,  6.3458,  ..., -0.8262, -1.1515, -0.4300],
+         [-1.1626, -0.2603,  6.3675,  ..., -0.8500, -1.1361, -0.4040],
+         [-1.1463, -0.2299,  6.3918,  ..., -0.8763, -1.1207, -0.3767]],
+
+        [[-0.7138, -3.3579, -6.7789,  ...,  3.9690, -0.9984, -2.7590],
+         [-0.8540, -3.7378, -7.2103,  ...,  4.3752, -1.1190, -3.0944],
+         [-0.9073, -3.8838, -7.3734,  ...,  4.5311, -1.1634, -3.2240],
+         ...,
+         [-1.1186, -0.0431,  6.7139,  ..., -1.1116, -1.1594, -0.2037],
+         [-1.1153, -0.0382,  6.7141,  ..., -1.1148, -1.1579, -0.1985],
+         [-1.1215, -0.0480,  6.7091,  ..., -1.1069, -1.1631, -0.2075]],
+
+        [[-1.0057, -3.9866, -7.4310,  ...,  4.6248, -1.3160, -3.2996],
+         [-1.1842, -4.5130, -8.0184,  ...,  5.1825, -1.4417, -3.7761],
+         [-1.3280, -4.9652, -8.5267,  ...,  5.6561, -1.5293, -4.1913],
+         ...,
+         [-1.0265,  0.2672,  7.1475,  ..., -1.4632, -1.1145,  0.0757],
+         [-1.0275,  0.2668,  7.1506,  ..., -1.4640, -1.1139,  0.0747],
+         [-1.0186,  0.2810,  7.1556,  ..., -1.4752, -1.1084,  0.0886]],
+
+        ...,
+
+        [[-0.4919, -3.1886, -6.7119,  ...,  3.8467, -0.6255, -2.6531],
+         [-0.5040, -3.2203, -6.7496,  ...,  3.8814, -0.6356, -2.6809],
+         [-0.5296, -3.2847, -6.8217,  ...,  3.9501, -0.6602, -2.7367],
+         ...,
+         [-1.1773, -0.3060,  6.2644,  ..., -0.7883, -1.1415, -0.4430],
+         [-1.2259, -0.3995,  6.1878,  ..., -0.7066, -1.1903, -0.5261],
+         [-1.2169, -0.3838,  6.2000,  ..., -0.7197, -1.1816, -0.5120]],
+
+        [[-0.4084, -3.1118, -6.9063,  ...,  3.8202, -0.5630, -2.5696],
+         [-0.4839, -3.3077, -7.1358,  ...,  4.0275, -0.6374, -2.7399],
+         [-0.5063, -3.3682, -7.2091,  ...,  4.0916, -0.6588, -2.7928],
+         ...,
+         [-1.1485, -0.2139,  6.4559,  ..., -0.9074, -1.1208, -0.3658],
+         [-1.1402, -0.2009,  6.4641,  ..., -0.9178, -1.1131, -0.3538],
+         [-1.1212, -0.1677,  6.4885,  ..., -0.9454, -1.0946, -0.3239]],
+
+        [[-0.5411, -3.3918, -7.1786,  ...,  4.1010, -0.7142, -2.8104],
+         [-0.5104, -3.3136, -7.0927,  ...,  4.0189, -0.6832, -2.7424],
+         [-0.4587, -3.1822, -6.9429,  ...,  3.8806, -0.6315, -2.6283],
+         ...,
+         [-1.1406, -0.1802,  6.5013,  ..., -0.9457, -1.1222, -0.3343],
+         [-1.1295, -0.1623,  6.5129,  ..., -0.9600, -1.1115, -0.3181],
+         [-1.1295, -0.1631,  6.5120,  ..., -0.9589, -1.1111, -0.3189]]],
+       device='cuda:0')
+z[:100] values: tensor([[[-0.3958, -2.9907, -6.6094,  ...,  3.6616, -0.5462, -2.4725],
+         [-0.4452, -3.1156, -6.7524,  ...,  3.7944, -0.5946, -2.5806],
+         [-0.4895, -3.2244, -6.8731,  ...,  3.9091, -0.6391, -2.6748],
+         ...,
+         [-1.1787, -0.2890,  6.3458,  ..., -0.8262, -1.1515, -0.4300],
+         [-1.1626, -0.2603,  6.3675,  ..., -0.8500, -1.1361, -0.4040],
+         [-1.1463, -0.2299,  6.3918,  ..., -0.8763, -1.1207, -0.3767]],
+
+        [[-0.7138, -3.3579, -6.7789,  ...,  3.9690, -0.9984, -2.7590],
+         [-0.8540, -3.7378, -7.2103,  ...,  4.3752, -1.1190, -3.0944],
+         [-0.9073, -3.8838, -7.3734,  ...,  4.5311, -1.1634, -3.2240],
+         ...,
+         [-1.1186, -0.0431,  6.7139,  ..., -1.1116, -1.1594, -0.2037],
+         [-1.1153, -0.0382,  6.7141,  ..., -1.1148, -1.1579, -0.1985],
+         [-1.1215, -0.0480,  6.7091,  ..., -1.1069, -1.1631, -0.2075]],
+
+        [[-1.0057, -3.9866, -7.4310,  ...,  4.6248, -1.3160, -3.2996],
+         [-1.1842, -4.5130, -8.0184,  ...,  5.1825, -1.4417, -3.7761],
+         [-1.3280, -4.9652, -8.5267,  ...,  5.6561, -1.5293, -4.1913],
+         ...,
+         [-1.0265,  0.2672,  7.1475,  ..., -1.4632, -1.1145,  0.0757],
+         [-1.0275,  0.2668,  7.1506,  ..., -1.4640, -1.1139,  0.0747],
+         [-1.0186,  0.2810,  7.1556,  ..., -1.4752, -1.1084,  0.0886]],
+
+        ...,
+
+        [[-0.4919, -3.1886, -6.7119,  ...,  3.8467, -0.6255, -2.6531],
+         [-0.5040, -3.2203, -6.7496,  ...,  3.8814, -0.6356, -2.6809],
+         [-0.5296, -3.2847, -6.8217,  ...,  3.9501, -0.6602, -2.7367],
+         ...,
+         [-1.1773, -0.3060,  6.2644,  ..., -0.7883, -1.1415, -0.4430],
+         [-1.2259, -0.3995,  6.1878,  ..., -0.7066, -1.1903, -0.5261],
+         [-1.2169, -0.3838,  6.2000,  ..., -0.7197, -1.1816, -0.5120]],
+
+        [[-0.4084, -3.1118, -6.9063,  ...,  3.8202, -0.5630, -2.5696],
+         [-0.4839, -3.3077, -7.1358,  ...,  4.0275, -0.6374, -2.7399],
+         [-0.5063, -3.3682, -7.2091,  ...,  4.0916, -0.6588, -2.7928],
+         ...,
+         [-1.1485, -0.2139,  6.4559,  ..., -0.9074, -1.1208, -0.3658],
+         [-1.1402, -0.2009,  6.4641,  ..., -0.9178, -1.1131, -0.3538],
+         [-1.1212, -0.1677,  6.4885,  ..., -0.9454, -1.0946, -0.3239]],
+
+        [[-0.5411, -3.3918, -7.1786,  ...,  4.1010, -0.7142, -2.8104],
+         [-0.5104, -3.3136, -7.0927,  ...,  4.0189, -0.6832, -2.7424],
+         [-0.4587, -3.1822, -6.9429,  ...,  3.8806, -0.6315, -2.6283],
+         ...,
+         [-1.1406, -0.1802,  6.5013,  ..., -0.9457, -1.1222, -0.3343],
+         [-1.1295, -0.1623,  6.5129,  ..., -0.9600, -1.1115, -0.3181],
+         [-1.1295, -0.1631,  6.5120,  ..., -0.9589, -1.1111, -0.3189]]],
+       device='cuda:0')
+z[:100] values: tensor([[[-0.3958, -2.9907, -6.6094,  ...,  3.6616, -0.5462, -2.4725],
+         [-0.4452, -3.1156, -6.7524,  ...,  3.7944, -0.5946, -2.5806],
+         [-0.4895, -3.2244, -6.8731,  ...,  3.9091, -0.6391, -2.6748],
+         ...,
+         [-1.1787, -0.2890,  6.3458,  ..., -0.8262, -1.1515, -0.4300],
+         [-1.1626, -0.2603,  6.3675,  ..., -0.8500, -1.1361, -0.4040],
+         [-1.1463, -0.2299,  6.3918,  ..., -0.8763, -1.1207, -0.3767]],
+
+        [[-0.7138, -3.3579, -6.7789,  ...,  3.9690, -0.9984, -2.7590],
+         [-0.8540, -3.7378, -7.2103,  ...,  4.3752, -1.1190, -3.0944],
+         [-0.9073, -3.8838, -7.3734,  ...,  4.5311, -1.1634, -3.2240],
+         ...,
+         [-1.1186, -0.0431,  6.7139,  ..., -1.1116, -1.1594, -0.2037],
+         [-1.1153, -0.0382,  6.7141,  ..., -1.1148, -1.1579, -0.1985],
+         [-1.1215, -0.0480,  6.7091,  ..., -1.1069, -1.1631, -0.2075]],
+
+        [[-1.0057, -3.9866, -7.4310,  ...,  4.6248, -1.3160, -3.2996],
+         [-1.1842, -4.5130, -8.0184,  ...,  5.1825, -1.4417, -3.7761],
+         [-1.3280, -4.9652, -8.5267,  ...,  5.6561, -1.5293, -4.1913],
+         ...,
+         [-1.0265,  0.2672,  7.1475,  ..., -1.4632, -1.1145,  0.0757],
+         [-1.0275,  0.2668,  7.1506,  ..., -1.4640, -1.1139,  0.0747],
+         [-1.0186,  0.2810,  7.1556,  ..., -1.4752, -1.1084,  0.0886]],
+
+        ...,
+
+        [[-0.4919, -3.1886, -6.7119,  ...,  3.8467, -0.6255, -2.6531],
+         [-0.5040, -3.2203, -6.7496,  ...,  3.8814, -0.6356, -2.6809],
+         [-0.5296, -3.2847, -6.8217,  ...,  3.9501, -0.6602, -2.7367],
+         ...,
+         [-1.1773, -0.3060,  6.2644,  ..., -0.7883, -1.1415, -0.4430],
+         [-1.2259, -0.3995,  6.1878,  ..., -0.7066, -1.1903, -0.5261],
+         [-1.2169, -0.3838,  6.2000,  ..., -0.7197, -1.1816, -0.5120]],
+
+        [[-0.4084, -3.1118, -6.9063,  ...,  3.8202, -0.5630, -2.5696],
+         [-0.4839, -3.3077, -7.1358,  ...,  4.0275, -0.6374, -2.7399],
+         [-0.5063, -3.3682, -7.2091,  ...,  4.0916, -0.6588, -2.7928],
+         ...,
+         [-1.1485, -0.2139,  6.4559,  ..., -0.9074, -1.1208, -0.3658],
+         [-1.1402, -0.2009,  6.4641,  ..., -0.9178, -1.1131, -0.3538],
+         [-1.1212, -0.1677,  6.4885,  ..., -0.9454, -1.0946, -0.3239]],
+
+        [[-0.5411, -3.3918, -7.1786,  ...,  4.1010, -0.7142, -2.8104],
+         [-0.5104, -3.3136, -7.0927,  ...,  4.0189, -0.6832, -2.7424],
+         [-0.4587, -3.1822, -6.9429,  ...,  3.8806, -0.6315, -2.6283],
+         ...,
+         [-1.1406, -0.1802,  6.5013,  ..., -0.9457, -1.1222, -0.3343],
+         [-1.1295, -0.1623,  6.5129,  ..., -0.9600, -1.1115, -0.3181],
+         [-1.1295, -0.1631,  6.5120,  ..., -0.9589, -1.1111, -0.3189]]],
+       device='cuda:0')
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([64, 4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+torch.Size([4, 16, 768])
+Iteration: 1
+Iteration: 1
+Iteration: 1
+Iteration: 1
+time taken for epoch 0:00:09.486182
+time taken for epoch 0:00:09.486182
+time taken for epoch 0:00:09.486182
+time taken for epoch 0:00:09.486182
+Total pretraining time 0:00:09.486326
+Total pretraining time 0:00:09.486326
+Total pretraining time 0:00:09.486326
+Total pretraining time 0:00:09.486326
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+working on file logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar out of ['logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep400.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep300.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep200.pth.tar', 'logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar']...
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+Initialized (rank/world-size) 0/1
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+train.py: _GLOBAL_SEED=0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+Initialized ImageNet
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet dataset created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+ImageNet unsupervised data loader created
+Using AdamW
+Using AdamW
+Using AdamW
+Using AdamW
+Using AdamW
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 499 with msg: <All keys matched successfully>
+loaded optimizers from epoch 499
+loaded optimizers from epoch 499
+loaded optimizers from epoch 499
+loaded optimizers from epoch 499
+loaded optimizers from epoch 499
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep500.pth.tar
+Starting
+Starting
+Starting
+Starting
+Starting
+Iteration: 0
+Iteration: 0
+Iteration: 0
+Iteration: 0
+Iteration: 0
+z[:100] values: tensor([[[-9.7906e-01, -4.0101e+00, -6.7221e+00,  ...,  4.5220e+00,
+          -9.9458e-01, -3.4214e+00],
+         [-9.9477e-01, -4.0575e+00, -6.7698e+00,  ...,  4.5698e+00,
+          -1.0063e+00, -3.4647e+00],
+         [-1.0001e+00, -4.0686e+00, -6.7764e+00,  ...,  4.5805e+00,
+          -1.0113e+00, -3.4747e+00],
+         ...,
+         [-6.7242e-01, -7.3726e-02,  5.6629e+00,  ..., -8.6830e-01,
+          -6.1318e-01, -2.1536e-01],
+         [-6.6224e-01, -5.1898e-02,  5.6774e+00,  ..., -8.8683e-01,
+          -6.0437e-01, -1.9517e-01],
+         [-6.5731e-01, -4.0642e-02,  5.6852e+00,  ..., -8.9669e-01,
+          -6.0069e-01, -1.8470e-01]],
+
+        [[-1.0623e+00, -4.0896e+00, -6.5628e+00,  ...,  4.5628e+00,
+          -1.0987e+00, -3.4920e+00],
+         [-1.0743e+00, -4.1348e+00, -6.6171e+00,  ...,  4.6099e+00,
+          -1.1061e+00, -3.5337e+00],
+         [-1.0692e+00, -4.1163e+00, -6.5928e+00,  ...,  4.5914e+00,
+          -1.1022e+00, -3.5167e+00],
+         ...,
+         [-6.8155e-01, -9.1278e-02,  5.6232e+00,  ..., -8.4579e-01,
+          -6.4281e-01, -2.2427e-01],
+         [-6.6290e-01, -5.0343e-02,  5.6505e+00,  ..., -8.8124e-01,
+          -6.2676e-01, -1.8680e-01],
+         [-6.3826e-01,  4.3271e-03,  5.6869e+00,  ..., -9.2956e-01,
+          -6.0610e-01, -1.3686e-01]],
+
+        [[-6.5172e-01, -3.3374e+00, -6.4712e+00,  ...,  3.8891e+00,
+          -6.8866e-01, -2.8108e+00],
+         [-7.4091e-01, -3.5664e+00, -6.6419e+00,  ...,  4.1202e+00,
+          -7.5902e-01, -3.0188e+00],
+         [-7.6951e-01, -3.6409e+00, -6.7002e+00,  ...,  4.1950e+00,
+          -7.8129e-01, -3.0868e+00],
+         ...,
+         [-7.1742e-01, -1.9521e-01,  5.5170e+00,  ..., -7.4016e-01,
+          -6.2502e-01, -3.2884e-01],
+         [-7.0145e-01, -1.6277e-01,  5.5408e+00,  ..., -7.6799e-01,
+          -6.0936e-01, -2.9938e-01],
+         [-6.6697e-01, -8.8336e-02,  5.5996e+00,  ..., -8.3387e-01,
+          -5.7477e-01, -2.3273e-01]],
+
+        ...,
+
+        [[-8.7905e-01, -3.8278e+00, -6.7074e+00,  ...,  4.3627e+00,
+          -8.9128e-01, -3.2552e+00],
+         [-9.1284e-01, -3.9265e+00, -6.7980e+00,  ...,  4.4617e+00,
+          -9.1716e-01, -3.3458e+00],
+         [-9.1389e-01, -3.9316e+00, -6.8061e+00,  ...,  4.4669e+00,
+          -9.1763e-01, -3.3506e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6342e+00,  ..., -8.3887e-01,
+          -6.0905e-01, -2.4513e-01],
+         [-6.7482e-01, -8.4612e-02,  5.6471e+00,  ..., -8.5500e-01,
+          -6.0068e-01, -2.2799e-01],
+         [-6.5806e-01, -4.8548e-02,  5.6738e+00,  ..., -8.8650e-01,
+          -5.8450e-01, -1.9545e-01]],
+
+        [[-8.2477e-01, -3.6408e+00, -6.4939e+00,  ...,  4.1626e+00,
+          -8.5542e-01, -3.0851e+00],
+         [-8.8511e-01, -3.8039e+00, -6.6200e+00,  ...,  4.3270e+00,
+          -9.0078e-01, -3.2344e+00],
+         [-8.9441e-01, -3.8257e+00, -6.6337e+00,  ...,  4.3485e+00,
+          -9.0904e-01, -3.2540e+00],
+         ...,
+         [-7.0261e-01, -1.5178e-01,  5.5685e+00,  ..., -7.8600e-01,
+          -6.2666e-01, -2.8686e-01],
+         [-7.0117e-01, -1.4868e-01,  5.5706e+00,  ..., -7.8853e-01,
+          -6.2548e-01, -2.8388e-01],
+         [-7.0009e-01, -1.4610e-01,  5.5725e+00,  ..., -7.9083e-01,
+          -6.2505e-01, -2.8134e-01]],
+
+        [[-1.0544e+00, -4.1075e+00, -6.6419e+00,  ...,  4.5921e+00,
+          -1.0883e+00, -3.5074e+00],
+         [-1.0697e+00, -4.1648e+00, -6.7179e+00,  ...,  4.6511e+00,
+          -1.0981e+00, -3.5601e+00],
+         [-1.0783e+00, -4.2008e+00, -6.7703e+00,  ...,  4.6891e+00,
+          -1.1033e+00, -3.5932e+00],
+         ...,
+         [-6.6024e-01, -3.8229e-02,  5.7004e+00,  ..., -9.0582e-01,
+          -6.2340e-01, -1.7910e-01],
+         [-6.5343e-01, -2.3813e-02,  5.7100e+00,  ..., -9.1814e-01,
+          -6.1675e-01, -1.6610e-01],
+         [-6.3826e-01,  8.7533e-03,  5.7319e+00,  ..., -9.4625e-01,
+          -6.0310e-01, -1.3647e-01]]], device='cuda:0')
+z[:100] values: tensor([[[-9.7906e-01, -4.0101e+00, -6.7221e+00,  ...,  4.5220e+00,
+          -9.9458e-01, -3.4214e+00],
+         [-9.9477e-01, -4.0575e+00, -6.7698e+00,  ...,  4.5698e+00,
+          -1.0063e+00, -3.4647e+00],
+         [-1.0001e+00, -4.0686e+00, -6.7764e+00,  ...,  4.5805e+00,
+          -1.0113e+00, -3.4747e+00],
+         ...,
+         [-6.7242e-01, -7.3726e-02,  5.6629e+00,  ..., -8.6830e-01,
+          -6.1318e-01, -2.1536e-01],
+         [-6.6224e-01, -5.1898e-02,  5.6774e+00,  ..., -8.8683e-01,
+          -6.0437e-01, -1.9517e-01],
+         [-6.5731e-01, -4.0642e-02,  5.6852e+00,  ..., -8.9669e-01,
+          -6.0069e-01, -1.8470e-01]],
+
+        [[-1.0623e+00, -4.0896e+00, -6.5628e+00,  ...,  4.5628e+00,
+          -1.0987e+00, -3.4920e+00],
+         [-1.0743e+00, -4.1348e+00, -6.6171e+00,  ...,  4.6099e+00,
+          -1.1061e+00, -3.5337e+00],
+         [-1.0692e+00, -4.1163e+00, -6.5928e+00,  ...,  4.5914e+00,
+          -1.1022e+00, -3.5167e+00],
+         ...,
+         [-6.8155e-01, -9.1278e-02,  5.6232e+00,  ..., -8.4579e-01,
+          -6.4281e-01, -2.2427e-01],
+         [-6.6290e-01, -5.0343e-02,  5.6505e+00,  ..., -8.8124e-01,
+          -6.2676e-01, -1.8680e-01],
+         [-6.3826e-01,  4.3271e-03,  5.6869e+00,  ..., -9.2956e-01,
+          -6.0610e-01, -1.3686e-01]],
+
+        [[-6.5172e-01, -3.3374e+00, -6.4712e+00,  ...,  3.8891e+00,
+          -6.8866e-01, -2.8108e+00],
+         [-7.4091e-01, -3.5664e+00, -6.6419e+00,  ...,  4.1202e+00,
+          -7.5902e-01, -3.0188e+00],
+         [-7.6951e-01, -3.6409e+00, -6.7002e+00,  ...,  4.1950e+00,
+          -7.8129e-01, -3.0868e+00],
+         ...,
+         [-7.1742e-01, -1.9521e-01,  5.5170e+00,  ..., -7.4016e-01,
+          -6.2502e-01, -3.2884e-01],
+         [-7.0145e-01, -1.6277e-01,  5.5408e+00,  ..., -7.6799e-01,
+          -6.0936e-01, -2.9938e-01],
+         [-6.6697e-01, -8.8336e-02,  5.5996e+00,  ..., -8.3387e-01,
+          -5.7477e-01, -2.3273e-01]],
+
+        ...,
+
+        [[-8.7905e-01, -3.8278e+00, -6.7074e+00,  ...,  4.3627e+00,
+          -8.9128e-01, -3.2552e+00],
+         [-9.1284e-01, -3.9265e+00, -6.7980e+00,  ...,  4.4617e+00,
+          -9.1716e-01, -3.3458e+00],
+         [-9.1389e-01, -3.9316e+00, -6.8061e+00,  ...,  4.4669e+00,
+          -9.1763e-01, -3.3506e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6342e+00,  ..., -8.3887e-01,
+          -6.0905e-01, -2.4513e-01],
+         [-6.7482e-01, -8.4612e-02,  5.6471e+00,  ..., -8.5500e-01,
+          -6.0068e-01, -2.2799e-01],
+         [-6.5806e-01, -4.8548e-02,  5.6738e+00,  ..., -8.8650e-01,
+          -5.8450e-01, -1.9545e-01]],
+
+        [[-8.2477e-01, -3.6408e+00, -6.4939e+00,  ...,  4.1626e+00,
+          -8.5542e-01, -3.0851e+00],
+         [-8.8511e-01, -3.8039e+00, -6.6200e+00,  ...,  4.3270e+00,
+          -9.0078e-01, -3.2344e+00],
+         [-8.9441e-01, -3.8257e+00, -6.6337e+00,  ...,  4.3485e+00,
+          -9.0904e-01, -3.2540e+00],
+         ...,
+         [-7.0261e-01, -1.5178e-01,  5.5685e+00,  ..., -7.8600e-01,
+          -6.2666e-01, -2.8686e-01],
+         [-7.0117e-01, -1.4868e-01,  5.5706e+00,  ..., -7.8853e-01,
+          -6.2548e-01, -2.8388e-01],
+         [-7.0009e-01, -1.4610e-01,  5.5725e+00,  ..., -7.9083e-01,
+          -6.2505e-01, -2.8134e-01]],
+
+        [[-1.0544e+00, -4.1075e+00, -6.6419e+00,  ...,  4.5921e+00,
+          -1.0883e+00, -3.5074e+00],
+         [-1.0697e+00, -4.1648e+00, -6.7179e+00,  ...,  4.6511e+00,
+          -1.0981e+00, -3.5601e+00],
+         [-1.0783e+00, -4.2008e+00, -6.7703e+00,  ...,  4.6891e+00,
+          -1.1033e+00, -3.5932e+00],
+         ...,
+         [-6.6024e-01, -3.8229e-02,  5.7004e+00,  ..., -9.0582e-01,
+          -6.2340e-01, -1.7910e-01],
+         [-6.5343e-01, -2.3813e-02,  5.7100e+00,  ..., -9.1814e-01,
+          -6.1675e-01, -1.6610e-01],
+         [-6.3826e-01,  8.7533e-03,  5.7319e+00,  ..., -9.4625e-01,
+          -6.0310e-01, -1.3647e-01]]], device='cuda:0')
+z[:100] values: tensor([[[-9.7906e-01, -4.0101e+00, -6.7221e+00,  ...,  4.5220e+00,
+          -9.9458e-01, -3.4214e+00],
+         [-9.9477e-01, -4.0575e+00, -6.7698e+00,  ...,  4.5698e+00,
+          -1.0063e+00, -3.4647e+00],
+         [-1.0001e+00, -4.0686e+00, -6.7764e+00,  ...,  4.5805e+00,
+          -1.0113e+00, -3.4747e+00],
+         ...,
+         [-6.7242e-01, -7.3726e-02,  5.6629e+00,  ..., -8.6830e-01,
+          -6.1318e-01, -2.1536e-01],
+         [-6.6224e-01, -5.1898e-02,  5.6774e+00,  ..., -8.8683e-01,
+          -6.0437e-01, -1.9517e-01],
+         [-6.5731e-01, -4.0642e-02,  5.6852e+00,  ..., -8.9669e-01,
+          -6.0069e-01, -1.8470e-01]],
+
+        [[-1.0623e+00, -4.0896e+00, -6.5628e+00,  ...,  4.5628e+00,
+          -1.0987e+00, -3.4920e+00],
+         [-1.0743e+00, -4.1348e+00, -6.6171e+00,  ...,  4.6099e+00,
+          -1.1061e+00, -3.5337e+00],
+         [-1.0692e+00, -4.1163e+00, -6.5928e+00,  ...,  4.5914e+00,
+          -1.1022e+00, -3.5167e+00],
+         ...,
+         [-6.8155e-01, -9.1278e-02,  5.6232e+00,  ..., -8.4579e-01,
+          -6.4281e-01, -2.2427e-01],
+         [-6.6290e-01, -5.0343e-02,  5.6505e+00,  ..., -8.8124e-01,
+          -6.2676e-01, -1.8680e-01],
+         [-6.3826e-01,  4.3271e-03,  5.6869e+00,  ..., -9.2956e-01,
+          -6.0610e-01, -1.3686e-01]],
+
+        [[-6.5172e-01, -3.3374e+00, -6.4712e+00,  ...,  3.8891e+00,
+          -6.8866e-01, -2.8108e+00],
+         [-7.4091e-01, -3.5664e+00, -6.6419e+00,  ...,  4.1202e+00,
+          -7.5902e-01, -3.0188e+00],
+         [-7.6951e-01, -3.6409e+00, -6.7002e+00,  ...,  4.1950e+00,
+          -7.8129e-01, -3.0868e+00],
+         ...,
+         [-7.1742e-01, -1.9521e-01,  5.5170e+00,  ..., -7.4016e-01,
+          -6.2502e-01, -3.2884e-01],
+         [-7.0145e-01, -1.6277e-01,  5.5408e+00,  ..., -7.6799e-01,
+          -6.0936e-01, -2.9938e-01],
+         [-6.6697e-01, -8.8336e-02,  5.5996e+00,  ..., -8.3387e-01,
+          -5.7477e-01, -2.3273e-01]],
+
+        ...,
+
+        [[-8.7905e-01, -3.8278e+00, -6.7074e+00,  ...,  4.3627e+00,
+          -8.9128e-01, -3.2552e+00],
+         [-9.1284e-01, -3.9265e+00, -6.7980e+00,  ...,  4.4617e+00,
+          -9.1716e-01, -3.3458e+00],
+         [-9.1389e-01, -3.9316e+00, -6.8061e+00,  ...,  4.4669e+00,
+          -9.1763e-01, -3.3506e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6342e+00,  ..., -8.3887e-01,
+          -6.0905e-01, -2.4513e-01],
+         [-6.7482e-01, -8.4612e-02,  5.6471e+00,  ..., -8.5500e-01,
+          -6.0068e-01, -2.2799e-01],
+         [-6.5806e-01, -4.8548e-02,  5.6738e+00,  ..., -8.8650e-01,
+          -5.8450e-01, -1.9545e-01]],
+
+        [[-8.2477e-01, -3.6408e+00, -6.4939e+00,  ...,  4.1626e+00,
+          -8.5542e-01, -3.0851e+00],
+         [-8.8511e-01, -3.8039e+00, -6.6200e+00,  ...,  4.3270e+00,
+          -9.0078e-01, -3.2344e+00],
+         [-8.9441e-01, -3.8257e+00, -6.6337e+00,  ...,  4.3485e+00,
+          -9.0904e-01, -3.2540e+00],
+         ...,
+         [-7.0261e-01, -1.5178e-01,  5.5685e+00,  ..., -7.8600e-01,
+          -6.2666e-01, -2.8686e-01],
+         [-7.0117e-01, -1.4868e-01,  5.5706e+00,  ..., -7.8853e-01,
+          -6.2548e-01, -2.8388e-01],
+         [-7.0009e-01, -1.4610e-01,  5.5725e+00,  ..., -7.9083e-01,
+          -6.2505e-01, -2.8134e-01]],
+
+        [[-1.0544e+00, -4.1075e+00, -6.6419e+00,  ...,  4.5921e+00,
+          -1.0883e+00, -3.5074e+00],
+         [-1.0697e+00, -4.1648e+00, -6.7179e+00,  ...,  4.6511e+00,
+          -1.0981e+00, -3.5601e+00],
+         [-1.0783e+00, -4.2008e+00, -6.7703e+00,  ...,  4.6891e+00,
+          -1.1033e+00, -3.5932e+00],
+         ...,
+         [-6.6024e-01, -3.8229e-02,  5.7004e+00,  ..., -9.0582e-01,
+          -6.2340e-01, -1.7910e-01],
+         [-6.5343e-01, -2.3813e-02,  5.7100e+00,  ..., -9.1814e-01,
+          -6.1675e-01, -1.6610e-01],
+         [-6.3826e-01,  8.7533e-03,  5.7319e+00,  ..., -9.4625e-01,
+          -6.0310e-01, -1.3647e-01]]], device='cuda:0')
+z[:100] values: tensor([[[-9.7906e-01, -4.0101e+00, -6.7221e+00,  ...,  4.5220e+00,
+          -9.9458e-01, -3.4214e+00],
+         [-9.9477e-01, -4.0575e+00, -6.7698e+00,  ...,  4.5698e+00,
+          -1.0063e+00, -3.4647e+00],
+         [-1.0001e+00, -4.0686e+00, -6.7764e+00,  ...,  4.5805e+00,
+          -1.0113e+00, -3.4747e+00],
+         ...,
+         [-6.7242e-01, -7.3726e-02,  5.6629e+00,  ..., -8.6830e-01,
+          -6.1318e-01, -2.1536e-01],
+         [-6.6224e-01, -5.1898e-02,  5.6774e+00,  ..., -8.8683e-01,
+          -6.0437e-01, -1.9517e-01],
+         [-6.5731e-01, -4.0642e-02,  5.6852e+00,  ..., -8.9669e-01,
+          -6.0069e-01, -1.8470e-01]],
+
+        [[-1.0623e+00, -4.0896e+00, -6.5628e+00,  ...,  4.5628e+00,
+          -1.0987e+00, -3.4920e+00],
+         [-1.0743e+00, -4.1348e+00, -6.6171e+00,  ...,  4.6099e+00,
+          -1.1061e+00, -3.5337e+00],
+         [-1.0692e+00, -4.1163e+00, -6.5928e+00,  ...,  4.5914e+00,
+          -1.1022e+00, -3.5167e+00],
+         ...,
+         [-6.8155e-01, -9.1278e-02,  5.6232e+00,  ..., -8.4579e-01,
+          -6.4281e-01, -2.2427e-01],
+         [-6.6290e-01, -5.0343e-02,  5.6505e+00,  ..., -8.8124e-01,
+          -6.2676e-01, -1.8680e-01],
+         [-6.3826e-01,  4.3271e-03,  5.6869e+00,  ..., -9.2956e-01,
+          -6.0610e-01, -1.3686e-01]],
+
+        [[-6.5172e-01, -3.3374e+00, -6.4712e+00,  ...,  3.8891e+00,
+          -6.8866e-01, -2.8108e+00],
+         [-7.4091e-01, -3.5664e+00, -6.6419e+00,  ...,  4.1202e+00,
+          -7.5902e-01, -3.0188e+00],
+         [-7.6951e-01, -3.6409e+00, -6.7002e+00,  ...,  4.1950e+00,
+          -7.8129e-01, -3.0868e+00],
+         ...,
+         [-7.1742e-01, -1.9521e-01,  5.5170e+00,  ..., -7.4016e-01,
+          -6.2502e-01, -3.2884e-01],
+         [-7.0145e-01, -1.6277e-01,  5.5408e+00,  ..., -7.6799e-01,
+          -6.0936e-01, -2.9938e-01],
+         [-6.6697e-01, -8.8336e-02,  5.5996e+00,  ..., -8.3387e-01,
+          -5.7477e-01, -2.3273e-01]],
+
+        ...,
+
+        [[-8.7905e-01, -3.8278e+00, -6.7074e+00,  ...,  4.3627e+00,
+          -8.9128e-01, -3.2552e+00],
+         [-9.1284e-01, -3.9265e+00, -6.7980e+00,  ...,  4.4617e+00,
+          -9.1716e-01, -3.3458e+00],
+         [-9.1389e-01, -3.9316e+00, -6.8061e+00,  ...,  4.4669e+00,
+          -9.1763e-01, -3.3506e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6342e+00,  ..., -8.3887e-01,
+          -6.0905e-01, -2.4513e-01],
+         [-6.7482e-01, -8.4612e-02,  5.6471e+00,  ..., -8.5500e-01,
+          -6.0068e-01, -2.2799e-01],
+         [-6.5806e-01, -4.8548e-02,  5.6738e+00,  ..., -8.8650e-01,
+          -5.8450e-01, -1.9545e-01]],
+
+        [[-8.2477e-01, -3.6408e+00, -6.4939e+00,  ...,  4.1626e+00,
+          -8.5542e-01, -3.0851e+00],
+         [-8.8511e-01, -3.8039e+00, -6.6200e+00,  ...,  4.3270e+00,
+          -9.0078e-01, -3.2344e+00],
+         [-8.9441e-01, -3.8257e+00, -6.6337e+00,  ...,  4.3485e+00,
+          -9.0904e-01, -3.2540e+00],
+         ...,
+         [-7.0261e-01, -1.5178e-01,  5.5685e+00,  ..., -7.8600e-01,
+          -6.2666e-01, -2.8686e-01],
+         [-7.0117e-01, -1.4868e-01,  5.5706e+00,  ..., -7.8853e-01,
+          -6.2548e-01, -2.8388e-01],
+         [-7.0009e-01, -1.4610e-01,  5.5725e+00,  ..., -7.9083e-01,
+          -6.2505e-01, -2.8134e-01]],
+
+        [[-1.0544e+00, -4.1075e+00, -6.6419e+00,  ...,  4.5921e+00,
+          -1.0883e+00, -3.5074e+00],
+         [-1.0697e+00, -4.1648e+00, -6.7179e+00,  ...,  4.6511e+00,
+          -1.0981e+00, -3.5601e+00],
+         [-1.0783e+00, -4.2008e+00, -6.7703e+00,  ...,  4.6891e+00,
+          -1.1033e+00, -3.5932e+00],
+         ...,
+         [-6.6024e-01, -3.8229e-02,  5.7004e+00,  ..., -9.0582e-01,
+          -6.2340e-01, -1.7910e-01],
+         [-6.5343e-01, -2.3813e-02,  5.7100e+00,  ..., -9.1814e-01,
+          -6.1675e-01, -1.6610e-01],
+         [-6.3826e-01,  8.7533e-03,  5.7319e+00,  ..., -9.4625e-01,
+          -6.0310e-01, -1.3647e-01]]], device='cuda:0')
+z[:100] values: tensor([[[-9.7906e-01, -4.0101e+00, -6.7221e+00,  ...,  4.5220e+00,
+          -9.9458e-01, -3.4214e+00],
+         [-9.9477e-01, -4.0575e+00, -6.7698e+00,  ...,  4.5698e+00,
+          -1.0063e+00, -3.4647e+00],
+         [-1.0001e+00, -4.0686e+00, -6.7764e+00,  ...,  4.5805e+00,
+          -1.0113e+00, -3.4747e+00],
+         ...,
+         [-6.7242e-01, -7.3726e-02,  5.6629e+00,  ..., -8.6830e-01,
+          -6.1318e-01, -2.1536e-01],
+         [-6.6224e-01, -5.1898e-02,  5.6774e+00,  ..., -8.8683e-01,
+          -6.0437e-01, -1.9517e-01],
+         [-6.5731e-01, -4.0642e-02,  5.6852e+00,  ..., -8.9669e-01,
+          -6.0069e-01, -1.8470e-01]],
+
+        [[-1.0623e+00, -4.0896e+00, -6.5628e+00,  ...,  4.5628e+00,
+          -1.0987e+00, -3.4920e+00],
+         [-1.0743e+00, -4.1348e+00, -6.6171e+00,  ...,  4.6099e+00,
+          -1.1061e+00, -3.5337e+00],
+         [-1.0692e+00, -4.1163e+00, -6.5928e+00,  ...,  4.5914e+00,
+          -1.1022e+00, -3.5167e+00],
+         ...,
+         [-6.8155e-01, -9.1278e-02,  5.6232e+00,  ..., -8.4579e-01,
+          -6.4281e-01, -2.2427e-01],
+         [-6.6290e-01, -5.0343e-02,  5.6505e+00,  ..., -8.8124e-01,
+          -6.2676e-01, -1.8680e-01],
+         [-6.3826e-01,  4.3271e-03,  5.6869e+00,  ..., -9.2956e-01,
+          -6.0610e-01, -1.3686e-01]],
+
+        [[-6.5172e-01, -3.3374e+00, -6.4712e+00,  ...,  3.8891e+00,
+          -6.8866e-01, -2.8108e+00],
+         [-7.4091e-01, -3.5664e+00, -6.6419e+00,  ...,  4.1202e+00,
+          -7.5902e-01, -3.0188e+00],
+         [-7.6951e-01, -3.6409e+00, -6.7002e+00,  ...,  4.1950e+00,
+          -7.8129e-01, -3.0868e+00],
+         ...,
+         [-7.1742e-01, -1.9521e-01,  5.5170e+00,  ..., -7.4016e-01,
+          -6.2502e-01, -3.2884e-01],
+         [-7.0145e-01, -1.6277e-01,  5.5408e+00,  ..., -7.6799e-01,
+          -6.0936e-01, -2.9938e-01],
+         [-6.6697e-01, -8.8336e-02,  5.5996e+00,  ..., -8.3387e-01,
+          -5.7477e-01, -2.3273e-01]],
+
+        ...,
+
+        [[-8.7905e-01, -3.8278e+00, -6.7074e+00,  ...,  4.3627e+00,
+          -8.9128e-01, -3.2552e+00],
+         [-9.1284e-01, -3.9265e+00, -6.7980e+00,  ...,  4.4617e+00,
+          -9.1716e-01, -3.3458e+00],
+         [-9.1389e-01, -3.9316e+00, -6.8061e+00,  ...,  4.4669e+00,
+          -9.1763e-01, -3.3506e+00],
+         ...,
+         [-6.8379e-01, -1.0339e-01,  5.6342e+00,  ..., -8.3887e-01,
+          -6.0905e-01, -2.4513e-01],
+         [-6.7482e-01, -8.4612e-02,  5.6471e+00,  ..., -8.5500e-01,
+          -6.0068e-01, -2.2799e-01],
+         [-6.5806e-01, -4.8548e-02,  5.6738e+00,  ..., -8.8650e-01,
+          -5.8450e-01, -1.9545e-01]],
+
+        [[-8.2477e-01, -3.6408e+00, -6.4939e+00,  ...,  4.1626e+00,
+          -8.5542e-01, -3.0851e+00],
+         [-8.8511e-01, -3.8039e+00, -6.6200e+00,  ...,  4.3270e+00,
+          -9.0078e-01, -3.2344e+00],
+         [-8.9441e-01, -3.8257e+00, -6.6337e+00,  ...,  4.3485e+00,
+          -9.0904e-01, -3.2540e+00],
+         ...,
+         [-7.0261e-01, -1.5178e-01,  5.5685e+00,  ..., -7.8600e-01,
+          -6.2666e-01, -2.8686e-01],
+         [-7.0117e-01, -1.4868e-01,  5.5706e+00,  ..., -7.8853e-01,
+          -6.2548e-01, -2.8388e-01],
+         [-7.0009e-01, -1.4610e-01,  5.5725e+00,  ..., -7.9083e-01,
+          -6.2505e-01, -2.8134e-01]],
+
+        [[-1.0544e+00, -4.1075e+00, -6.6419e+00,  ...,  4.5921e+00,
+          -1.0883e+00, -3.5074e+00],
+         [-1.0697e+00, -4.1648e+00, -6.7179e+00,  ...,  4.6511e+00,
+          -1.0981e+00, -3.5601e+00],
+         [-1.0783e+00, -4.2008e+00, -6.7703e+00,  ...,  4.6891e+00,
+          -1.1033e+00, -3.5932e+00],
+         ...,
+         [-6.6024e-01, -3.8229e-02,  5.7004e+00,  ..., -9.0582e-01,
+          -6.2340e-01, -1.7910e-01],
+         [-6.5343e-01, -2.3813e-02,  5.7100e+00,  ..., -9.1814e-01,
+          -6.1675e-01, -1.6610e-01],
+         [-6.3826e-01,  8.7533e-03,  5.7319e+00,  ..., -9.4625e-01,
+          -6.0310e-01, -1.3647e-01]]], device='cuda:0')
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([64, 4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+torch.Size([4, 20, 768])
+Iteration: 1
+Iteration: 1
+Iteration: 1
+Iteration: 1
+Iteration: 1
+time taken for epoch 0:00:11.145686
+time taken for epoch 0:00:11.145686
+time taken for epoch 0:00:11.145686
+time taken for epoch 0:00:11.145686
+time taken for epoch 0:00:11.145686
+Total pretraining time 0:00:11.146015
+Total pretraining time 0:00:11.146015
+Total pretraining time 0:00:11.146015
+Total pretraining time 0:00:11.146015
+Total pretraining time 0:00:11.146015
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/intel-image-classification/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 99 with msg: <All keys matched successfully>
+loaded optimizers from epoch 99
+read-path: logs_PKT_cross/iic-train-l2-pkt-cross-seed43/jepa-iic-l2-pkt-cross-seed43-ep100.pth.tar
+Starting
+Iteration: 0
+z[:100] values: tensor([[[ 23.7126, -22.5902,  -0.4155,  ..., -14.4794,  -3.5487, -25.5933],
+         [ 23.7123, -22.5903,  -0.4155,  ..., -14.4795,  -3.5488, -25.5934],
+         [ 23.7123, -22.5904,  -0.4155,  ..., -14.4795,  -3.5489, -25.5934],
+         ...,
+         [ 23.7125, -22.5903,  -0.4154,  ..., -14.4795,  -3.5486, -25.5933],
+         [ 23.7123, -22.5904,  -0.4154,  ..., -14.4795,  -3.5487, -25.5933],
+         [ 23.7124, -22.5905,  -0.4154,  ..., -14.4795,  -3.5487, -25.5933]],
+
+        [[ 10.0686,  19.8881,   3.8852,  ...,  17.9879,  22.9635,  16.9424],
+         [ 10.0580,  19.8906,   3.8840,  ...,  17.9890,  22.9591,  16.9469],
+         [ 10.0503,  19.8922,   3.8832,  ...,  17.9898,  22.9560,  16.9501],
+         ...,
+         [  7.7058,  20.4227,   3.6012,  ...,  18.1806,  21.9572,  17.9094],
+         [ 10.0736,  19.8868,   3.8862,  ...,  17.9873,  22.9657,  16.9403],
+         [ 10.0669,  19.8882,   3.8854,  ...,  17.9880,  22.9629,  16.9431]],
+
+        [[ 23.7116, -22.6066,  -0.4264,  ..., -14.4696,  -3.5645, -25.6014],
+         [ 23.7113, -22.6068,  -0.4264,  ..., -14.4698,  -3.5648, -25.6015],
+         [ 23.7110, -22.6069,  -0.4264,  ..., -14.4699,  -3.5650, -25.6016],
+         ...,
+         [ 23.7111, -22.6068,  -0.4265,  ..., -14.4698,  -3.5648, -25.6015],
+         [ 23.7107, -22.6069,  -0.4265,  ..., -14.4700,  -3.5651, -25.6016],
+         [ 23.7105, -22.6071,  -0.4265,  ..., -14.4701,  -3.5653, -25.6016]],
+
+        ...,
+
+        [[-33.4380,   7.2015,  -2.5153,  ...,   0.2504, -15.3844,  12.8513],
+         [-33.4399,   7.1936,  -2.5163,  ...,   0.2434, -15.3923,  12.8441],
+         [-33.4423,   7.1832,  -2.5176,  ...,   0.2343, -15.4025,  12.8347],
+         ...,
+         [-33.4413,   7.1856,  -2.5173,  ...,   0.2363, -15.4001,  12.8368],
+         [-33.4439,   7.1744,  -2.5187,  ...,   0.2265, -15.4111,  12.8267],
+         [-33.4461,   7.1647,  -2.5200,  ...,   0.2181, -15.4206,  12.8180]],
+
+        [[  8.6738,  20.2495,   3.7404,  ...,  18.1189,  22.4178,  17.5455],
+         [  8.6648,  20.2512,   3.7394,  ...,  18.1195,  22.4138,  17.5490],
+         [  8.6634,  20.2513,   3.7392,  ...,  18.1197,  22.4131,  17.5495],
+         ...,
+         [  8.6906,  20.2459,   3.7428,  ...,  18.1175,  22.4253,  17.5388],
+         [  8.6826,  20.2474,   3.7418,  ...,  18.1181,  22.4217,  17.5419],
+         [  8.6803,  20.2477,   3.7415,  ...,  18.1183,  22.4206,  17.5428]],
+
+        [[ 23.6967, -22.6041,  -0.4249,  ..., -14.4813,  -3.5717, -25.6018],
+         [ 23.6967, -22.6042,  -0.4249,  ..., -14.4813,  -3.5717, -25.6018],
+         [ 23.6969, -22.6042,  -0.4249,  ..., -14.4812,  -3.5716, -25.6017],
+         ...,
+         [ 23.6965, -22.6043,  -0.4250,  ..., -14.4813,  -3.5718, -25.6018],
+         [ 23.6967, -22.6042,  -0.4250,  ..., -14.4812,  -3.5716, -25.6017],
+         [ 23.6969, -22.6042,  -0.4250,  ..., -14.4811,  -3.5714, -25.6017]]],
+       device='cuda:0')
+torch.Size([64, 4, 16, 768])
+torch.Size([4, 16, 768])

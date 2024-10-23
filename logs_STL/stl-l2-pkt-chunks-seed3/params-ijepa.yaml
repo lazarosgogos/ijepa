@@ -13,7 +13,7 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  checkpoint_freq: 10
+  checkpoint_freq: 50
   folder: logs_STL/stl-l2-pkt-chunks-seed3
   logging_frequency: 2
   output_file: ostl-pretrain-l2-pkt-chunks-seed3.out
@@ -46,7 +46,7 @@ optimization:
   ema:
   - 0.996
   - 1.0
-  epochs: 75
+  epochs: 300
   final_lr: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0
@@ -55,10 +55,11 @@ optimization:
   pkt_scale: 1.0
   start_lr: 0.0002
   variance_weight: 0.0
-  warmup: 6
+  warmup: 40
   weight_decay: 0.04
 pkt:
   T_max: 200
+  chunks_step: 256
   final_alpha: 0.0
   ref_alpha: 1.0
   start_alpha: 1.0

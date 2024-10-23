@@ -110,6 +110,6 @@ test_images = read_all_images(TEST_DATA_PATH)
 
 unlabelled_images = read_all_images(UNLAB_DATA_PATH)
 
-# save_images(train_images, train_labels, 'train_images')
+save_images(train_images, train_labels, 'train_images')
 save_images(test_images, test_labels, 'test_images')
 save_unlabelled_images(unlabelled_images)

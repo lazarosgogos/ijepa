@@ -133,10 +133,10 @@ def L2_PKT_chunks(z,h, **kwargs):
   h_ = h.view(-1, emb_size) 
   # create a random permutation
   # [0, 10, 500, 4999, 2, 9, ..., ]
-  rperm = torch.randperm(z_.size(0)) # this yields an array of [1, 5, 0,... , 5119] random indices
+  # rperm = torch.randperm(z_.size(0)) # this yields an array of [1, 5, 0,... , 5119] random indices
   vsize = h_.size(0) # vector size
   
-  chunks_step = kwargs.get('chunks_step', 512)
+  chunks_step = kwargs.get('chunks_step', 256)
   assert h_.size(0) == z_.size(0), 'Different batch sizes between z,h ?'
 
   pkt_scale = kwargs.get('pkt_scale', 1.) # default to 1 if it fails
@@ -145,9 +145,9 @@ def L2_PKT_chunks(z,h, **kwargs):
   loss_L2 = L2(z,h)
   loss_pkt = 0
   for i in range(0, vsize, chunks_step):
-    loss_pkt += PKTClass.cosine_similarity_loss(z_[rperm[i:i+chunks_step]],h_[rperm[i:i+chunks_step]])
+    # loss_pkt += PKTClass.cosine_similarity_loss(z_[rperm[i:i+chunks_step]],h_[rperm[i:i+chunks_step]])
     
-    # loss_pkt += PKTClass.cosine_similarity_loss(z_[i:i+step],h_[i:i+step])  
+    loss_pkt += PKTClass.cosine_similarity_loss(z_[i:i+chunks_step],h_[i:i+chunks_step])  
     # loss_L2 += L2(z_[i:i+step],h_[i:i+step])
 
   return (loss_pkt*pkt_scale + loss_L2)/(vsize/chunks_step)
@@ -160,7 +160,7 @@ def PKT_chunks(z,h, **kwargs):
   # create a random permutation
   # rperm = torch.randperm(z_.size(-1)) # this yields an array of [1, 5, 0,... , 5119] random indices
   vsize = h_.size(0) # vector size
-  chunks_step = kwargs.get('chunks_step', 512)
+  chunks_step = kwargs.get('chunks_step', 256)
   
   assert h_.size(0) == z_.size(0), 'Different batch sizes between z,h ?'
 
@@ -185,7 +185,7 @@ def L2_PKT_cross(z,h, **kwargs):
   # rperm = torch.randperm(z_.size(-1)) # this yields an array of [1, 5, 0,... , 5119] random indices
   vsize = h_.size(0) # vector size
   
-  chunks_step = kwargs.get('chunks_step', 512)
+  chunks_step = kwargs.get('chunks_step', 256)
   assert h_.size(0) == z_.size(0), 'Different batch sizes between z,h ?'
 
   
@@ -212,7 +212,7 @@ def PKT_cross(z,h, **kwargs):
   h_ = h.view(-1, emb_size)
 
   vsize = h_.size(0)
-  chunks_step = kwargs.get('chunks_step', 512)
+  chunks_step = kwargs.get('chunks_step', 256)
   assert h_.size(0) == z_.size(0), 'Different batch sizes between z,h ?'
 
   mse = 0

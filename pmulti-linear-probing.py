@@ -204,7 +204,8 @@ class LinearProbe():
                                             ('%.5e', 'train_accuracy'),
                                             ('%.5e', 'val_accuracy'),
                                             ('%.5e', 'loss'),
-                                            ('%.2f', 'time'))
+                                            ('%.5e', 'val_loss'),
+                                            ('%.2f', 'time'),)
 
     
 
@@ -279,6 +280,7 @@ class LinearProbe():
             self.model.eval() # set to evaluation mode
             val_correct = 0
             total_val = 0
+            val_running_loss = 0.
             with torch.no_grad():
                 for inputs, labels in self.val_loader_features:
                     inputs, labels = inputs.to(self.device),\
@@ -287,27 +289,34 @@ class LinearProbe():
                     _, predicted = outputs.max(dim=1)
                     total_val += labels.size(0)
                     val_correct += (predicted == labels).sum().item()
+                    loss = self.criterion(outputs, labels)
+                    val_running_loss += loss.item()
             time_taken = time.perf_counter() - epoch_start_time
             # duration = timedelta(seconds=time_taken)
             duration = time_taken
             val_accuracy = val_correct / total_val
 
+            val_loss = val_running_loss / total_val
+
             self.logger.info('Epoch: %d/%d '
                             'Train accuracy: %.5e ' 
                             'Validation accuracy: %.5e '
-                            'Loss %.5e '
+                            'Training loss %.5e '
+                            'Validation loss %.5e'
                             'Time taken: %.2f seconds '
                             # 'ETA: %.2f '
                              % (epoch+1, self.epochs,
                                 train_accuracy,
                                 val_accuracy,
                                 epoch_loss,
+                                val_loss,
                                 duration) )
             self.csvlogger.log(self.pretrain_checkpoint_epoch,
                                epoch+1, 
                                train_accuracy, 
                                val_accuracy, 
                                epoch_loss, 
+                               val_loss, 
                                duration)
             # save checkpoint after epoch
             self.save_checkpoint(epoch+1)

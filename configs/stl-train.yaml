@@ -15,7 +15,7 @@ data:
 logging:
   folder: logs_STL/stl-l2-seed3
   write_tag: jepa-stl-l2-seed3
-  checkpoint_freq: 10 # new addition
+  checkpoint_freq: 50 # new addition
   logging_frequency: 2 # defaults to 3, for more concise logs
   output_file: ostl-pretrain-l2-seed3.out
 mask:
@@ -45,13 +45,13 @@ optimization:
   ema:
   - 0.996                   # default: 0.996
   - 1.0                     # default: 1.
-  epochs: 75
+  epochs: 300
   final_lr: 1.0e-06         # default: 1.0e-06
   final_weight_decay: 0.4   # default: 0.4
   ipe_scale: 1.0
   lr: 0.001                 # default: 1e-3
   start_lr: 0.0002          # default: 2e-4
-  warmup: 6
+  warmup: 40
   weight_decay: 0.04        # default: 0.04
   loss_function: L2       # this function name must exist in the which_loss.py file
   pkt_scale: 1.0e+0         # perform grid search over this, no default value yet

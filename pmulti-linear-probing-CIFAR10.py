@@ -172,14 +172,28 @@ class LinearProbe():
         self.criterion = nn.CrossEntropyLoss()
         self.optim = optim.AdamW(self.model.parameters(), lr=self.lr)
 
+        # self.transform = transforms.Compose([
+        #     transforms.Resize((self.crop_size, self.crop_size)),
+        #     transforms.ToTensor(), 
+        #     transforms.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5])
+        # ])
+
+        # self.train_dataset_images = ImageFolder(root='./datasets/', train=True, download=True, transform=self.transform)
+        # self.val_dataset_images = ImageFolder(root='./datasets/', train=False, download=True, transform=self.transform)
+
+        # CIFAR-10 specific transforms
         self.transform = transforms.Compose([
             transforms.Resize((self.crop_size, self.crop_size)),
-            transforms.ToTensor(), 
-            transforms.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5])
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], 
+                              std=[0.2023, 0.1994, 0.2010])  # CIFAR-10 specific normalization
         ])
 
-        self.train_dataset_images = ImageFolder(root='./datasets/', train=True, download=True, transform=self.transform)
-        self.val_dataset_images = ImageFolder(root='./datasets/', train=False, download=True, transform=self.transform)
+        # Load CIFAR-10 datasets
+        self.train_dataset_images = torchvision.datasets.CIFAR10(root='./datasets', train=True, 
+                                          download=True, transform=self.transform)
+        self.val_dataset_images = torchvision.datasets.CIFAR10(root='./datasets', train=False, 
+                                        download=True, transform=self.transform)
 
         # run feature extractor here
         # feature_extractor = FeatureExtractor(self.encoder)
@@ -204,6 +218,7 @@ class LinearProbe():
                                             ('%.5e', 'train_accuracy'),
                                             ('%.5e', 'val_accuracy'),
                                             ('%.5e', 'loss'),
+                                            ('%.5e', 'val_loss'),
                                             ('%.2f', 'time'))
 
     
@@ -279,6 +294,7 @@ class LinearProbe():
             self.model.eval() # set to evaluation mode
             val_correct = 0
             total_val = 0
+            val_running_loss = 0.0
             with torch.no_grad():
                 for inputs, labels in self.val_loader_features:
                     inputs, labels = inputs.to(self.device),\
@@ -287,27 +303,34 @@ class LinearProbe():
                     _, predicted = outputs.max(dim=1)
                     total_val += labels.size(0)
                     val_correct += (predicted == labels).sum().item()
+
+                    loss = self.criterion(outputs, labels)
+                    val_running_loss += loss.item()
             time_taken = time.perf_counter() - epoch_start_time
             # duration = timedelta(seconds=time_taken)
             duration = time_taken
             val_accuracy = val_correct / total_val
+            val_epoch_loss = val_running_loss / total_val
 
             self.logger.info('Epoch: %d/%d '
                             'Train accuracy: %.5e ' 
                             'Validation accuracy: %.5e '
                             'Loss %.5e '
+                            'Validation Loss %.5e '
                             'Time taken: %.2f seconds '
                             # 'ETA: %.2f '
                              % (epoch+1, self.epochs,
                                 train_accuracy,
                                 val_accuracy,
                                 epoch_loss,
+                                val_epoch_loss,
                                 duration) )
             self.csvlogger.log(self.pretrain_checkpoint_epoch,
                                epoch+1, 
                                train_accuracy, 
                                val_accuracy, 
                                epoch_loss, 
+                               val_epoch_loss,
                                duration)
             # save checkpoint after epoch
             self.save_checkpoint(epoch+1)
@@ -388,7 +411,7 @@ def process_main(fname, devices=['cuda:0']):
             temp_params['pretrain_checkpoint_epoch'] = epoch 
 
             basename = os.path.basename(os.path.normpath(log_dir))
-            eval_output = os.path.join(log_dir, 'ocls-jepa-' + basename + '.out') # + f'-ep{epoch}.out') 
+            eval_output = os.path.join(log_dir, 'ocls-jepa-CIFAR10-' + basename + '.out') # + f'-ep{epoch}.out') 
             # # do not alter evalout name
             logger.addHandler(logging.StreamHandler())
             logger.addHandler(logging.FileHandler(eval_output))
@@ -397,7 +420,7 @@ def process_main(fname, devices=['cuda:0']):
             # temp_params['logging']['log_file'] += f'-ep{epoch}'  # do not create another log file, print them all in
             # get basename of current folder
             basename = os.path.basename(os.path.normpath(log_dir))
-            temp_params['logging']['log_file'] = 'stats-' + basename + '.csv'
+            temp_params['logging']['log_file'] = 'stats-CIFAR10-' + basename + '.csv'
             
             linear_prober = LinearProbe(temp_params, logger)
             linear_prober.eval_linear()

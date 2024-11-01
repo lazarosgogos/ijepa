@@ -87,25 +87,19 @@ def evaluate_knn(encoder, train_loader, test_loader, device='cuda'):
     with torch.no_grad():
         for images, labels in train_loader:
             features = encoder(images.to(device)).mean(dim=1)  # Get embeddings
-            features = encoder(images.to(device)).mean(dim=1)  # Get embeddings
             train_features.append(features.cpu().numpy())
-            train_labels.append(np.array(labels))
             train_labels.append(np.array(labels))
             
         for images, labels in test_loader:
             features = encoder(images.to(device)).mean(dim=1)
-            features = encoder(images.to(device)).mean(dim=1)
             test_features.append(features.cpu().numpy())
-            test_labels.append(np.array(labels))
             test_labels.append(np.array(labels))
     
     train_features = np.concatenate(train_features)
     train_labels = np.concatenate(train_labels).astype(int)
-    train_labels = np.concatenate(train_labels).astype(int)
     test_features = np.concatenate(test_features)
     test_labels = np.concatenate(test_labels).astype(int)
 
-    test_labels = np.concatenate(test_labels).astype(int)
 
     # KNN classifier
     classifier = KNeighborsClassifier(n_neighbors=5)
@@ -313,7 +307,6 @@ def main(args, resume_preempt=False):
         root_path=root_path,
         image_folder=image_folder,
         copy_data=copy_data,)
-    
     ipe = len(unsupervised_loader) # iterations per epoch
 
     # -- init optimizer and scheduler

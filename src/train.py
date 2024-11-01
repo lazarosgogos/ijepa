@@ -314,18 +314,6 @@ def main(args, resume_preempt=False):
         image_folder=image_folder,
         copy_data=copy_data,)
     
-    _, test_loader, _ = make_imagenet1k_supervised(
-        transform=transform,
-        batch_size=batch_size,
-        collator=None,  # No mask collator for supervised data
-        pin_mem=pin_mem,
-        training=False,
-        num_workers=num_workers,
-        world_size=world_size,
-        rank=rank,
-        root_path=root_path,
-        image_folder=image_folder,
-        copy_data=copy_data,)
     ipe = len(unsupervised_loader) # iterations per epoch
 
     # -- init optimizer and scheduler

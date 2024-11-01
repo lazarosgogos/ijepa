@@ -41,7 +41,7 @@ from src.utils.logging import (
     grad_logger,
     AverageMeter)
 from src.utils.tensors import repeat_interleave_batch
-from src.datasets.imagenet1k import make_imagenet1k
+from src.datasets.imagenet1k import make_imagenet1k, make_imagenet1k_supervised
 
 from src.helper import (
     load_checkpoint,
@@ -56,6 +56,8 @@ from torch.utils.tensorboard import SummaryWriter
 
 import time
 import datetime
+
+from sklearn.neighbors import KNeighborsClassifier
 # --
 log_timings = True
 log_freq = 10
@@ -72,6 +74,38 @@ torch.backends.cudnn.benchmark = True
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
+
+# Add this function after the imports but before main()
+def evaluate_knn(encoder, train_loader, test_loader, device='cuda'):
+    """
+    Perform KNN evaluation on model representations
+    """
+    encoder.eval()
+    train_features, train_labels = [], []
+    test_features, test_labels = [], []
+    
+    with torch.no_grad():
+        for images, labels in train_loader:
+            features = encoder(images.to(device))  # Get embeddings
+            train_features.append(features.cpu().numpy())
+            train_labels.append(labels.numpy())
+            
+        for images, labels in test_loader:
+            features = encoder(images.to(device))
+            test_features.append(features.cpu().numpy())
+            test_labels.append(labels.numpy())
+    
+    train_features = np.concatenate(train_features)
+    train_labels = np.concatenate(train_labels)
+    test_features = np.concatenate(test_features)
+    test_labels = np.concatenate(test_labels)
+    
+    # KNN classifier
+    classifier = KNeighborsClassifier(n_neighbors=5)
+    classifier.fit(train_features, train_labels)
+    accuracy = classifier.score(test_features, test_labels)
+    
+    return accuracy
 
 
 def main(args, resume_preempt=False):
@@ -141,7 +175,7 @@ def main(args, resume_preempt=False):
     output_file = args['logging'].get('output_file', tag)
 
     # -- PKT 
-    use_pkt_scheduler = args['pkt'].get('use_pkt_scheduler', 1.)
+    use_pkt_scheduler = args['pkt'].get('use_pkt_scheduler', False)
     start_alpha = args['pkt'].get('start_alpha', 1.)
     warmup_steps_alpha = args['pkt'].get('warmup_steps_alpha', 100)
     ref_alpha = args['pkt'].get('ref_alpha', 1.)
@@ -172,6 +206,7 @@ def main(args, resume_preempt=False):
     log_file = os.path.join(folder, f'{tag}_r{rank}.csv')
     losses_log_file = os.path.join(folder, f'{tag}_all_losses.csv')
     loss_file = os.path.join(folder, f'{tag}_loss_{loss_function}.csv')
+    knn_loss_filename = os.path.join(folder, f'{tag}_KNN_{loss_function}.csv')
     save_path = os.path.join(folder, f'{tag}' + '-ep{epoch}.pth.tar')
     latest_path = os.path.join(folder, f'{tag}-latest.pth.tar')
     output_file = os.path.join(folder, output_file)
@@ -191,13 +226,16 @@ def main(args, resume_preempt=False):
                             ('%d', 'time (ms)'))
 
     if rank == 0:
-        loss_file_logger = CSVLogger(loss_file, 
+        loss_file_logger = CSVLogger(knn_loss_filename, 
                                     ('%d', 'epoch'),
                                     ('%e', 'loss'), 
-                                    ('%e', 'loss_L2'),
-                                    ('%e', 'loss_PKT'),
-                                    ('%e', 'cross_mse'),
+                                    # ('%e', 'loss_L2'),
+                                    # ('%e', 'loss_PKT'),
+                                    # ('%e', 'cross_mse'),
                                     )
+        knn_csv_logger = CSVLogger(loss_file,
+                                    ('%d', 'epoch'),
+                                    ('%e', 'knn_accuracy'), )
 
     # -- init model
     encoder, predictor = init_model(
@@ -243,6 +281,19 @@ def main(args, resume_preempt=False):
             image_folder=image_folder,
             copy_data=copy_data,
             drop_last=True)
+    
+    train_loader, test_loader, _ = make_imagenet1k_supervised(
+        transform=transform,
+        batch_size=batch_size,
+        #collator=None,  # No mask collator for supervised data
+        pin_mem=pin_mem,
+        training=True,
+        num_workers=num_workers,
+        world_size=world_size,
+        rank=rank,
+        root_path=root_path,
+        image_folder=image_folder,
+        copy_data=copy_data,)
     ipe = len(unsupervised_loader) # iterations per epoch
 
     # -- init optimizer and scheduler
@@ -379,20 +430,18 @@ def main(args, resume_preempt=False):
                         loss = AllReduce.apply(loss_l2 + loss_pkt + mse)
                     else: 
                         loss = AllReduce.apply(final_loss)
-                        loss_l2 = 0
-                        loss_pkt = 0
-                        mse = 0
+                        
                     assert not np.isnan(loss.detach().cpu()), 'NaN loss, abort'
-                    return loss, loss_l2, loss_pkt, mse
+                    return loss
 
                 # Step 1. Forward
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):
                     h = forward_target()
                     z = forward_context()
                     if not use_pkt_scheduler:
-                        loss, loss_l2, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale, chunks_step=chunks_step) # pkt scale default to 1
+                        loss = loss_fn(z, h, pkt_scale=pkt_scale, chunks_step=chunks_step) # pkt scale default to 1
                     else: 
-                        loss, loss_l2, loss_pkt, mse = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha, chunks_step=chunks_step)
+                        loss = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha, chunks_step=chunks_step)
                     # gathered_losses = all_losses(z,h) # this contains all loss functions
 
                 #  Step 2. Backward & step
@@ -412,14 +461,14 @@ def main(args, resume_preempt=False):
                     for param_q, param_k in zip(encoder.parameters(), target_encoder.parameters()):
                         param_k.data.mul_(m).add_((1.-m) * param_q.detach().data)
 
-                return (float(loss), _new_lr, _new_wd, grad_stats, loss_l2, loss_pkt, mse,) #, gathered_losses)
-            (loss, _new_lr, _new_wd, grad_stats, loss_l2, loss_pkt, mse), etime = gpu_timer(train_step)
+                return (float(loss), _new_lr, _new_wd, grad_stats, ) #, gathered_losses)
+            (loss, _new_lr, _new_wd, grad_stats), etime = gpu_timer(train_step)
             # neg_var could be None
             loss_meter.update(loss)
             time_meter.update(etime)
-            loss_l2_meter.update(loss_l2)
-            loss_pkt_meter.update(loss_pkt)
-            mse_meter.update(mse)
+            # loss_l2_meter.update(loss_l2)
+            # loss_pkt_meter.update(loss_pkt)
+            # mse_meter.update(mse)
             # -- Logging
             def log_stats():
                 csv_logger.log(epoch + 1, itr, loss, maskA_meter.val, maskB_meter.val, etime)
@@ -430,9 +479,9 @@ def main(args, resume_preempt=False):
                                 'masks: %.1f %.1f '
                                 '[wd: %.2e] [lr: %.2e] '
                                 '[mem: %.2e] '
-                                'loss l2: %e '
-                                'loss pkt: %e '
-                                'cross mse: %e '
+                                # 'loss l2: %e '
+                                # 'loss pkt: %e '
+                                # 'cross mse: %e '
                                 '(%.1f ms)'
                                 % (epoch + 1, itr,
                                    loss_meter.avg,
@@ -441,9 +490,9 @@ def main(args, resume_preempt=False):
                                    _new_wd,
                                    _new_lr,
                                    torch.cuda.max_memory_allocated() / 1024.**2,
-                                   loss_l2_meter.avg,
-                                   loss_pkt_meter.avg,
-                                   mse_meter.avg,
+                                #    loss_l2_meter.avg,
+                                #    loss_pkt_meter.avg,
+                                #    mse_meter.avg,
                                    time_meter.avg))
 
                     if grad_stats is not None:
@@ -461,19 +510,21 @@ def main(args, resume_preempt=False):
         if rank == 0:
             loss_file_logger.log(epoch+1,
                                  loss_meter.avg,
-                                 loss_l2_meter.avg,
-                                 loss_pkt_meter.avg,
-                                 mse_meter.avg,
                                  )
             writer.add_scalar('Loss', loss_meter.avg, epoch+1)
-            writer.add_scalar('Loss L2', loss_l2_meter.avg, epoch+1)
-            writer.add_scalar('Loss PKT', loss_pkt_meter.avg, epoch+1)
-            writer.add_scalar('Cross sim matrix MSE', mse_meter.avg, epoch+1)
+            # writer.add_scalar('Loss L2', loss_l2_meter.avg, epoch+1)
+            # writer.add_scalar('Loss PKT', loss_pkt_meter.avg, epoch+1)
+            # writer.add_scalar('Cross sim matrix MSE', mse_meter.avg, epoch+1)
             
         # -- Save Checkpoint after every epoch
         logger.info('avg. loss %.8e' % loss_meter.avg)
-        logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
+        # logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
         save_checkpoint(epoch+1)
+        if (epoch + 1) % 50 == 0 and rank == 0:  # Only evaluate on main process
+            knn_acc = evaluate_knn(encoder, train_loader, test_loader, device)
+            logger.info(f'\tEpoch {epoch + 1}, KNN accuracy: {knn_acc:.5e}')
+            knn_csv_logger.log(epoch+1, knn_acc)
+            writer.add_scalar('KNN_Accuracy', knn_acc, epoch + 1)
         time_epoch = time.perf_counter() - start_time_epoch
         logger.info('time taken for epoch %s' % str(datetime.timedelta(seconds=time_epoch)))
     total_time = time.perf_counter() - start_time

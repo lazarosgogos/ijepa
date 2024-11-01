@@ -165,7 +165,7 @@ class LinearProbe():
 
         if self.probe_checkpoints:
             self.model = LinearClassifier(self.embed_dims, self.num_classes, self.use_normalization)
-        else: 
+        else:
             self.model = Both(self.encoder, self.embed_dims, self.num_classes, self.use_normalization)
         self.model.to(self.device)
 
@@ -180,24 +180,40 @@ class LinearProbe():
 
         self.train_dataset_images = ImageFolder(root=self.train_dataset_path, transform=self.transform)
         self.val_dataset_images = ImageFolder(root=self.val_dataset_path, transform=self.transform)
+        # Replace the current feature extraction and loading logic in the LinearProbe.__init__ with:
 
+        
         # run feature extractor here
         # feature_extractor = FeatureExtractor(self.encoder)
         logger.info('Extracting features and saving them locally..')
         self.train_loader_images = DataLoader(self.train_dataset_images, batch_size=self.batch_size)
         self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size)
 
-
+        """
         self.save_features(self.encoder, self.train_loader_images, self.train_features_file_path, self.device)
         self.save_features(self.encoder, self.val_loader_images, self.val_features_file_path, self.device)
 
         self.train_dataset_features = FeaturesDataset(self.train_features_file_path)
         self.val_dataset_features = FeaturesDataset(self.val_features_file_path)
 
+
         self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True)
         self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size)
+        """
+        # In __init__, replace the feature extraction and dataset creation with:
         self.logger = logger
-        
+        self.logger.info('Extracting features...')
+        train_features, train_labels = self.extract_features(self.encoder, self.train_loader_images, self.device)
+        val_features, val_labels = self.extract_features(self.encoder, self.val_loader_images, self.device)
+
+        # Create datasets directly from memory
+        self.train_dataset_features = torch.utils.data.TensorDataset(train_features, train_labels)
+        self.val_dataset_features = torch.utils.data.TensorDataset(val_features, val_labels)
+
+        # Create data loaders
+        self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True, pin_memory=True)
+        self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size, pin_memory=True)
+
         self.csvlogger = CSVLoggerAppender(self.log_file, 
                                             ('%d', 'pretrain_checkpoint_epoch'),
                                             ('%d', 'epoch'),
@@ -208,7 +224,19 @@ class LinearProbe():
                                             ('%.2f', 'time'),)
 
     
-
+    # Instead of saving features to disk and loading them back:
+    def extract_features(self, encoder, loader, device='cuda'):
+        all_features = []
+        all_labels = []
+        with torch.no_grad():
+            encoder.eval()
+            for inputs, labels in loader:
+                inputs, labels = inputs.to(device), labels.to(device)
+                output = encoder(inputs)
+                all_features.append(output.cpu())
+                all_labels.append(labels.cpu())
+        
+        return torch.cat(all_features, dim=0), torch.cat(all_labels, dim=0)
     def save_checkpoint(self, epoch):
         '''Save a checkpoint of a given model & an optimizer. 
         Every `checkpoint_freq` epochs save the model in a different file as well for post-use'''
@@ -302,7 +330,7 @@ class LinearProbe():
                             'Train accuracy: %.5e ' 
                             'Validation accuracy: %.5e '
                             'Training loss %.5e '
-                            'Validation loss %.5e'
+                            'Validation loss %.5e '
                             'Time taken: %.2f seconds '
                             # 'ETA: %.2f '
                              % (epoch+1, self.epochs,
@@ -326,8 +354,9 @@ class LinearProbe():
         total_duration = timedelta(seconds=end_time-start_time)
         self.logger.info('Total time taken %s' % str(total_duration))
         self.logger.info('Cleaning up intermediate feature (.pt) files')
-        os.remove(self.train_features_file_path)
-        os.remove(self.val_features_file_path)
+        
+        # os.remove(self.train_features_file_path)
+        # os.remove(self.val_features_file_path)
         self.logger.info('Done')
 
 

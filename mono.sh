@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH -J IJEPA_500_EPOCHS
+#SBATCH -J IJEPA_IN100_L2
 #SBATCH -t 6-00:00:00
-#SBATCH --mem=64G
+#SBATCH --mem=256G
 #SBATCH -c 16
 #SBATCH -n 1
 #SBATCH --mail-type=ALL
@@ -17,5 +17,5 @@ conda activate ijepa
 export PATH=$CONDA_PREFIX/bin:$PATH
 
 python main.py  \
-	--fname configs/tin_A100_ep500.yaml \
+	--fname configs/in100_vitb14_ep600.yaml \
 	--devices cuda:0 cuda:1 cuda:2 cuda:3

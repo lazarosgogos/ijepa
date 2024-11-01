@@ -1,0 +1,27 @@
+data:
+  crop_size: 224
+  num_classes: 100
+  train_dataset_path: datasets/imagenet100/train
+  val_dataset_path: datasets/imagenet100/val
+  model_name: vit_base
+  batch_size: 128
+  patch_size: 14
+  probe_checkpoints: true
+  probe_prefix: jepa_in100
+logging:
+  log_dir: logs_IN100/in100-vitb-l2-seed0/
+  # pretrained_model_path: jepa_iic_l2-seed-43-latest.pth.tar # omit this, 1st try
+  save_path: classifiers/jepa-stl-l2-seed2-classifier-pretrained-vitb
+  checkpoint_freq: 1000
+  log_file: stats-in100-l2-seed0.csv # the .csv file
+  eval_output: ocls-jepa-in100-l2-seed0.out # the .out file
+optimization:
+  lr: 0.001
+  epochs: 200
+  use_last_n_blocks: 1 # not yet supported
+  use_normalization: false # use layer_norm and dropout layer
+meta:
+  device: cuda:0
+message: "Multi classification back to back"
+multi_probing:
+  - logs_IN100/in100-vitb-l2-seed0/

@@ -62,6 +62,56 @@ def make_imagenet1k(
 
     return dataset, data_loader, dist_sampler
 
+def make_imagenet1k_supervised(
+    transform,
+    batch_size,
+    #collator=None,
+    pin_mem=True,
+    num_workers=8,
+    world_size=1,
+    rank=0,
+    root_path=None,
+    image_folder=None,
+    training=True,
+    copy_data=False,
+    drop_last=True,
+    subset_file=None,
+):
+    """
+    Creates supervised ImageNet dataloader for KNN evaluation
+    Returns (image, label) pairs
+    """
+    dataset = ImageNet(
+        root=root_path,
+        image_folder=image_folder,
+        transform=transform,
+        train=training,
+        copy_data=copy_data,
+        index_targets=True)  # Always index targets for supervised loading
+    
+    if subset_file is not None:
+        dataset = ImageNetSubset(dataset, subset_file)
+    
+    logger.info('ImageNet supervised dataset created')
+    
+    # Create sampler
+    dist_sampler = torch.utils.data.distributed.DistributedSampler(
+        dataset=dataset,
+        num_replicas=world_size,
+        rank=rank)
+    
+    # Create supervised data loader
+    data_loader = torch.utils.data.DataLoader(
+        dataset,
+        sampler=dist_sampler,
+        batch_size=batch_size,
+        drop_last=drop_last,
+        pin_memory=pin_mem,
+        num_workers=num_workers,
+        persistent_workers=False)
+    
+    logger.info('ImageNet supervised data loader created')
+    return dataset, data_loader, dist_sampler
 
 class ImageNet(torchvision.datasets.ImageFolder):
 

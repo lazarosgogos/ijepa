@@ -65,7 +65,7 @@ def make_imagenet1k(
 def make_imagenet1k_supervised(
     transform,
     batch_size,
-    #collator=None,
+    collator=None,
     pin_mem=True,
     num_workers=8,
     world_size=1,
@@ -99,6 +99,11 @@ def make_imagenet1k_supervised(
         dataset=dataset,
         num_replicas=world_size,
         rank=rank)
+
+    # def my_collator(batch):
+    #     collated_batch = torch.utils.data.default_collate(batch)
+    #     logger.critical('My custom collated_batch: %s' % str(collated_batch))
+    #     return collated_batch
     
     # Create supervised data loader
     data_loader = torch.utils.data.DataLoader(
@@ -106,11 +111,15 @@ def make_imagenet1k_supervised(
         sampler=dist_sampler,
         batch_size=batch_size,
         drop_last=drop_last,
+        collate_fn=torch.utils.data.default_collate,
         pin_memory=pin_mem,
         num_workers=num_workers,
         persistent_workers=False)
     
     logger.info('ImageNet supervised data loader created')
+    # logger.critical('%s %s %s' % (str(dataset), 
+    #                               str(data_loader),
+    #                               str(dist_sampler)))
     return dataset, data_loader, dist_sampler
 
 class ImageNet(torchvision.datasets.ImageFolder):

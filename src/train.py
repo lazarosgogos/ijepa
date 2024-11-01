@@ -87,17 +87,24 @@ def evaluate_knn(encoder, train_loader, test_loader, device='cuda'):
     with torch.no_grad():
         for images, labels in train_loader:
             features = encoder(images.to(device)).mean(dim=1)  # Get embeddings
+            features = encoder(images.to(device)).mean(dim=1)  # Get embeddings
             train_features.append(features.cpu().numpy())
+            train_labels.append(np.array(labels))
             train_labels.append(np.array(labels))
             
         for images, labels in test_loader:
             features = encoder(images.to(device)).mean(dim=1)
+            features = encoder(images.to(device)).mean(dim=1)
             test_features.append(features.cpu().numpy())
+            test_labels.append(np.array(labels))
             test_labels.append(np.array(labels))
     
     train_features = np.concatenate(train_features)
     train_labels = np.concatenate(train_labels).astype(int)
+    train_labels = np.concatenate(train_labels).astype(int)
     test_features = np.concatenate(test_features)
+    test_labels = np.concatenate(test_labels).astype(int)
+
     test_labels = np.concatenate(test_labels).astype(int)
 
     # KNN classifier
@@ -281,13 +288,25 @@ def main(args, resume_preempt=False):
             copy_data=copy_data,
             drop_last=True)
     
-    
     _, train_loader, _ = make_imagenet1k_supervised(
         transform=transform,
         batch_size=batch_size,
         collator=None,  # No mask collator for supervised data
         pin_mem=pin_mem,
         training=True,
+        num_workers=num_workers,
+        world_size=world_size,
+        rank=rank,
+        root_path=root_path,
+        image_folder=image_folder,
+        copy_data=copy_data,)
+    
+    _, test_loader, _ = make_imagenet1k_supervised(
+        transform=transform,
+        batch_size=batch_size,
+        collator=None,  # No mask collator for supervised data
+        pin_mem=pin_mem,
+        training=False,
         num_workers=num_workers,
         world_size=world_size,
         rank=rank,
@@ -533,7 +552,7 @@ def main(args, resume_preempt=False):
         logger.info('avg. loss %.8e' % loss_meter.avg)
         # logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
         save_checkpoint(epoch+1)
-        if (epoch + 1) % 50 == 0 and rank == 0:  # Only evaluate on main process
+        if (epoch + 1) % 1 == 0 and rank == 0:  # Only evaluate on main process
             knn_acc = evaluate_knn(encoder, train_loader, test_loader, device)
             logger.info(f'\tEpoch {epoch + 1}, KNN accuracy: {knn_acc:.5e}')
             knn_csv_logger.log(epoch+1, knn_acc)

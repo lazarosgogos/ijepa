@@ -226,14 +226,14 @@ def main(args, resume_preempt=False):
                             ('%d', 'time (ms)'))
 
     if rank == 0:
-        loss_file_logger = CSVLogger(knn_loss_filename, 
+        loss_file_logger = CSVLogger(loss_file, 
                                     ('%d', 'epoch'),
                                     ('%e', 'loss'), 
                                     # ('%e', 'loss_L2'),
                                     # ('%e', 'loss_PKT'),
                                     # ('%e', 'cross_mse'),
                                     )
-        knn_csv_logger = CSVLogger(loss_file,
+        knn_csv_logger = CSVLogger(knn_loss_filename,
                                     ('%d', 'epoch'),
                                     ('%e', 'knn_accuracy'), )
 
@@ -392,9 +392,6 @@ def main(args, resume_preempt=False):
         maskA_meter = AverageMeter()
         maskB_meter = AverageMeter()
         time_meter = AverageMeter()
-        mse_meter = AverageMeter()
-        loss_pkt_meter = AverageMeter()
-        loss_l2_meter = AverageMeter()
 
         for itr, (udata, masks_enc, masks_pred) in enumerate(unsupervised_loader):
 
@@ -533,7 +530,7 @@ def main(args, resume_preempt=False):
         logger.info('avg. loss %.8e' % loss_meter.avg)
         # logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
         save_checkpoint(epoch+1)
-        if (epoch + 1) % 1 == 0 and rank == 0:  # Only evaluate on main process
+        if (epoch + 1) % 50 == 0 and rank == 0:  # Only evaluate on main process
             knn_acc = evaluate_knn(encoder, train_loader, test_loader, device)
             logger.info(f'\tEpoch {epoch + 1}, KNN accuracy: {knn_acc:.5e}')
             knn_csv_logger.log(epoch+1, knn_acc)

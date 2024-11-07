@@ -66,7 +66,7 @@ log_freq = 10
 
 # rng = np.random.Generator(np.random.PCG64()) 
 
-_GLOBAL_SEED = 0 # 
+_GLOBAL_SEED = 51 # 
 # seed is logged later on
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
@@ -341,10 +341,11 @@ def main(args, resume_preempt=False):
     momentum_scheduler = (ema[0] + i*(ema[1]-ema[0])/(ipe*num_epochs*ipe_scale)
                           for i in range(int(ipe*num_epochs*ipe_scale)+1))
 
+    """
     # convert T_max_alpha from epoch to actual itr number
     T_max_alpha = ipe*T_max_alpha*ipe_scale
     warmup_steps_alpha = ipe*warmup_steps_alpha*ipe_scale
-    """pkt_scheduler = PKTSchedule(warmup_steps=warmup_steps_alpha,
+    pkt_scheduler = PKTSchedule(warmup_steps=warmup_steps_alpha,
                                 start_alpha=start_alpha,
                                 ref_alpha=ref_alpha,
                                 T_max=T_max_alpha,
@@ -541,7 +542,7 @@ def main(args, resume_preempt=False):
         logger.info('avg. loss %.8e' % loss_meter.avg)
         # logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
         save_checkpoint(epoch+1)
-        if (epoch + 1) % 50 == 0 and rank == 0:  # Only evaluate on main process
+        if (epoch + 1) % 10 == 0 and rank == 0:  # Only evaluate KNN on main process
             knn_acc_train, knn_acc_test = evaluate_knn(encoder, train_loader, test_loader, device)
             logger.info(f'\tEpoch {epoch + 1}, KNN accuracy train: {knn_acc_train:.5e}, KNN accuracy train: {knn_acc_test:.5e}')
             knn_csv_logger.log(epoch+1, knn_acc_train, knn_acc_test)

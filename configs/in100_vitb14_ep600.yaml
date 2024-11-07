@@ -1,5 +1,5 @@
 data:
-  batch_size: 128
+  batch_size: 256
   color_jitter_strength: 0.0
   crop_scale: 
   - 0.3
@@ -46,16 +46,17 @@ optimization:
   - 0.996
   - 1.0
   epochs: 600
-  final_lr: 1.25e-7         # default: 1.0e-06
+  final_lr: 1.0e-06         # default: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0
-  lr: 0.000125              # default: 0.001
-  start_lr: 0.000025        # default: 0.0002
+  lr: 0.001              # default: 0.001
+  start_lr: 0.0002        # default: 0.0002
   warmup: 80                # default: 40
   weight_decay: 0.04
   loss_function: L2 
   pkt_scale: 1.0e+0   
   variance_weight: 0.0
+  accumulate_grads_every: 4
 pkt:
   use_pkt_scheduler: false
   start_alpha: 1.

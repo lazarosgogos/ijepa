@@ -1,5 +1,5 @@
 data:
-  batch_size: 128
+  batch_size: 256
   color_jitter_strength: 0.0
   crop_scale: 
   - 0.3
@@ -15,9 +15,9 @@ data:
 logging:
   folder: logs_IN100/in100-vitb-l2-pkt-chunks-ep600-seed0
   write_tag: jepa_in100
-  checkpoint_freq: 200 # new addition
+  checkpoint_freq: 300 # new addition
   logging_frequency: 2 # defaults to 3, for more concise logs
-  output_file: oin100-pretrain-vitb-l2-seed0.out
+  output_file: oin100-pretrain-vitb-l2-pkt-chunks-ep600-seed0.out
 mask:
   allow_overlap: false
   aspect_ratio:
@@ -37,7 +37,7 @@ meta:
   copy_data: false
   load_checkpoint: false
   model_name: vit_base
-  pred_depth: 12
+  pred_depth: 6
   pred_emb_dim: 384
   read_checkpoint: null
   use_bfloat16: true
@@ -46,16 +46,17 @@ optimization:
   - 0.996
   - 1.0
   epochs: 600
-  final_lr: 1.0e-06
+  final_lr: 1.0e-06         # default: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0
-  lr: 0.001
-  start_lr: 0.0002
-  warmup: 40
+  lr: 0.001             # default: 0.001
+  start_lr: 0.0002       # default: 0.0002
+  warmup: 80                # default: 40
   weight_decay: 0.04
   loss_function: L2_PKT_chunks
   pkt_scale: 1.0e+0   
   variance_weight: 0.0
+  accumulate_grads_every: 4
 pkt:
   use_pkt_scheduler: false
   start_alpha: 1.

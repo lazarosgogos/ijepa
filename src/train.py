@@ -104,9 +104,15 @@ def evaluate_knn(encoder, train_loader, test_loader, device='cuda'):
     # KNN classifier
     classifier = KNeighborsClassifier(n_neighbors=5)
     classifier.fit(train_features, train_labels)
-    accuracy = classifier.score(test_features, test_labels)
+
+    # accuracy = classifier.score(test_features, test_labels)
+    # Calculate train and test accuracy
+    train_accuracy = classifier.score(train_features, train_labels)
+    test_accuracy = classifier.score(test_features, test_labels)
     
-    return accuracy
+    return train_accuracy, test_accuracy
+    
+    # return accuracy
 
 def main(args, resume_preempt=False):
 
@@ -166,7 +172,7 @@ def main(args, resume_preempt=False):
     final_lr = args['optimization']['final_lr']
     loss_function = args['optimization'].get('loss_function', 'L2') # get the loss function, use L2 if no loss fn definition was found in the config file
     evaluate = args['optimization'].get('evaluate', False) # print sim distributions only, do NOT pretrain
-
+    accumulate_grads_every = args['optimization'].get('accumulate_grads_every', 1)
     # -- LOGGING
     folder = args['logging']['folder']
     tag = args['logging']['write_tag']
@@ -175,15 +181,16 @@ def main(args, resume_preempt=False):
     output_file = args['logging'].get('output_file', tag)
 
     # -- PKT 
-    use_pkt_scheduler = args['pkt'].get('use_pkt_scheduler', False)
+    """use_pkt_scheduler = args['pkt'].get('use_pkt_scheduler', False)
     start_alpha = args['pkt'].get('start_alpha', 1.)
     warmup_steps_alpha = args['pkt'].get('warmup_steps_alpha', 100)
     ref_alpha = args['pkt'].get('ref_alpha', 1.)
     T_max_alpha = args['pkt'].get('T_max', 200)
     final_alpha = args['pkt'].get('final_alpha', 0.)
     pkt_scale = args['pkt'].get('pkt_scale', 1.0)
+    """
     chunks_step = args['pkt'].get('chunks_step', 512)
-
+    
     # force_cudnn_initialization()
     writer_dest = os.path.join(folder, f'tensorboard-{tag}')
     dump = os.path.join(folder, 'params-ijepa.yaml')
@@ -235,7 +242,8 @@ def main(args, resume_preempt=False):
                                     )
         knn_csv_logger = CSVLogger(knn_loss_filename,
                                     ('%d', 'epoch'),
-                                    ('%e', 'knn_accuracy'), )
+                                    ('%e', 'knn_accuracy_train'), 
+                                    ('%e', 'knn_accuracy_test'), )
 
     # -- init model
     encoder, predictor = init_model(
@@ -336,11 +344,11 @@ def main(args, resume_preempt=False):
     # convert T_max_alpha from epoch to actual itr number
     T_max_alpha = ipe*T_max_alpha*ipe_scale
     warmup_steps_alpha = ipe*warmup_steps_alpha*ipe_scale
-    pkt_scheduler = PKTSchedule(warmup_steps=warmup_steps_alpha,
+    """pkt_scheduler = PKTSchedule(warmup_steps=warmup_steps_alpha,
                                 start_alpha=start_alpha,
                                 ref_alpha=ref_alpha,
                                 T_max=T_max_alpha,
-                                final_alpha=final_alpha)
+                                final_alpha=final_alpha)"""
 
     start_epoch = 0
     # -- load training checkpoint
@@ -358,7 +366,7 @@ def main(args, resume_preempt=False):
             wd_scheduler.step()
             next(momentum_scheduler)
             mask_collator.step()
-            pkt_scheduler.step()
+            # pkt_scheduler.step()
 
     def save_checkpoint(epoch):
         save_dict = {
@@ -387,6 +395,7 @@ def main(args, resume_preempt=False):
             log_freq = ipe // logging_frequency # report every X := `logging_frequency` intermediate steps
         # -- update distributed-data-loader epoch
         unsupervised_sampler.set_epoch(epoch)
+        optimizer.zero_grad() # for safety
 
         loss_meter = AverageMeter()
         maskA_meter = AverageMeter()
@@ -408,9 +417,9 @@ def main(args, resume_preempt=False):
             def train_step():
                 _new_lr = scheduler.step()
                 _new_wd = wd_scheduler.step()
-                _new_alpha = pkt_scheduler.step()
-                if rank == 0 and itr == 0 and use_pkt_scheduler:
-                    logger.info('new alpha: %f' % _new_alpha)
+                # _new_alpha = pkt_scheduler.step()
+                # if rank == 0 and itr == 0 and use_pkt_scheduler:
+                #     logger.info('new alpha: %f' % _new_alpha)
                 # --
 
                 def forward_target():
@@ -448,20 +457,22 @@ def main(args, resume_preempt=False):
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):
                     h = forward_target()
                     z = forward_context()
-                    if not use_pkt_scheduler:
-                        loss = loss_fn(z, h, pkt_scale=pkt_scale, chunks_step=chunks_step) # pkt scale default to 1
-                    else: 
-                        loss = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha, chunks_step=chunks_step)
+                    # if not use_pkt_scheduler:
+                    loss = loss_fn(z, h, chunks_step=chunks_step) # pkt scale default to 1
+                    # else: 
+                    #     loss = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha, chunks_step=chunks_step)
                     # gathered_losses = all_losses(z,h) # this contains all loss functions
 
                 #  Step 2. Backward & step
                 if use_bfloat16:
                     scaler.scale(loss).backward()
-                    scaler.step(optimizer)
-                    scaler.update()
+                    if (itr+1) % accumulate_grads_every == 0: # accumulate_grads_every = 1 cancels grad accumulation
+                        scaler.step(optimizer)
+                        scaler.update()
                 else:
                     loss.backward()
-                    optimizer.step()
+                    if (itr+1) % accumulate_grads_every == 0:
+                        optimizer.step()
                 grad_stats = grad_logger(encoder.named_parameters())
                 optimizer.zero_grad()
 
@@ -531,10 +542,11 @@ def main(args, resume_preempt=False):
         # logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
         save_checkpoint(epoch+1)
         if (epoch + 1) % 50 == 0 and rank == 0:  # Only evaluate on main process
-            knn_acc = evaluate_knn(encoder, train_loader, test_loader, device)
-            logger.info(f'\tEpoch {epoch + 1}, KNN accuracy: {knn_acc:.5e}')
-            knn_csv_logger.log(epoch+1, knn_acc)
-            writer.add_scalar('KNN_Accuracy', knn_acc, epoch + 1)
+            knn_acc_train, knn_acc_test = evaluate_knn(encoder, train_loader, test_loader, device)
+            logger.info(f'\tEpoch {epoch + 1}, KNN accuracy train: {knn_acc_train:.5e}, KNN accuracy train: {knn_acc_test:.5e}')
+            knn_csv_logger.log(epoch+1, knn_acc_train, knn_acc_test)
+            writer.add_scalar('KNN_Accuracy train', knn_acc_train, epoch + 1)
+            writer.add_scalar('KNN_Accuracy test', knn_acc_test, epoch + 1)
         time_epoch = time.perf_counter() - start_time_epoch
         logger.info('time taken for epoch %s' % str(datetime.timedelta(seconds=time_epoch)))
     total_time = time.perf_counter() - start_time

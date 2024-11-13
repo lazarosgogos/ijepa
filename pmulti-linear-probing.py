@@ -28,6 +28,7 @@ import torchvision
 import glob
 import re
 import copy
+import gc
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -200,7 +201,6 @@ class LinearProbe():
         self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True)
         self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size)
         """
-        # In __init__, replace the feature extraction and dataset creation with:
         self.logger = logger
         self.logger.info('Extracting features...')
         train_features, train_labels = self.extract_features(self.encoder, self.train_loader_images, self.device)
@@ -222,6 +222,11 @@ class LinearProbe():
                                             ('%.5e', 'loss'),
                                             ('%.5e', 'val_loss'),
                                             ('%.2f', 'time'),)
+
+        # del train_features
+        # del train_labels
+        # del val_features 
+        # del val_labels
 
     
     # Instead of saving features to disk and loading them back:
@@ -358,6 +363,18 @@ class LinearProbe():
         # os.remove(self.train_features_file_path)
         # os.remove(self.val_features_file_path)
         self.logger.info('Done')
+        # Unpin the data loaders from memory
+        self.train_loader_features.pin_memory = False
+        self.val_loader_features.pin_memory = False
+        # Delete the dataset and data loader objects
+        del self.train_dataset_features
+        del self.val_dataset_features
+        del self.train_loader_features
+        del self.val_loader_features
+
+        # Clear the CUDA cache
+        gc.collect()
+        torch.cuda.empty_cache()
 
 
     

@@ -2,8 +2,8 @@
 
 #SBATCH -J IJEPA_IN100_L2
 #SBATCH -t 6-00:00:00
-#SBATCH --mem=256G
-#SBATCH -c 16
+#SBATCH --mem=128G
+#SBATCH -c 8
 #SBATCH -n 1
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=lazarosg@csd.auth.gr

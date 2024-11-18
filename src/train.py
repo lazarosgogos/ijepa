@@ -66,7 +66,7 @@ log_freq = 10
 
 # rng = np.random.Generator(np.random.PCG64()) 
 
-_GLOBAL_SEED = 51 # 
+_GLOBAL_SEED = 0 # 
 # seed is logged later on
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
@@ -460,6 +460,7 @@ def main(args, resume_preempt=False):
                     z = forward_context()
                     # if not use_pkt_scheduler:
                     loss = loss_fn(z, h, chunks_step=chunks_step) # pkt scale default to 1
+                    loss /= accumulate_grads_every
                     # else: 
                     #     loss = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha, chunks_step=chunks_step)
                     # gathered_losses = all_losses(z,h) # this contains all loss functions
@@ -467,15 +468,17 @@ def main(args, resume_preempt=False):
                 #  Step 2. Backward & step
                 if use_bfloat16:
                     scaler.scale(loss).backward()
-                    if (itr+1) % accumulate_grads_every == 0: # accumulate_grads_every = 1 cancels grad accumulation
+                    if (itr+1) % accumulate_grads_every == 0 or (itr + 1 == len(unsupervised_loader)): # accumulate_grads_every = 1 cancels grad accumulation
                         scaler.step(optimizer)
                         scaler.update()
+                        grad_stats = grad_logger(encoder.named_parameters())
+                        optimizer.zero_grad()
                 else:
                     loss.backward()
-                    if (itr+1) % accumulate_grads_every == 0:
+                    if (itr+1) % accumulate_grads_every == 0 or (itr + 1 == len(unsupervised_loader)):
                         optimizer.step()
-                grad_stats = grad_logger(encoder.named_parameters())
-                optimizer.zero_grad()
+                        grad_stats = grad_logger(encoder.named_parameters())
+                        optimizer.zero_grad()
 
                 # Step 3. momentum update of target encoder
                 with torch.no_grad():
@@ -542,7 +545,7 @@ def main(args, resume_preempt=False):
         logger.info('avg. loss %.8e' % loss_meter.avg)
         # logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
         save_checkpoint(epoch+1)
-        if (epoch + 1) % 10 == 0 and rank == 0:  # Only evaluate KNN on main process
+        if (epoch + 1) % 50 == 0 and rank == 0:  # Only evaluate KNN on main process
             knn_acc_train, knn_acc_test = evaluate_knn(encoder, train_loader, test_loader, device)
             logger.info(f'\tEpoch {epoch + 1}, KNN accuracy train: {knn_acc_train:.5e}, KNN accuracy train: {knn_acc_test:.5e}')
             knn_csv_logger.log(epoch+1, knn_acc_train, knn_acc_test)

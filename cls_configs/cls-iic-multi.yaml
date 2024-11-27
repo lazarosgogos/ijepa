@@ -2,14 +2,14 @@ data:
   crop_size: 150
   num_classes: 6
   train_dataset_path: datasets/intel-image-classification/train
-  val_dataset_path: datasets/intel-image-classification/test
+  val_dataset_path: datasets/intel-image-classification/val
   model_name: vit_base
   batch_size: 128
   patch_size: 15
   probe_checkpoints: true
   probe_prefix: jepa-iic
 logging:
-  log_dir: logs_iic/iic-l2-pkt-chunks-seed0/
+  log_dir: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed50
   # pretrained_model_path: jepa_iic_l2-seed-43-latest.pth.tar # omit this, 1st try
   save_path: classifiers/jepa-iic-l2-seed0-classifier-pretrained-vitb
   checkpoint_freq: 1000
@@ -21,7 +21,8 @@ optimization:
   use_last_n_blocks: 1 # not yet supported
   use_normalization: false # use layer_norm and dropout layer
 meta:
-  device: cuda:0
-message: "Multi classification based on PKT cross sim matrix MSE seed 0"
+  device: cuda:1
+# message: "Multi classification based on PKT cross sim matrix MSE seed 0"
 multi_probing:
-  - logs_PKT_cross/iic-train-pkt-cross-seed0
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed50
+  - logs_PKT_chunks/iic-train-l2-seed50

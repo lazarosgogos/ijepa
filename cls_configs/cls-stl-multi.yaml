@@ -17,14 +17,14 @@ logging:
   eval_output: ocls-jepa-stl-l2-pkt-chunks-seed2.out # the .out file
 optimization:
   lr: 0.001
-  epochs: 200
+  epochs: 100
   use_last_n_blocks: 1 # not yet supported
   use_normalization: false # use layer_norm and dropout layer
 meta:
-  device: cuda:1
+  device: cuda:0
 message: "Multi classification back to back"
 multi_probing:
   # - logs_STL/stl-l2-pkt-chunks-seed0
   # - logs_STL/stl-l2-pkt-chunks-seed2
-  - logs_STL/stl-l2-seed0
-  - logs_STL/stl-l2-seed2
+  # - logs_STL/stl-l2-seed0
+  - logs_STL/stl-l2-pkt-chunks-seed1-NEW

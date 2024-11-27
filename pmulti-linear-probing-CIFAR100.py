@@ -51,9 +51,6 @@ class LinearClassifier(nn.Module):
         super(LinearClassifier, self).__init__()
         self.num_classes = num_classes
         self.input_size = input_size
-        self.hidden_linear = nn.Linear(input_size, input_size)
-        self.hidden_linear.weight.data.normal_(mean=0.0, std=0.1)
-        self.hidden_linear.bias.data.zero_()
         self.linear = nn.Linear(input_size, num_classes)
         self.linear.weight.data.normal_(mean=0.0, std=0.1)
         self.linear.bias.data.zero_()
@@ -73,7 +70,6 @@ class LinearClassifier(nn.Module):
             x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension
                                        # but normalize over feature dim
         # linear layer
-        x = self.hidden_linear(x)
         x = self.linear(x)
         return self.softmax(x)
 

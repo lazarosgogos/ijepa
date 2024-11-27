@@ -3,13 +3,13 @@
 #SBATCH -J IJEPA_IN100_L2_LIN_PROB_PKT
 #SBATCH -t 6:00:00
 #SBATCH --mem=256G
-#SBATCH -c 8
+#SBATCH -c 16
 #SBATCH -n 1
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=lazarosg@csd.auth.gr
 #SBATCH -p ampere
 #SBATCH --gres=gpu:1
-#SBATCH --dependency=afterok:1845123
+#SBATCH --dependency=afterok:1851885
 
 module load gcc miniconda3 cuda
 source $CONDA_PROFILE/conda.sh

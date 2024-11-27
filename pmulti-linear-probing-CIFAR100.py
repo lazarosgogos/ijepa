@@ -28,6 +28,7 @@ import torchvision
 import glob
 import re
 import copy
+import gc
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -165,34 +166,26 @@ class LinearProbe():
 
         if self.probe_checkpoints:
             self.model = LinearClassifier(self.embed_dims, self.num_classes, self.use_normalization)
-        else: 
+        else:
             self.model = Both(self.encoder, self.embed_dims, self.num_classes, self.use_normalization)
         self.model.to(self.device)
 
         self.criterion = nn.CrossEntropyLoss()
         self.optim = optim.AdamW(self.model.parameters(), lr=self.lr)
 
-        # self.transform = transforms.Compose([
-        #     transforms.Resize((self.crop_size, self.crop_size)),
-        #     transforms.ToTensor(), 
-        #     transforms.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5])
-        # ])
-
-        # self.train_dataset_images = ImageFolder(root='./datasets/', train=True, download=True, transform=self.transform)
-        # self.val_dataset_images = ImageFolder(root='./datasets/', train=False, download=True, transform=self.transform)
-
+        
         # CIFAR-10 specific transforms
         self.transform = transforms.Compose([
             transforms.Resize((self.crop_size, self.crop_size)),
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], 
-                              std=[0.2023, 0.1994, 0.2010])  # CIFAR-10 specific normalization
+            transforms.Normalize(mean=[0.5071, 0.4867, 0.4408], 
+                              std=[0.2675, 0.2565, 0.2761])  # CIFAR-10 specific normalization
         ])
 
         # Load CIFAR-10 datasets
-        self.train_dataset_images = torchvision.datasets.CIFAR10(root='./datasets', train=True, 
+        self.train_dataset_images = torchvision.datasets.CIFAR100(root='./datasets', train=True, 
                                           download=True, transform=self.transform)
-        self.val_dataset_images = torchvision.datasets.CIFAR10(root='./datasets', train=False, 
+        self.val_dataset_images = torchvision.datasets.CIFAR100(root='./datasets', train=False, 
                                         download=True, transform=self.transform)
 
         # run feature extractor here
@@ -201,7 +194,7 @@ class LinearProbe():
         self.train_loader_images = DataLoader(self.train_dataset_images, batch_size=self.batch_size)
         self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size)
 
-
+        """
         self.save_features(self.encoder, self.train_loader_images, self.train_features_file_path, self.device)
         self.save_features(self.encoder, self.val_loader_images, self.val_features_file_path, self.device)
 
@@ -210,8 +203,22 @@ class LinearProbe():
 
         self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True)
         self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size)
+        """
         self.logger = logger
-        
+        self.logger.info('Extracting features...')
+        train_features, train_labels = self.extract_features(self.encoder, self.train_loader_images, self.device)
+        val_features, val_labels = self.extract_features(self.encoder, self.val_loader_images, self.device)
+        self.logger.info('Done extracting features...\n Creating datasets')
+
+        # Create datasets directly from memory
+        self.train_dataset_features = torch.utils.data.TensorDataset(train_features, train_labels)
+        self.val_dataset_features = torch.utils.data.TensorDataset(val_features, val_labels)
+        self.logger.info('Created datasets...\n Creating data loaders')
+        # Create data loaders
+        self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True, pin_memory=True)
+        self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size, pin_memory=True)
+        self.logger.info('Done with data loaders')
+
         self.csvlogger = CSVLoggerAppender(self.log_file, 
                                             ('%d', 'pretrain_checkpoint_epoch'),
                                             ('%d', 'epoch'),
@@ -222,7 +229,19 @@ class LinearProbe():
                                             ('%.2f', 'time'))
 
     
-
+    # Instead of saving features to disk and loading them back:
+    def extract_features(self, encoder, loader, device='cuda'):
+        all_features = []
+        all_labels = []
+        with torch.no_grad():
+            encoder.eval()
+            for inputs, labels in loader:
+                inputs, labels = inputs.to(device), labels.to(device)
+                output = encoder(inputs)
+                all_features.append(output.cpu())
+                all_labels.append(labels.cpu())
+        
+        return torch.cat(all_features, dim=0), torch.cat(all_labels, dim=0)
     def save_checkpoint(self, epoch):
         '''Save a checkpoint of a given model & an optimizer. 
         Every `checkpoint_freq` epochs save the model in a different file as well for post-use'''
@@ -265,6 +284,7 @@ class LinearProbe():
     def eval_linear(self):
         """ The main function in which linear probing is implemented"""
         start_time = time.perf_counter()
+        self.logger.info('Commencing training')
         for epoch in range(self.epochs):
             epoch_start_time = time.perf_counter()
             self.model.train() # set model to training mode
@@ -340,9 +360,22 @@ class LinearProbe():
         total_duration = timedelta(seconds=end_time-start_time)
         self.logger.info('Total time taken %s' % str(total_duration))
         self.logger.info('Cleaning up intermediate feature (.pt) files')
-        os.remove(self.train_features_file_path)
-        os.remove(self.val_features_file_path)
+        
+        # os.remove(self.train_features_file_path)
+        # os.remove(self.val_features_file_path)
         self.logger.info('Done')
+        # Unpin the data loaders from memory
+        self.train_loader_features.pin_memory = False
+        self.val_loader_features.pin_memory = False
+        # Delete the dataset and data loader objects
+        del self.train_dataset_features
+        del self.val_dataset_features
+        del self.train_loader_features
+        del self.val_loader_features
+
+        # Clear the CUDA cache
+        gc.collect()
+        torch.cuda.empty_cache()
 
 
     
@@ -391,7 +424,7 @@ def process_main(fname, devices=['cuda:0']):
         temp_params = copy.deepcopy(params)
         temp_params['logging']['log_dir'] = log_dir
         for tarfile in sorted(tarfiles):
-            eval_output = temp_params['logging'].get('eval_output', 'pfeature_extractor.out')
+            # eval_output = temp_params['logging'].get('eval_output', 'pfeature_extractor.out')
             logger.info('working on file %s ...' % str(tarfile))
             temp_params['logging']['pretrained_model_path'] = os.path.basename(tarfile) # use this tarfile name
             
@@ -411,7 +444,7 @@ def process_main(fname, devices=['cuda:0']):
             temp_params['pretrain_checkpoint_epoch'] = epoch 
 
             basename = os.path.basename(os.path.normpath(log_dir))
-            eval_output = os.path.join(log_dir, 'ocls-jepa-CIFAR10-' + basename + '.out') # + f'-ep{epoch}.out') 
+            eval_output = os.path.join(log_dir, 'ocls-jepa-CIFAR100-' + basename + '.out') # + f'-ep{epoch}.out') 
             # # do not alter evalout name
             logger.addHandler(logging.StreamHandler())
             logger.addHandler(logging.FileHandler(eval_output))
@@ -420,7 +453,7 @@ def process_main(fname, devices=['cuda:0']):
             # temp_params['logging']['log_file'] += f'-ep{epoch}'  # do not create another log file, print them all in
             # get basename of current folder
             basename = os.path.basename(os.path.normpath(log_dir))
-            temp_params['logging']['log_file'] = 'stats-CIFAR10-' + basename + '.csv'
+            temp_params['logging']['log_file'] = 'stats-CIFAR100-' + basename + '.csv'
             
             linear_prober = LinearProbe(temp_params, logger)
             linear_prober.eval_linear()

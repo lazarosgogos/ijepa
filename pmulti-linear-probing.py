@@ -186,7 +186,7 @@ class LinearProbe():
         
         # run feature extractor here
         # feature_extractor = FeatureExtractor(self.encoder)
-        logger.info('Extracting features and saving them locally..')
+        logger.info('Extracting features and saving them in memory..')
         self.train_loader_images = DataLoader(self.train_dataset_images, batch_size=self.batch_size)
         self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size)
 

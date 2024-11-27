@@ -33,7 +33,8 @@ def make_imagenet1k(
     training=True,
     copy_data=False,
     drop_last=True,
-    subset_file=None
+    subset_file=None,
+    shuffle=False
 ):
     dataset = ImageNet(
         root=root_path,
@@ -48,7 +49,8 @@ def make_imagenet1k(
     dist_sampler = torch.utils.data.distributed.DistributedSampler(
         dataset=dataset,
         num_replicas=world_size,
-        rank=rank)
+        rank=rank,
+        shuffle=shuffle)
     data_loader = torch.utils.data.DataLoader(
         dataset,
         collate_fn=collator,
@@ -57,7 +59,8 @@ def make_imagenet1k(
         drop_last=drop_last,
         pin_memory=pin_mem,
         num_workers=num_workers,
-        persistent_workers=False)
+        persistent_workers=False,
+        )
     logger.info('ImageNet unsupervised data loader created')
 
     return dataset, data_loader, dist_sampler
@@ -76,6 +79,7 @@ def make_imagenet1k_supervised(
     copy_data=False,
     drop_last=True,
     subset_file=None,
+    shuffle=False
 ):
     """
     Creates supervised ImageNet dataloader for KNN evaluation
@@ -87,7 +91,7 @@ def make_imagenet1k_supervised(
         transform=transform,
         train=training,
         copy_data=copy_data,
-        index_targets=True)  # Always index targets for supervised loading
+        index_targets=True,)  # Always index targets for supervised loading
     
     if subset_file is not None:
         dataset = ImageNetSubset(dataset, subset_file)
@@ -98,7 +102,8 @@ def make_imagenet1k_supervised(
     dist_sampler = torch.utils.data.distributed.DistributedSampler(
         dataset=dataset,
         num_replicas=world_size,
-        rank=rank)
+        rank=rank,
+        shuffle=shuffle)
 
     # def my_collator(batch):
     #     collated_batch = torch.utils.data.default_collate(batch)
@@ -114,7 +119,8 @@ def make_imagenet1k_supervised(
         collate_fn=torch.utils.data.default_collate,
         pin_memory=pin_mem,
         num_workers=num_workers,
-        persistent_workers=False)
+        persistent_workers=False,
+        )
     
     logger.info('ImageNet supervised data loader created')
     # logger.critical('%s %s %s' % (str(dataset), 

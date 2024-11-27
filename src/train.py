@@ -288,7 +288,8 @@ def main(args, resume_preempt=False):
             root_path=root_path,
             image_folder=image_folder,
             copy_data=copy_data,
-            drop_last=True)
+            drop_last=True,
+            shuffle=True)
     
     _, train_loader, _ = make_imagenet1k_supervised(
         transform=transform,
@@ -301,7 +302,8 @@ def main(args, resume_preempt=False):
         rank=rank,
         root_path=root_path,
         image_folder=image_folder,
-        copy_data=copy_data,)
+        copy_data=copy_data,
+        shuffle=True)
     
     _, test_loader, _ = make_imagenet1k_supervised(
         transform=transform,
@@ -314,7 +316,8 @@ def main(args, resume_preempt=False):
         rank=rank,
         root_path=root_path,
         image_folder=image_folder,
-        copy_data=copy_data,)
+        copy_data=copy_data,
+        shuffle=True)
     ipe = len(unsupervised_loader) # iterations per epoch
 
     # -- init optimizer and scheduler
@@ -396,7 +399,7 @@ def main(args, resume_preempt=False):
             log_freq = ipe // logging_frequency # report every X := `logging_frequency` intermediate steps
         # -- update distributed-data-loader epoch
         unsupervised_sampler.set_epoch(epoch)
-        optimizer.zero_grad() # for safety
+        # optimizer.zero_grad() # for safety
 
         loss_meter = AverageMeter()
         maskA_meter = AverageMeter()
@@ -468,17 +471,17 @@ def main(args, resume_preempt=False):
                 #  Step 2. Backward & step
                 if use_bfloat16:
                     scaler.scale(loss).backward()
-                    if (itr+1) % accumulate_grads_every == 0 or (itr + 1 == len(unsupervised_loader)): # accumulate_grads_every = 1 cancels grad accumulation
+                    if (itr+1) % accumulate_grads_every == 0: # or (itr + 1 == len(unsupervised_loader)): # accumulate_grads_every = 1 cancels grad accumulation
                         scaler.step(optimizer)
                         scaler.update()
-                        grad_stats = grad_logger(encoder.named_parameters())
+                        # grad_stats = grad_logger(encoder.named_parameters())
                         optimizer.zero_grad()
                 else:
                     loss.backward()
-                    if (itr+1) % accumulate_grads_every == 0 or (itr + 1 == len(unsupervised_loader)):
+                    if (itr+1) % accumulate_grads_every == 0: # or (itr + 1 == len(unsupervised_loader)):
                         optimizer.step()
-                        grad_stats = grad_logger(encoder.named_parameters())
                         optimizer.zero_grad()
+                grad_stats = grad_logger(encoder.named_parameters())
 
                 # Step 3. momentum update of target encoder
                 with torch.no_grad():

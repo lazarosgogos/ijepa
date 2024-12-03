@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH -J IJEPA_IN100_L2_PKT_bs256
-#SBATCH -t 6-00:00:00
+#SBATCH -t 2-00:00:00
 #SBATCH --mem=128G
 #SBATCH -c 10
 #SBATCH -n 1

@@ -4,10 +4,11 @@ data:
   train_dataset_path: datasets/stl10/train_images
   val_dataset_path: datasets/stl10/val_images
   model_name: vit_base
-  batch_size: 128
+  batch_size: 64
   patch_size: 15
   probe_checkpoints: true
-  probe_prefix: jepa-stl
+  # probe_prefix: jepa_in100-l2
+  probe_prefix: jepa-stl-l2
 logging:
   save_path: classifiers/jepa-stl-l2-seed2-classifier-pretrained-vitb
   checkpoint_freq: 1000
@@ -21,6 +22,8 @@ meta:
 message: "Multi classification back to back"
 multi_probing:
   - logs_STL/stl-l2-pkt-chunks-seed1/
-  - logs_STL/stl-l2-pkt-chunks-seed3 # use cuda:1 here
+  # - logs_STL/stl-l2-pkt-chunks-seed3 # use cuda:1 here
   - logs_STL/stl-l2-seed1 
-  - logs_STL/stl-l2-seed3 # use cuda:1 here
+  # - logs_STL/stl-l2-seed3 # use cuda:1 here
+  # - logs_IN100/in100-vitb-l2-ep600-seed0-PLATEU
+  # - logs_IN100/in100-vitb-l2-pkt-chunks-ep600-seed0-PLATEU

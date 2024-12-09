@@ -9,12 +9,8 @@ data:
   probe_checkpoints: true
   probe_prefix: jepa-stl
 logging:
-  log_dir: logs_STL/stl-l2-pkt-chunks-seed2/
-  # pretrained_model_path: jepa_iic_l2-seed-43-latest.pth.tar # omit this, 1st try
   save_path: classifiers/jepa-stl-l2-seed2-classifier-pretrained-vitb
   checkpoint_freq: 1000
-  log_file: stl-stats-l2-pkt-chunks-seed2.csv # the .csv file
-  eval_output: ocls-jepa-stl-l2-pkt-chunks-seed2.out # the .out file
 optimization:
   lr: 0.001
   epochs: 200
@@ -24,8 +20,8 @@ meta:
   device: cuda:0
 message: "Multi classification back to back"
 multi_probing:
-  - logs_STL/stl-l2-pkt-chunks-seed1
-  - logs_STL/stl-l2-pkt-chunks-seed3
-  - logs_STL/stl-l2-seed1
-  - logs_STL/stl-l2-seed3
+  - logs_STL/stl-l2-pkt-chunks-seed0
+  # - logs_STL/stl-l2-pkt-chunks-seed2 # use cuda:1
+  - logs_STL/stl-l2-seed0
+  # - logs_STL/stl-l2-seed2 # use cuda:1
   # - logs_STL/stl-l2-pkt-chunks-seed1-NEW

@@ -249,7 +249,7 @@ class LinearProbe():
         
         # Allocate memory only once!
         # Pre-allocate tensors with known shape
-        feature_dim = encoder(next(iter(loader))[0].to(device)).shape[-1]
+        feature_dim = VIT_EMBED_DIMS[self.model_name] # encoder(next(iter(loader))[0].to(device)).shape[-1]
         all_features = torch.zeros(total_samples, feature_dim, device='cpu')
         all_labels = torch.zeros(total_samples, dtype=torch.long, device='cpu')
         

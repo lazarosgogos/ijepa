@@ -447,7 +447,9 @@ def process_main(fname, devices=['cuda:0']):
         prefixed_path = os.path.join(log_dir, probe_prefix)
         tarfiles = glob.glob(prefixed_path + '*-ep*.pth.tar') # grab all requested pth tar files
         # tarfiles.append(prefixed_path + '-latest.pth.tar')
+        tarfiles = [file for file in tarfiles if 'ep300' in file]
         epoch = 0
+
 
         temp_params = copy.deepcopy(params)
         temp_params['logging']['log_dir'] = log_dir

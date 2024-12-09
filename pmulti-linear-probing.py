@@ -61,7 +61,7 @@ class LinearClassifier(nn.Module):
 
     def forward(self, x):
         # flatten 
-        x = torch.mean(x, dim=1, dtype=x.dtype)
+        # x = torch.mean(x, dim=1, dtype=x.dtype)
         if self.use_normalization:
             # add dropout
             x = self.head_dropout(x)
@@ -70,7 +70,7 @@ class LinearClassifier(nn.Module):
             x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension
                                        # but normalize over feature dim
         # linear layer
-        return self.softmax(self.linear(x))
+        return self.linear(x) #self.softmax(self.linear(x))
 
 class Both(nn.Module):
     def __init__(self, encoder, EMBED_DIMS, num_classes, use_normalization):
@@ -228,7 +228,7 @@ class LinearProbe():
         # del val_features 
         # del val_labels
 
-    
+    """    
     # Instead of saving features to disk and loading them back:
     def extract_features(self, encoder, loader, device='cuda'):
         all_features = []
@@ -242,6 +242,35 @@ class LinearProbe():
                 all_labels.append(labels.cpu())
         
         return torch.cat(all_features, dim=0), torch.cat(all_labels, dim=0)
+    """
+    def extract_features(self, encoder, loader, device='cuda'):
+        # Count the total number of batches first
+        total_samples = len(loader.dataset)
+        
+        # Allocate memory only once!
+        # Pre-allocate tensors with known shape
+        feature_dim = encoder(next(iter(loader))[0].to(device)).shape[-1]
+        all_features = torch.zeros(total_samples, feature_dim, device='cpu')
+        all_labels = torch.zeros(total_samples, dtype=torch.long, device='cpu')
+        
+        with torch.no_grad():
+            encoder.eval()
+            start_idx = 0
+            for inputs, labels in loader:
+                inputs, labels = inputs.to(device), labels.to(device)
+                batch_size = inputs.size(0)
+                
+                # Extract features directly to pre-allocated tensor
+                output = encoder(inputs)
+                output = torch.mean(output, dim=1, dtype=output.dtype)
+                
+                # Copy to pre-allocated tensor
+                all_features[start_idx:start_idx+batch_size] = output.cpu()
+                all_labels[start_idx:start_idx+batch_size] = labels.cpu()
+                
+                start_idx += batch_size
+        
+        return all_features, all_labels
     def save_checkpoint(self, epoch):
         '''Save a checkpoint of a given model & an optimizer. 
         Every `checkpoint_freq` epochs save the model in a different file as well for post-use'''

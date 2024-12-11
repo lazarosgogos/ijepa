@@ -13,11 +13,11 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_IN100/in100-vitb-l2-pkt-chunks-ep600-seed0-fulllr
-  write_tag: jepa_in100
+  folder: logs_IN100/in100-vitb16-l2-pkt-chunks-ep600-seed0-lr16
+  write_tag: jepa-in100
   checkpoint_freq: 300 # new addition
   logging_frequency: 2 # defaults to 3, for more concise logs
-  output_file: oin100-pretrain-vitb-l2-pkt-chunks-ep600-seed0-fulllr.out
+  output_file: oin100-pretrain-vitb-l2-pkt-chunks-ep600-seed0-lr16.out
 mask:
   allow_overlap: false
   aspect_ratio:
@@ -46,11 +46,11 @@ optimization:
   - 0.996
   - 1.0
   epochs: 600
-  final_lr: 1.0e-06         # default: 1.0e-06
+  final_lr: 6.25e-8         # default: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0
-  lr: 0.001             # default: 0.001
-  start_lr: 0.0002       # default: 0.0002
+  lr: 0.0000625              # default: 0.001
+  start_lr: 0.0000125        # default: 0.0002
   warmup: 80                # default: 40
   weight_decay: 0.04
   loss_function: L2_PKT_chunks
@@ -65,4 +65,4 @@ pkt:
   T_max: 200
   final_alpha: 0.
   chunks_step: 256
-message: "ViT-B/16 L2 + PKT chunks on IMAGENET100 seed 0"
+message: "ViT-B/16 L2 + PKT chunks on IMAGENET100 seed 0 learning_rate/16"

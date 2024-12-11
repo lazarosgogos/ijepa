@@ -249,7 +249,7 @@ class LinearProbe():
         
         # Allocate memory only once!
         # Pre-allocate tensors with known shape
-        feature_dim = encoder(next(iter(loader))[0].to(device)).shape[-1]
+        feature_dim = VIT_EMBED_DIMS[self.model_name] # encoder(next(iter(loader))[0].to(device)).shape[-1]
         all_features = torch.zeros(total_samples, feature_dim, device='cpu')
         all_labels = torch.zeros(total_samples, dtype=torch.long, device='cpu')
         
@@ -447,7 +447,9 @@ def process_main(fname, devices=['cuda:0']):
         prefixed_path = os.path.join(log_dir, probe_prefix)
         tarfiles = glob.glob(prefixed_path + '*-ep*.pth.tar') # grab all requested pth tar files
         # tarfiles.append(prefixed_path + '-latest.pth.tar')
+        tarfiles = [file for file in tarfiles if 'ep300' in file]
         epoch = 0
+
 
         temp_params = copy.deepcopy(params)
         temp_params['logging']['log_dir'] = log_dir

@@ -222,12 +222,6 @@ class LinearProbe():
                                             ('%.5e', 'loss'),
                                             ('%.5e', 'val_loss'),
                                             ('%.2f', 'time'),)
-
-        # del train_features
-        # del train_labels
-        # del val_features 
-        # del val_labels
-
     """    
     # Instead of saving features to disk and loading them back:
     def extract_features(self, encoder, loader, device='cuda'):
@@ -249,7 +243,7 @@ class LinearProbe():
         
         # Allocate memory only once!
         # Pre-allocate tensors with known shape
-        feature_dim = VIT_EMBED_DIMS[self.model_name] # encoder(next(iter(loader))[0].to(device)).shape[-1]
+        feature_dim = VIT_EMBED_DIMS[self.model_name] 
         all_features = torch.zeros(total_samples, feature_dim, device='cpu')
         all_labels = torch.zeros(total_samples, dtype=torch.long, device='cpu')
         
@@ -342,7 +336,7 @@ class LinearProbe():
             self.model.eval() # set to evaluation mode
             val_correct = 0
             total_val = 0
-            val_running_loss = 0.
+            val_running_loss = 0.0
             with torch.no_grad():
                 for inputs, labels in self.val_loader_features:
                     inputs, labels = inputs.to(self.device),\
@@ -447,7 +441,8 @@ def process_main(fname, devices=['cuda:0']):
         prefixed_path = os.path.join(log_dir, probe_prefix)
         tarfiles = glob.glob(prefixed_path + '*-ep*.pth.tar') # grab all requested pth tar files
         # tarfiles.append(prefixed_path + '-latest.pth.tar')
-        tarfiles = [file for file in tarfiles if 'ep300' in file]
+        # filter last epoch
+        tarfiles = [file for file in tarfiles if 'ep500' in file]
         epoch = 0
 
 

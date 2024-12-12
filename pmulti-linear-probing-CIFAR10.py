@@ -28,6 +28,7 @@ import torchvision
 import glob
 import re
 import copy
+import gc
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -60,7 +61,7 @@ class LinearClassifier(nn.Module):
 
     def forward(self, x):
         # flatten 
-        x = torch.mean(x, dim=1, dtype=x.dtype)
+        # x = torch.mean(x, dim=1, dtype=x.dtype)
         if self.use_normalization:
             # add dropout
             x = self.head_dropout(x)
@@ -69,7 +70,7 @@ class LinearClassifier(nn.Module):
             x = F.layer_norm(x, (x.size(-1),)) # do not touch the BATCH SIZE dimension
                                        # but normalize over feature dim
         # linear layer
-        return self.softmax(self.linear(x))
+        return self.linear(x) #self.softmax(self.linear(x))
 
 class Both(nn.Module):
     def __init__(self, encoder, EMBED_DIMS, num_classes, use_normalization):
@@ -165,7 +166,7 @@ class LinearProbe():
 
         if self.probe_checkpoints:
             self.model = LinearClassifier(self.embed_dims, self.num_classes, self.use_normalization)
-        else: 
+        else:
             self.model = Both(self.encoder, self.embed_dims, self.num_classes, self.use_normalization)
         self.model.to(self.device)
 
@@ -201,7 +202,7 @@ class LinearProbe():
         self.train_loader_images = DataLoader(self.train_dataset_images, batch_size=self.batch_size)
         self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size)
 
-
+        """
         self.save_features(self.encoder, self.train_loader_images, self.train_features_file_path, self.device)
         self.save_features(self.encoder, self.val_loader_images, self.val_features_file_path, self.device)
 
@@ -210,8 +211,22 @@ class LinearProbe():
 
         self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True)
         self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size)
+        """
         self.logger = logger
-        
+        self.logger.info('Extracting features...')
+        train_features, train_labels = self.extract_features(self.encoder, self.train_loader_images, self.device)
+        val_features, val_labels = self.extract_features(self.encoder, self.val_loader_images, self.device)
+        self.logger.info('Done extracting features...\n Creating datasets')
+
+        # Create datasets directly from memory
+        self.train_dataset_features = torch.utils.data.TensorDataset(train_features, train_labels)
+        self.val_dataset_features = torch.utils.data.TensorDataset(val_features, val_labels)
+        self.logger.info('Created datasets...\n Creating data loaders')
+        # Create data loaders
+        self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True, pin_memory=True)
+        self.val_loader_features = DataLoader(self.val_dataset_features, batch_size=self.batch_size, pin_memory=True)
+        self.logger.info('Done with data loaders')
+
         self.csvlogger = CSVLoggerAppender(self.log_file, 
                                             ('%d', 'pretrain_checkpoint_epoch'),
                                             ('%d', 'epoch'),
@@ -223,7 +238,7 @@ class LinearProbe():
 
     
 
-    def save_checkpoint(self, epoch):
+    """def save_checkpoint(self, epoch):
         '''Save a checkpoint of a given model & an optimizer. 
         Every `checkpoint_freq` epochs save the model in a different file as well for post-use'''
         save_dict = {
@@ -236,8 +251,35 @@ class LinearProbe():
         torch.save(save_dict, save_path+'-latest.pth.tar')
         save_path = save_path + f'-ep{ep}.pth.tar'
         if (ep) % self.checkpoint_freq == 0:
-            torch.save(save_dict, save_path)
-
+            torch.save(save_dict, save_path)"""
+    def extract_features(self, encoder, loader, device='cuda'):
+        # Count the total number of batches first
+        total_samples = len(loader.dataset)
+        
+        # Allocate memory only once!
+        # Pre-allocate tensors with known shape
+        feature_dim = VIT_EMBED_DIMS[self.model_name] 
+        all_features = torch.zeros(total_samples, feature_dim, device='cpu')
+        all_labels = torch.zeros(total_samples, dtype=torch.long, device='cpu')
+        
+        with torch.no_grad():
+            encoder.eval()
+            start_idx = 0
+            for inputs, labels in loader:
+                inputs, labels = inputs.to(device), labels.to(device)
+                batch_size = inputs.size(0)
+                
+                # Extract features directly to pre-allocated tensor
+                output = encoder(inputs)
+                output = torch.mean(output, dim=1, dtype=output.dtype)
+                
+                # Copy to pre-allocated tensor
+                all_features[start_idx:start_idx+batch_size] = output.cpu()
+                all_labels[start_idx:start_idx+batch_size] = labels.cpu()
+                
+                start_idx += batch_size
+        
+        return all_features, all_labels
     def save_features(self, encoder, _loader, features_file_path, device='cuda'):
         all_features = []
         all_labels = []
@@ -265,6 +307,7 @@ class LinearProbe():
     def eval_linear(self):
         """ The main function in which linear probing is implemented"""
         start_time = time.perf_counter()
+        self.logger.info('Commencing training')
         for epoch in range(self.epochs):
             epoch_start_time = time.perf_counter()
             self.model.train() # set model to training mode
@@ -315,8 +358,8 @@ class LinearProbe():
             self.logger.info('Epoch: %d/%d '
                             'Train accuracy: %.5e ' 
                             'Validation accuracy: %.5e '
-                            'Loss %.5e '
-                            'Validation Loss %.5e '
+                            'Training loss %.5e '
+                            'Validation loss %.5e '
                             'Time taken: %.2f seconds '
                             # 'ETA: %.2f '
                              % (epoch+1, self.epochs,
@@ -333,16 +376,29 @@ class LinearProbe():
                                val_epoch_loss,
                                duration)
             # save checkpoint after epoch
-            self.save_checkpoint(epoch+1)
+            # self.save_checkpoint(epoch+1)
         
         # report on time after all epochs are complete
         end_time = time.perf_counter()
         total_duration = timedelta(seconds=end_time-start_time)
         self.logger.info('Total time taken %s' % str(total_duration))
         self.logger.info('Cleaning up intermediate feature (.pt) files')
-        os.remove(self.train_features_file_path)
-        os.remove(self.val_features_file_path)
+        
+        # os.remove(self.train_features_file_path)
+        # os.remove(self.val_features_file_path)
         self.logger.info('Done')
+        # Unpin the data loaders from memory
+        self.train_loader_features.pin_memory = False
+        self.val_loader_features.pin_memory = False
+        # Delete the dataset and data loader objects
+        del self.train_dataset_features
+        del self.val_dataset_features
+        del self.train_loader_features
+        del self.val_loader_features
+
+        # Clear the CUDA cache
+        gc.collect()
+        torch.cuda.empty_cache()
 
 
     
@@ -386,6 +442,8 @@ def process_main(fname, devices=['cuda:0']):
         prefixed_path = os.path.join(log_dir, probe_prefix)
         tarfiles = glob.glob(prefixed_path + '*-ep*.pth.tar') # grab all requested pth tar files
         # tarfiles.append(prefixed_path + '-latest.pth.tar')
+        # filter last epoch
+        tarfiles = [file for file in tarfiles if 'ep500' in file]
         epoch = 0
 
         temp_params = copy.deepcopy(params)

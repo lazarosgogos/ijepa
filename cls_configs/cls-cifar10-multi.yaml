@@ -7,7 +7,7 @@ data:
   batch_size: 128
   patch_size: 15
   probe_checkpoints: true
-  probe_prefix: jepa-stl
+  probe_prefix: jepa-iic
 logging:
   log_dir: logs_STL/stl-l2-pkt-chunks-seed2/
   # pretrained_model_path: jepa_iic_l2-seed-43-latest.pth.tar # omit this, 1st try
@@ -21,10 +21,12 @@ optimization:
   use_last_n_blocks: 1 # not yet supported
   use_normalization: false # use layer_norm and dropout layer
 meta:
-  device: cuda:0
+  device: cuda:1
 message: "Multi classification back to back"
 multi_probing:
-  - logs_STL/stl-l2-pkt-chunks-seed3/
-  - logs_STL/stl-l2-seed3
-  - logs_STL/stl-l2-seed1
-  - logs_STL/stl-l2-pkt-chunks-seed1
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed1
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed2
+  - logs_PKT_chunks/iic-train-l2-seed0 # use cuda:1
+  - logs_PKT_chunks/iic-train-l2-seed1 # use cuda:1
+  - logs_PKT_chunks/iic-train-l2-seed2 # use cuda:1

@@ -7,14 +7,14 @@ data:
   batch_size: 128
   patch_size: 16
   probe_checkpoints: true
-  probe_prefix: jepa_in100
+  probe_prefix: jepa-in100
 logging:
-  log_dir: logs_IN100/in100-vitb-l2-pkt-chunks-ep600-seed0
+  log_dir: logs_IN100/in100-vitb-l2-pkt-chunks-ep300-seed0
   # pretrained_model_path: jepa_iic_l2-seed-43-latest.pth.tar # omit this, 1st try
-  save_path: classifiers/jepa-stl-l2-pkt-chunks-ep600-seed0-classifier-pretrained-vitb
+  save_path: classifiers/jepa-stl-l2-pkt-chunks-ep300-seed0-classifier-pretrained-vitb
   checkpoint_freq: 1000
-  log_file: stl-stats-l2-pkt-chunks-ep600-seed0.csv # the .csv file
-  eval_output: ocls-jepa-stl-l2-pkt-chunks-ep600-seed0.out # the .out file
+  log_file: stl-stats-l2-pkt-chunks-ep300-seed0.csv # the .csv file
+  eval_output: ocls-jepa-stl-l2-pkt-chunks-ep300-seed0.out # the .out file
 optimization:
   lr: 0.001
   epochs: 200
@@ -24,4 +24,4 @@ meta:
   device: cuda:0
 # message: "Multi classification back to back"
 multi_probing:
-  - logs_IN100/in100-vitb-l2-pkt-chunks-ep600-seed0-fulllr/
+  - logs_IN100/in100-vitb16-l2-pkt-chunks-ep300

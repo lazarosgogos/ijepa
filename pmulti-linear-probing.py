@@ -442,7 +442,7 @@ def process_main(fname, devices=['cuda:0']):
         tarfiles = glob.glob(prefixed_path + '*-ep*.pth.tar') # grab all requested pth tar files
         # tarfiles.append(prefixed_path + '-latest.pth.tar')
         # filter last epoch
-        tarfiles = [file for file in tarfiles if 'ep500' in file]
+        # tarfiles = [file for file in tarfiles if 'ep500' in file]
         epoch = 0
 
 

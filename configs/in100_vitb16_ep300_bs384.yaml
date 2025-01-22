@@ -13,11 +13,11 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_IN100/in100-vitb16-l2-ep300-bs384
+  folder: logs_IN100/in100-vitb16-l2-ep300-bs384-w80
   write_tag: jepa-in100
   checkpoint_freq: 150 # new addition
   logging_frequency: 3 # defaults to 3, for more concise logs
-  output_file: oin100-pretrain-vitb-l2-ep300-bs384-seed0.out
+  output_file: oin100-pretrain-vitb-l2-ep300-bs384-warmup80-seed0.out
 mask:
   allow_overlap: false
   aspect_ratio:
@@ -51,7 +51,7 @@ optimization:
   ipe_scale: 1.0
   lr: 0.001              # default: 0.001
   start_lr: 0.0002        # default: 0.0002
-  warmup: 40                # default: 40
+  warmup: 80                # default: 40
   weight_decay: 0.04
   loss_function: L2 
   pkt_scale: 1.0e+0   
@@ -65,4 +65,4 @@ pkt:
   T_max: 200
   final_alpha: 0.
   chunks_step: 256
-message: "ViT-B/16 L2 on IMAGENET100 seed 0 batch size 384"
+message: "ViT-B/16 L2 on IMAGENET100 seed 0 batch size 384 wamup steps 80"

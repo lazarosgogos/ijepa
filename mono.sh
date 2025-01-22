@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J IJEPA_IN100_L2
+#SBATCH -J IJEPAL2
 #SBATCH -t 1-00:00:00
 #SBATCH --mem=128G
 #SBATCH -c 10

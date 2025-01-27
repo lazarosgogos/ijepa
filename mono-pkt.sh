@@ -16,6 +16,8 @@ source $CONDA_PROFILE/conda.sh
 conda activate ijepa
 export PATH=$CONDA_PREFIX/bin:$PATH
 
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
 python main.py  \
-	--fname configs/in100_vitb16_ep300_bs384_pkt.yaml \
+	--fname configs/in100_vitb16_ep300_bs448_pkt.yaml \
 	--devices cuda:0 cuda:1 cuda:2 cuda:3

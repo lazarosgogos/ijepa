@@ -65,6 +65,7 @@ def make_imagenet1k(
 
     return dataset, data_loader, dist_sampler
 
+
 def make_imagenet1k_supervised(
     transform,
     batch_size,
@@ -79,7 +80,9 @@ def make_imagenet1k_supervised(
     copy_data=False,
     drop_last=True,
     subset_file=None,
-    shuffle=False
+    shuffle=False,
+    train_suffix="train/",
+    val_suffix="val/",
 ):
     """
     Creates supervised ImageNet dataloader for KNN evaluation
@@ -91,13 +94,16 @@ def make_imagenet1k_supervised(
         transform=transform,
         train=training,
         copy_data=copy_data,
-        index_targets=True,)  # Always index targets for supervised loading
-    
+        index_targets=True,  # Always index targets for supervised loading
+        train_suffix=train_suffix,
+        val_suffix=val_suffix,
+    )
+
     if subset_file is not None:
         dataset = ImageNetSubset(dataset, subset_file)
-    
+
     logger.info('ImageNet supervised dataset created')
-    
+
     # Create sampler
     dist_sampler = torch.utils.data.distributed.DistributedSampler(
         dataset=dataset,
@@ -109,7 +115,7 @@ def make_imagenet1k_supervised(
     #     collated_batch = torch.utils.data.default_collate(batch)
     #     logger.critical('My custom collated_batch: %s' % str(collated_batch))
     #     return collated_batch
-    
+
     # Create supervised data loader
     data_loader = torch.utils.data.DataLoader(
         dataset,
@@ -121,12 +127,13 @@ def make_imagenet1k_supervised(
         num_workers=num_workers,
         persistent_workers=False,
         )
-    
+
     logger.info('ImageNet supervised data loader created')
-    # logger.critical('%s %s %s' % (str(dataset), 
+    # logger.critical('%s %s %s' % (str(dataset),
     #                               str(data_loader),
     #                               str(dist_sampler)))
     return dataset, data_loader, dist_sampler
+
 
 class ImageNet(torchvision.datasets.ImageFolder):
 
@@ -140,7 +147,9 @@ class ImageNet(torchvision.datasets.ImageFolder):
         job_id=None,
         local_rank=None,
         copy_data=True,
-        index_targets=False
+        index_targets=False,
+        train_suffix='train/',
+        val_suffix='val/',
     ):
         """
         ImageNet
@@ -156,7 +165,7 @@ class ImageNet(torchvision.datasets.ImageFolder):
         :param index_targets: whether to index the id of each labeled image
         """
 
-        suffix = 'train/' if train else 'val/'
+        suffix = train_suffix if train else val_suffix
         data_path = None
         if copy_data:
             logger.info('copying data locally')

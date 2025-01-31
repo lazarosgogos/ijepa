@@ -574,8 +574,9 @@ class VisionTransformer(nn.Module):
             # logger.critical('x, in ViT has shape: %s' % (str(x.size())))
             if self.use_tb:
                 self.writer.add_scalar('Mean', x.mean(), i)
-                self.writer.add_scalar('Std', x.reshape(-1, 768).std(dim=1).mean(), i) # [64, 100]
-
+                self.writer.add_scalar(
+                    "Std", x.reshape(-1, self.embed_dim).std(dim=1).mean(), i
+                )  # [64, 100]
 
         if self.norm is not None:
             x = self.norm(x)
@@ -593,7 +594,6 @@ class VisionTransformer(nn.Module):
             if len(self.blocks) - i <= n:
                 output.append(self.norm(x))
         return output
-
 
     def interpolate_pos_encoding(self, x, pos_embed):
         npatch = x.shape[1] - 1

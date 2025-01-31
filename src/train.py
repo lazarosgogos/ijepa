@@ -64,7 +64,7 @@ log_freq = 10
 # checkpoint_freq = 200
 # --
 
-# rng = np.random.Generator(np.random.PCG64()) 
+# rng = np.random.Generator(np.random.PCG64())
 
 _GLOBAL_SEED = 0 # 
 # seed is logged later on
@@ -179,8 +179,10 @@ def main(args, resume_preempt=False):
     checkpoint_freq = args['logging'].get('checkpoint_freq', 100) # get default frequency, default to 100 otherwise
     logging_frequency = args['logging'].get('logging_frequency', 3) # default to 3
     output_file = args['logging'].get('output_file', tag)
-
-    # -- PKT 
+    train_suffix=  args['logging'].get('train_suffix', 'train_images/')
+    val_suffix=  args['logging'].get('val_suffix', 'val_images/')
+    knn_every = args['logging'].get('knn_every', 50)
+    # -- PKT
     """use_pkt_scheduler = args['pkt'].get('use_pkt_scheduler', False)
     start_alpha = args['pkt'].get('start_alpha', 1.)
     warmup_steps_alpha = args['pkt'].get('warmup_steps_alpha', 100)
@@ -189,8 +191,8 @@ def main(args, resume_preempt=False):
     final_alpha = args['pkt'].get('final_alpha', 0.)
     pkt_scale = args['pkt'].get('pkt_scale', 1.0)
     """
-    chunks_step = args['pkt'].get('chunks_step', 512)
-    
+    chunks_step = args['pkt'].get('chunks_step', 256)
+
     # force_cudnn_initialization()
     writer_dest = os.path.join(folder, f'tensorboard-{tag}')
     dump = os.path.join(folder, 'params-ijepa.yaml')
@@ -290,7 +292,7 @@ def main(args, resume_preempt=False):
             copy_data=copy_data,
             drop_last=True,
             shuffle=True)
-    
+
     _, train_loader, _ = make_imagenet1k_supervised(
         transform=transform,
         batch_size=batch_size,
@@ -303,8 +305,10 @@ def main(args, resume_preempt=False):
         root_path=root_path,
         image_folder=image_folder,
         copy_data=copy_data,
-        shuffle=True)
-    
+        shuffle=True,
+        train_suffix=train_suffix,
+        val_suffix=val_suffix)
+
     _, test_loader, _ = make_imagenet1k_supervised(
         transform=transform,
         batch_size=batch_size,
@@ -317,7 +321,9 @@ def main(args, resume_preempt=False):
         root_path=root_path,
         image_folder=image_folder,
         copy_data=copy_data,
-        shuffle=True)
+        shuffle=False,
+        train_suffix=train_suffix,
+        val_suffix=val_suffix, )
     ipe = len(unsupervised_loader) # iterations per epoch
 
     # -- init optimizer and scheduler
@@ -395,6 +401,7 @@ def main(args, resume_preempt=False):
     for epoch in range(start_epoch, num_epochs):
         start_time_epoch = time.perf_counter()
         logger.info('Epoch %d' % (epoch + 1))
+        encoder.train()
         if logging_frequency > 0:
             log_freq = ipe // logging_frequency # report every X := `logging_frequency` intermediate steps
         # -- update distributed-data-loader epoch
@@ -443,18 +450,18 @@ def main(args, resume_preempt=False):
 
                 def loss_fn(z, h, **kwargs):
                     # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
-                    # this should be fully functional, as proven by L2 
+                    # this should be fully functional, as proven by L2
                     final_loss = which_loss.__dict__[loss_function](z,h, **kwargs)
 
-                    if isinstance(final_loss, tuple): # if more than one loss was returned
-                        loss_l2 = final_loss[0]
-                        loss_pkt = final_loss[1]
-                        mse = final_loss[2]
-                        loss = AllReduce.apply(loss_l2 + loss_pkt + mse)
-                    else: 
-                        loss = AllReduce.apply(final_loss)
-                        
-                    assert not np.isnan(loss.detach().cpu()), 'NaN loss, abort'
+                    # if isinstance(final_loss, tuple): # if more than one loss was returned
+                    #     loss_l2 = final_loss[0]
+                    #     loss_pkt = final_loss[1]
+                    #     mse = final_loss[2]
+                    #     loss = AllReduce.apply(loss_l2 + loss_pkt + mse)
+                    # else:
+                    loss = AllReduce.apply(final_loss)
+
+                    # assert not np.isnan(loss.detach().cpu()), 'NaN loss, abort'
                     return loss
 
                 # Step 1. Forward
@@ -463,25 +470,26 @@ def main(args, resume_preempt=False):
                     z = forward_context()
                     # if not use_pkt_scheduler:
                     loss = loss_fn(z, h, chunks_step=chunks_step) # pkt scale default to 1
-                    loss /= accumulate_grads_every
-                    # else: 
+                    
+                    # loss = loss / accumulate_grads_every
+                    # else:
                     #     loss = loss_fn(z, h, pkt_scale=pkt_scale, alpha=_new_alpha, chunks_step=chunks_step)
                     # gathered_losses = all_losses(z,h) # this contains all loss functions
-
+                
                 #  Step 2. Backward & step
                 if use_bfloat16:
                     scaler.scale(loss).backward()
                     if (itr+1) % accumulate_grads_every == 0: # or (itr + 1 == len(unsupervised_loader)): # accumulate_grads_every = 1 cancels grad accumulation
                         scaler.step(optimizer)
                         scaler.update()
-                        # grad_stats = grad_logger(encoder.named_parameters())
+                        grad_stats = grad_logger(encoder.named_parameters())
                         optimizer.zero_grad()
                 else:
                     loss.backward()
                     if (itr+1) % accumulate_grads_every == 0: # or (itr + 1 == len(unsupervised_loader)):
                         optimizer.step()
+                        grad_stats = grad_logger(encoder.named_parameters())
                         optimizer.zero_grad()
-                grad_stats = grad_logger(encoder.named_parameters())
 
                 # Step 3. momentum update of target encoder
                 with torch.no_grad():
@@ -500,8 +508,8 @@ def main(args, resume_preempt=False):
             # -- Logging
             def log_stats():
                 csv_logger.log(epoch + 1, itr, loss, maskA_meter.val, maskB_meter.val, etime)
-                                # custom: all losses report
-                
+                # custom: all losses report
+
                 if (logging_frequency > 0 and itr % log_freq == 0) or np.isnan(loss) or np.isinf(loss):
                     logger.info('[%d, %5d] loss: %e '
                                 'masks: %.1f %.1f '
@@ -543,12 +551,12 @@ def main(args, resume_preempt=False):
             # writer.add_scalar('Loss L2', loss_l2_meter.avg, epoch+1)
             # writer.add_scalar('Loss PKT', loss_pkt_meter.avg, epoch+1)
             # writer.add_scalar('Cross sim matrix MSE', mse_meter.avg, epoch+1)
-            
+
         # -- Save Checkpoint after every epoch
         logger.info('avg. loss %.8e' % loss_meter.avg)
         # logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
         save_checkpoint(epoch+1)
-        if (epoch + 1) % 50 == 0 and rank == 0:  # Only evaluate KNN on main process
+        if (epoch + 1) % knn_every == 0 and rank == 0:  # Only evaluate KNN on main process
             knn_acc_train, knn_acc_test = evaluate_knn(encoder, train_loader, test_loader, device)
             logger.info(f'\tEpoch {epoch + 1}, KNN accuracy train: {knn_acc_train:.5e}, KNN accuracy train: {knn_acc_test:.5e}')
             knn_csv_logger.log(epoch+1, knn_acc_train, knn_acc_test)

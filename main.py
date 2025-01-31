@@ -85,7 +85,7 @@ def process_main(rank, fname, world_size, devices, test=0):
             else: 
                 return False
         
-        tarfiles = list(filter(relevant, tarfiles)) # this should only grab the relevant file
+        # tarfiles = list(filter(relevant, tarfiles)) # this should only grab the relevant file
         logger.info('tarfiles: ' + str(tarfiles))
         
         # tarfiles has a  list of names of all tarballs with this desired prefix

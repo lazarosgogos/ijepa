@@ -9,7 +9,7 @@
 #SBATCH --mail-user=lazarosg@csd.auth.gr
 #SBATCH -p ampere
 #SBATCH --gres=gpu:1
-#SBATCH --dependency=afterok:1879805
+#SBATCH --dependency=afterok:1883953
 
 module load gcc miniconda3 cuda
 source $CONDA_PROFILE/conda.sh

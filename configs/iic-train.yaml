@@ -13,11 +13,11 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_PKT_cross/iic-train-pkt-cross-seed0
-  write_tag: jepa-iic-pkt-cross256-seed0
+  folder: logs_PKT_chunks/iic-train-l2-seed0-KNN
+  write_tag: jepa-iic
   checkpoint_freq: 100 # new addition
   logging_frequency: 2 # defaults to 3, for more concise logs
-  output_file: oiic-pretrain-pkt-cross256-seed0.out
+  output_file: oiic-pretrain-seed0.out
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -53,7 +53,7 @@ optimization:
   start_lr: 0.0002          # default: 2e-4
   warmup: 40
   weight_decay: 0.04        # default: 0.04
-  loss_function: PKT_cross  # this function name must exist in the which_loss.py file
+  loss_function: L2  # this function name must exist in the which_loss.py file
   variance_weight: 0.0      # variance factor weight, use 0 to deactivate
 pkt:
   pkt_scale: 1.0e+0         # perform grid search over this, no default value yet
@@ -64,5 +64,5 @@ pkt:
   T_max: 200
   final_alpha: 0.
   chunks_step: 256
-message: "PKT cross sim matrix step:256 seed 0"
+message: "L2 on IIC for KNN seed 0"
 # message is unused, only for printing info out

@@ -444,57 +444,57 @@ def process_main(fname, devices=['cuda:0']):
     dirs = params.get('multi_probing', list())
     
     assert len(dirs) != 0, 'No directories were found.'
-    
-    for log_dir in dirs:
+    for itr in range(1,4):
+        for log_dir in dirs:
 
-    # ----------------------- AUTOMATIC LINEAR PROBING -----------------------
-        # log_dir = params['logging'].get('log_dir', None)
-        probe_prefix = params['data'].get('probe_prefix', None)
+        # ----------------------- AUTOMATIC LINEAR PROBING -----------------------
+            # log_dir = params['logging'].get('log_dir', None)
+            probe_prefix = params['data'].get('probe_prefix', None)
 
-        prefixed_path = os.path.join(log_dir, probe_prefix)
-        tarfiles = glob.glob(prefixed_path + '*-ep*.pth.tar') # grab all requested pth tar files
-        # tarfiles.append(prefixed_path + '-latest.pth.tar')
-        # filter last epoch
-        tarfiles = [file for file in tarfiles if 'ep300' in file]
-        epoch = 0
+            prefixed_path = os.path.join(log_dir, probe_prefix)
+            tarfiles = glob.glob(prefixed_path + '*-ep*.pth.tar') # grab all requested pth tar files
+            # tarfiles.append(prefixed_path + '-latest.pth.tar')
+            # filter last epoch
+            tarfiles = [file for file in tarfiles if 'ep300' in file]
+            epoch = 0
 
-        temp_params = copy.deepcopy(params)
-        temp_params['logging']['log_dir'] = log_dir
-        for tarfile in sorted(tarfiles):
-            # eval_output = temp_params['logging'].get('eval_output', 'pfeature_extractor.out')
-            logger.info('working on file %s ...' % str(tarfile))
-            temp_params['logging']['pretrained_model_path'] = os.path.basename(tarfile) # use this tarfile name
-            
-            # First, remove all handlers! 
-            for handler in logger.handlers[:]:
-                logger.removeHandler(handler)
-            
-            # extract the epoch
-            match_ = re.search(r'ep(\d+)\.', tarfile)
+            temp_params = copy.deepcopy(params)
+            temp_params['logging']['log_dir'] = log_dir
+            for tarfile in sorted(tarfiles):
+                # eval_output = temp_params['logging'].get('eval_output', 'pfeature_extractor.out')
+                logger.info('working on file %s ...' % str(tarfile))
+                temp_params['logging']['pretrained_model_path'] = os.path.basename(tarfile) # use this tarfile name
+                
+                # First, remove all handlers! 
+                for handler in logger.handlers[:]:
+                    logger.removeHandler(handler)
+                
+                # extract the epoch
+                match_ = re.search(r'ep(\d+)\.', tarfile)
 
-            if match_:
-                epoch = int(match_.group(1))
-            else:
-                epoch += 1 # signify that no epoch could be read in the title file
-            
-            # keep info about what epoch this current run corresponds to
-            temp_params['pretrain_checkpoint_epoch'] = epoch 
+                if match_:
+                    epoch = int(match_.group(1))
+                else:
+                    epoch += 1 # signify that no epoch could be read in the title file
+                
+                # keep info about what epoch this current run corresponds to
+                temp_params['pretrain_checkpoint_epoch'] = epoch 
 
-            basename = os.path.basename(os.path.normpath(log_dir))
-            eval_output = os.path.join(log_dir, 'ocls-jepa-CIFAR100-' + basename + '.out') # + f'-ep{epoch}.out') 
-            # # do not alter evalout name
-            logger.addHandler(logging.StreamHandler())
-            logger.addHandler(logging.FileHandler(eval_output))
+                basename = os.path.basename(os.path.normpath(log_dir))
+                eval_output = os.path.join(log_dir, 'ocls-jepa-CIFAR100-' + basename + '.out') # + f'-ep{epoch}.out') 
+                # # do not alter evalout name
+                logger.addHandler(logging.StreamHandler())
+                logger.addHandler(logging.FileHandler(eval_output))
 
-            temp_params['logging']['save_path'] += f'-ep{epoch}' 
-            # temp_params['logging']['log_file'] += f'-ep{epoch}'  # do not create another log file, print them all in
-            # get basename of current folder
-            basename = os.path.basename(os.path.normpath(log_dir))
-            temp_params['logging']['log_file'] = 'stats-CIFAR100-' + basename + '.csv'
-            
-            linear_prober = LinearProbe(temp_params, logger)
-            linear_prober.eval_linear()
-            logger.info('\n')
+                temp_params['logging']['save_path'] += f'-ep{epoch}' 
+                # temp_params['logging']['log_file'] += f'-ep{epoch}'  # do not create another log file, print them all in
+                # get basename of current folder
+                basename = os.path.basename(os.path.normpath(log_dir))
+                temp_params['logging']['log_file'] = 'stats-CIFAR100-' + basename + '-seed' + str(itr) + '.csv'
+                
+                linear_prober = LinearProbe(temp_params, logger)
+                linear_prober.eval_linear()
+                logger.info('\n')
 
 
 

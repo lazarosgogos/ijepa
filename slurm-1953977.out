@@ -1,0 +1,32 @@
+INFO:root:called-params cls_configs/cls-in100-cifar100-multi.yaml
+INFO:root:loaded params....
+{   'data': {   'batch_size': 128,
+                'crop_size': 224,
+                'model_name': 'vit_base',
+                'num_classes': 100,
+                'patch_size': 16,
+                'probe_checkpoints': True,
+                'probe_prefix': 'jepa-in100',
+                'train_dataset_path': 'datasets/imagenet100/train',
+                'val_dataset_path': 'datasets/imagenet100/val'},
+    'logging': {   'checkpoint_freq': 1000,
+                   'eval_output': 'ocls-jepa-in100-l2-pkt-chunks-seed2.out',
+                   'log_dir': 'logs_IN100/in100-vitb16-l2-ep300',
+                   'log_file': 'in100-stats-l2-pkt-chunks-seed2.csv',
+                   'save_path': 'classifiers/jepa-in100-l2-seed2-classifier-pretrained-vitb'},
+    'message': 'Multi classification back to back',
+    'meta': {'device': 'cuda:0'},
+    'multi_probing': ['logs_IN100/in100-vitb16-l2-ep300-bs448-w40-fixedtrain'],
+    'optimization': {   'epochs': 200,
+                        'lr': 0.001,
+                        'use_last_n_blocks': 1,
+                        'use_normalization': False}}
+INFO:root:working on file logs_IN100/in100-vitb16-l2-ep300-bs448-w40-fixedtrain/jepa-in100-ep150.pth.tar ...
+Traceback (most recent call last):
+  File "/home/l/lazarosg/thesis/ijepa/pmulti-linear-probing-CIFAR100.py", line 505, in <module>
+    process_main(args.fname) 
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l/lazarosg/thesis/ijepa/pmulti-linear-probing-CIFAR100.py", line 493, in process_main
+    temp_params['logging']['log_file'] = 'stats-CIFAR100-' + basename + '-seed' + itr + '.csv'
+                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+TypeError: can only concatenate str (not "int") to str

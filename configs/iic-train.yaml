@@ -13,11 +13,14 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_PKT_chunks/iic-train-l2-seed0-KNN
+  folder: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN
   write_tag: jepa-iic
   checkpoint_freq: 100 # new addition
   logging_frequency: 2 # defaults to 3, for more concise logs
   output_file: oiic-pretrain-seed0.out
+  train_suffix: train/
+  val_suffix: val/
+  knn_every: 20
 mask:
   allow_overlap: false
   aspect_ratio: 
@@ -37,7 +40,7 @@ meta:
   copy_data: false          # default: false
   load_checkpoint: false    # default: true
   model_name: vit_base
-  pred_depth: 12
+  pred_depth: 6
   pred_emb_dim: 384
   read_checkpoint: null     # default: null and read the latest one if load_chkpt is true
   use_bfloat16: false       # default: true
@@ -53,7 +56,7 @@ optimization:
   start_lr: 0.0002          # default: 2e-4
   warmup: 40
   weight_decay: 0.04        # default: 0.04
-  loss_function: L2  # this function name must exist in the which_loss.py file
+  loss_function: L2_PKT_chunks  # this function name must exist in the which_loss.py file
   variance_weight: 0.0      # variance factor weight, use 0 to deactivate
 pkt:
   pkt_scale: 1.0e+0         # perform grid search over this, no default value yet

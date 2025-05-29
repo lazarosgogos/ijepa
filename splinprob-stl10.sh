@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH -J IJEPALPSTL10
-#SBATCH -t 6:00:00
+#SBATCH -t 1:00:00
 #SBATCH --mem=256G
 #SBATCH -c 16
 #SBATCH -n 1

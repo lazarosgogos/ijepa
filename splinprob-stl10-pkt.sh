@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH -J IJEPALPSTL10PKT
-#SBATCH -t 6:00:00
+#SBATCH -t 1:00:00
 #SBATCH --mem=256G
 #SBATCH -c 16
 #SBATCH -n 1
@@ -9,7 +9,6 @@
 #SBATCH --mail-user=lazarosg@csd.auth.gr
 #SBATCH -p ampere
 #SBATCH --gres=gpu:1
-
 
 module load gcc miniconda3 cuda
 source $CONDA_PROFILE/conda.sh

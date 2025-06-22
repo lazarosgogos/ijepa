@@ -186,6 +186,7 @@ class LinearProbe():
         
         # run feature extractor here
         # feature_extractor = FeatureExtractor(self.encoder)
+        extraction_time_start = time.perf_counter()
         logger.info('Extracting features and saving them in memory..')
         self.train_loader_images = DataLoader(self.train_dataset_images, batch_size=self.batch_size)
         self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size)
@@ -205,7 +206,7 @@ class LinearProbe():
         self.logger.info('Extracting features...')
         train_features, train_labels = self.extract_features(self.encoder, self.train_loader_images, self.device)
         val_features, val_labels = self.extract_features(self.encoder, self.val_loader_images, self.device)
-
+        self.logger.info(f'Time taken to extract features: {time.perf_counter() - extraction_time_start}')
         # Create datasets directly from memory
         self.train_dataset_features = torch.utils.data.TensorDataset(train_features, train_labels)
         self.val_dataset_features = torch.utils.data.TensorDataset(val_features, val_labels)
@@ -375,7 +376,7 @@ class LinearProbe():
                                val_loss, 
                                duration)
             # save checkpoint after epoch
-            self.save_checkpoint(epoch+1)
+            # self.save_checkpoint(epoch+1)
         
         # report on time after all epochs are complete
         end_time = time.perf_counter()
@@ -407,7 +408,7 @@ def process_main(fname, devices=['cuda:0']):
     logging.basicConfig()
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
-
+    global_time_start = time.perf_counter()
     logger.info(f'called-params {fname}')
 
     # load script params
@@ -483,7 +484,7 @@ def process_main(fname, devices=['cuda:0']):
             linear_prober = LinearProbe(temp_params, logger)
             linear_prober.eval_linear()
             logger.info('\n')
-
+    logger.info(f'Time taken to complete whole task: {time.perf_counter() - global_time_start}')
 
 
 if __name__ == '__main__':

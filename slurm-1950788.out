@@ -1,0 +1,507 @@
+INFO:root:called-params cls_configs/cls-in100-cifar100-multi.yaml
+INFO:root:loaded params....
+{   'data': {   'batch_size': 128,
+                'crop_size': 224,
+                'model_name': 'vit_base',
+                'num_classes': 100,
+                'patch_size': 16,
+                'probe_checkpoints': True,
+                'probe_prefix': 'jepa-in100',
+                'train_dataset_path': 'datasets/imagenet100/train',
+                'val_dataset_path': 'datasets/imagenet100/val'},
+    'logging': {   'checkpoint_freq': 1000,
+                   'eval_output': 'ocls-jepa-in100-l2-pkt-chunks-seed2.out',
+                   'log_dir': 'logs_IN100/in100-vitb16-l2-ep300',
+                   'log_file': 'in100-stats-l2-pkt-chunks-seed2.csv',
+                   'save_path': 'classifiers/jepa-in100-l2-seed2-classifier-pretrained-vitb'},
+    'message': 'Multi classification back to back',
+    'meta': {'device': 'cuda:0'},
+    'multi_probing': ['logs_IN100/in100-vitb16-l2-ep300'],
+    'optimization': {   'epochs': 200,
+                        'lr': 0.001,
+                        'use_last_n_blocks': 1,
+                        'use_normalization': False}}
+INFO:root:working on file logs_IN100/in100-vitb16-l2-ep300/jepa-in100-ep150.pth.tar ...
+Directory logs_IN100/in100-vitb16-l2-ep300/classifiers for saving the classifiers is now present
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(16, 16), stride=(16, 16))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+Extracting features and saving them in memory..
+Extracting features...
+Done extracting features...
+ Creating datasets
+Created datasets...
+ Creating data loaders
+Done with data loaders
+Commencing training
+Epoch: 1/200 Train accuracy: 2.89660e-01 Validation accuracy: 3.72600e-01 Training loss 2.36077e-02 Validation loss 1.94974e-02 Time taken: 0.94 seconds 
+Epoch: 2/200 Train accuracy: 4.13540e-01 Validation accuracy: 4.20200e-01 Training loss 1.77795e-02 Validation loss 1.77980e-02 Time taken: 0.72 seconds 
+Epoch: 3/200 Train accuracy: 4.50220e-01 Validation accuracy: 4.42100e-01 Training loss 1.63668e-02 Validation loss 1.68947e-02 Time taken: 0.73 seconds 
+Epoch: 4/200 Train accuracy: 4.74660e-01 Validation accuracy: 4.60500e-01 Training loss 1.55117e-02 Validation loss 1.65296e-02 Time taken: 0.73 seconds 
+Epoch: 5/200 Train accuracy: 4.93440e-01 Validation accuracy: 4.74200e-01 Training loss 1.48670e-02 Validation loss 1.59109e-02 Time taken: 0.74 seconds 
+Epoch: 6/200 Train accuracy: 5.05140e-01 Validation accuracy: 4.75200e-01 Training loss 1.44020e-02 Validation loss 1.58531e-02 Time taken: 0.73 seconds 
+Epoch: 7/200 Train accuracy: 5.16000e-01 Validation accuracy: 4.78300e-01 Training loss 1.40639e-02 Validation loss 1.58355e-02 Time taken: 0.73 seconds 
+Epoch: 8/200 Train accuracy: 5.25560e-01 Validation accuracy: 4.78100e-01 Training loss 1.37095e-02 Validation loss 1.57819e-02 Time taken: 0.73 seconds 
+Epoch: 9/200 Train accuracy: 5.29200e-01 Validation accuracy: 4.92300e-01 Training loss 1.35154e-02 Validation loss 1.53376e-02 Time taken: 0.73 seconds 
+Epoch: 10/200 Train accuracy: 5.37260e-01 Validation accuracy: 4.93500e-01 Training loss 1.32227e-02 Validation loss 1.54058e-02 Time taken: 0.74 seconds 
+Epoch: 11/200 Train accuracy: 5.39820e-01 Validation accuracy: 4.85600e-01 Training loss 1.30919e-02 Validation loss 1.56056e-02 Time taken: 0.74 seconds 
+Epoch: 12/200 Train accuracy: 5.46680e-01 Validation accuracy: 4.99200e-01 Training loss 1.29698e-02 Validation loss 1.51933e-02 Time taken: 0.74 seconds 
+Epoch: 13/200 Train accuracy: 5.53300e-01 Validation accuracy: 5.03700e-01 Training loss 1.27438e-02 Validation loss 1.49379e-02 Time taken: 0.74 seconds 
+Epoch: 14/200 Train accuracy: 5.55040e-01 Validation accuracy: 5.00600e-01 Training loss 1.26958e-02 Validation loss 1.52306e-02 Time taken: 0.74 seconds 
+Epoch: 15/200 Train accuracy: 5.60180e-01 Validation accuracy: 4.93800e-01 Training loss 1.25311e-02 Validation loss 1.52209e-02 Time taken: 0.74 seconds 
+Epoch: 16/200 Train accuracy: 5.63600e-01 Validation accuracy: 4.93200e-01 Training loss 1.24195e-02 Validation loss 1.52635e-02 Time taken: 0.73 seconds 
+Epoch: 17/200 Train accuracy: 5.65980e-01 Validation accuracy: 5.05900e-01 Training loss 1.23433e-02 Validation loss 1.48396e-02 Time taken: 0.73 seconds 
+Epoch: 18/200 Train accuracy: 5.68540e-01 Validation accuracy: 5.09700e-01 Training loss 1.22605e-02 Validation loss 1.48351e-02 Time taken: 0.73 seconds 
+Epoch: 19/200 Train accuracy: 5.69640e-01 Validation accuracy: 5.17100e-01 Training loss 1.21908e-02 Validation loss 1.46759e-02 Time taken: 0.74 seconds 
+Epoch: 20/200 Train accuracy: 5.72860e-01 Validation accuracy: 5.06900e-01 Training loss 1.20652e-02 Validation loss 1.47557e-02 Time taken: 0.74 seconds 
+Epoch: 21/200 Train accuracy: 5.78060e-01 Validation accuracy: 5.13500e-01 Training loss 1.19806e-02 Validation loss 1.47806e-02 Time taken: 0.74 seconds 
+Epoch: 22/200 Train accuracy: 5.78000e-01 Validation accuracy: 5.05500e-01 Training loss 1.19161e-02 Validation loss 1.49753e-02 Time taken: 0.74 seconds 
+Epoch: 23/200 Train accuracy: 5.79300e-01 Validation accuracy: 5.15400e-01 Training loss 1.18829e-02 Validation loss 1.46316e-02 Time taken: 0.73 seconds 
+Epoch: 24/200 Train accuracy: 5.80300e-01 Validation accuracy: 5.14000e-01 Training loss 1.17983e-02 Validation loss 1.47225e-02 Time taken: 0.73 seconds 
+Epoch: 25/200 Train accuracy: 5.85240e-01 Validation accuracy: 5.11600e-01 Training loss 1.16932e-02 Validation loss 1.50750e-02 Time taken: 0.74 seconds 
+Epoch: 26/200 Train accuracy: 5.85220e-01 Validation accuracy: 5.06000e-01 Training loss 1.17142e-02 Validation loss 1.49462e-02 Time taken: 0.74 seconds 
+Epoch: 27/200 Train accuracy: 5.87460e-01 Validation accuracy: 5.10300e-01 Training loss 1.16115e-02 Validation loss 1.49629e-02 Time taken: 1.72 seconds 
+Epoch: 28/200 Train accuracy: 5.89780e-01 Validation accuracy: 5.13400e-01 Training loss 1.15485e-02 Validation loss 1.49321e-02 Time taken: 0.78 seconds 
+Epoch: 29/200 Train accuracy: 5.92000e-01 Validation accuracy: 5.07100e-01 Training loss 1.14693e-02 Validation loss 1.51072e-02 Time taken: 0.79 seconds 
+Epoch: 30/200 Train accuracy: 5.90380e-01 Validation accuracy: 5.11400e-01 Training loss 1.15057e-02 Validation loss 1.49579e-02 Time taken: 0.74 seconds 
+Epoch: 31/200 Train accuracy: 5.93140e-01 Validation accuracy: 5.12300e-01 Training loss 1.14352e-02 Validation loss 1.47738e-02 Time taken: 0.74 seconds 
+Epoch: 32/200 Train accuracy: 5.92000e-01 Validation accuracy: 5.09700e-01 Training loss 1.14117e-02 Validation loss 1.49890e-02 Time taken: 0.74 seconds 
+Epoch: 33/200 Train accuracy: 5.97340e-01 Validation accuracy: 5.18700e-01 Training loss 1.13356e-02 Validation loss 1.46420e-02 Time taken: 0.74 seconds 
+Epoch: 34/200 Train accuracy: 6.00100e-01 Validation accuracy: 5.16500e-01 Training loss 1.12991e-02 Validation loss 1.48272e-02 Time taken: 0.74 seconds 
+Epoch: 35/200 Train accuracy: 5.98980e-01 Validation accuracy: 5.11900e-01 Training loss 1.12687e-02 Validation loss 1.48862e-02 Time taken: 0.74 seconds 
+Epoch: 36/200 Train accuracy: 5.99260e-01 Validation accuracy: 5.07300e-01 Training loss 1.12372e-02 Validation loss 1.50322e-02 Time taken: 0.74 seconds 
+Epoch: 37/200 Train accuracy: 5.99840e-01 Validation accuracy: 5.19400e-01 Training loss 1.11824e-02 Validation loss 1.46621e-02 Time taken: 0.74 seconds 
+Epoch: 38/200 Train accuracy: 6.01640e-01 Validation accuracy: 5.20100e-01 Training loss 1.11206e-02 Validation loss 1.48659e-02 Time taken: 0.74 seconds 
+Epoch: 39/200 Train accuracy: 6.03660e-01 Validation accuracy: 5.17200e-01 Training loss 1.10699e-02 Validation loss 1.48491e-02 Time taken: 0.73 seconds 
+Epoch: 40/200 Train accuracy: 6.04960e-01 Validation accuracy: 5.18800e-01 Training loss 1.10369e-02 Validation loss 1.47411e-02 Time taken: 0.74 seconds 
+Epoch: 41/200 Train accuracy: 6.04600e-01 Validation accuracy: 5.16300e-01 Training loss 1.10265e-02 Validation loss 1.47931e-02 Time taken: 0.74 seconds 
+Epoch: 42/200 Train accuracy: 6.05880e-01 Validation accuracy: 5.15500e-01 Training loss 1.09949e-02 Validation loss 1.49466e-02 Time taken: 0.74 seconds 
+Epoch: 43/200 Train accuracy: 6.06820e-01 Validation accuracy: 5.18400e-01 Training loss 1.09676e-02 Validation loss 1.47632e-02 Time taken: 0.74 seconds 
+Epoch: 44/200 Train accuracy: 6.10440e-01 Validation accuracy: 5.15600e-01 Training loss 1.08986e-02 Validation loss 1.47332e-02 Time taken: 0.74 seconds 
+Epoch: 45/200 Train accuracy: 6.09720e-01 Validation accuracy: 5.28000e-01 Training loss 1.09155e-02 Validation loss 1.45858e-02 Time taken: 0.77 seconds 
+Epoch: 46/200 Train accuracy: 6.09860e-01 Validation accuracy: 5.22800e-01 Training loss 1.08610e-02 Validation loss 1.48269e-02 Time taken: 0.77 seconds 
+Epoch: 47/200 Train accuracy: 6.12480e-01 Validation accuracy: 5.13900e-01 Training loss 1.08499e-02 Validation loss 1.49470e-02 Time taken: 0.74 seconds 
+Epoch: 48/200 Train accuracy: 6.10980e-01 Validation accuracy: 5.22100e-01 Training loss 1.08781e-02 Validation loss 1.46770e-02 Time taken: 0.74 seconds 
+Epoch: 49/200 Train accuracy: 6.13880e-01 Validation accuracy: 5.21900e-01 Training loss 1.07467e-02 Validation loss 1.47655e-02 Time taken: 0.74 seconds 
+Epoch: 50/200 Train accuracy: 6.15960e-01 Validation accuracy: 5.12400e-01 Training loss 1.06981e-02 Validation loss 1.52387e-02 Time taken: 0.74 seconds 
+Epoch: 51/200 Train accuracy: 6.12580e-01 Validation accuracy: 5.13000e-01 Training loss 1.07709e-02 Validation loss 1.52558e-02 Time taken: 0.74 seconds 
+Epoch: 52/200 Train accuracy: 6.16860e-01 Validation accuracy: 5.20100e-01 Training loss 1.06922e-02 Validation loss 1.48784e-02 Time taken: 0.74 seconds 
+Epoch: 53/200 Train accuracy: 6.16260e-01 Validation accuracy: 5.20500e-01 Training loss 1.06905e-02 Validation loss 1.49226e-02 Time taken: 0.74 seconds 
+Epoch: 54/200 Train accuracy: 6.17760e-01 Validation accuracy: 5.19800e-01 Training loss 1.06132e-02 Validation loss 1.49866e-02 Time taken: 0.74 seconds 
+Epoch: 55/200 Train accuracy: 6.16520e-01 Validation accuracy: 5.18600e-01 Training loss 1.06211e-02 Validation loss 1.49721e-02 Time taken: 0.74 seconds 
+Epoch: 56/200 Train accuracy: 6.18100e-01 Validation accuracy: 5.18100e-01 Training loss 1.05967e-02 Validation loss 1.48756e-02 Time taken: 0.74 seconds 
+Epoch: 57/200 Train accuracy: 6.22040e-01 Validation accuracy: 5.12100e-01 Training loss 1.05469e-02 Validation loss 1.51219e-02 Time taken: 0.74 seconds 
+Epoch: 58/200 Train accuracy: 6.18800e-01 Validation accuracy: 5.27000e-01 Training loss 1.05707e-02 Validation loss 1.46396e-02 Time taken: 0.74 seconds 
+Epoch: 59/200 Train accuracy: 6.22900e-01 Validation accuracy: 5.21800e-01 Training loss 1.05220e-02 Validation loss 1.48656e-02 Time taken: 0.74 seconds 
+Epoch: 60/200 Train accuracy: 6.17680e-01 Validation accuracy: 5.12700e-01 Training loss 1.05526e-02 Validation loss 1.50037e-02 Time taken: 0.74 seconds 
+Epoch: 61/200 Train accuracy: 6.19900e-01 Validation accuracy: 5.27100e-01 Training loss 1.05494e-02 Validation loss 1.47537e-02 Time taken: 0.74 seconds 
+Epoch: 62/200 Train accuracy: 6.23580e-01 Validation accuracy: 5.18800e-01 Training loss 1.04494e-02 Validation loss 1.49652e-02 Time taken: 0.74 seconds 
+Epoch: 63/200 Train accuracy: 6.23760e-01 Validation accuracy: 5.26900e-01 Training loss 1.04159e-02 Validation loss 1.48080e-02 Time taken: 0.74 seconds 
+Epoch: 64/200 Train accuracy: 6.24360e-01 Validation accuracy: 5.26900e-01 Training loss 1.03978e-02 Validation loss 1.48576e-02 Time taken: 0.74 seconds 
+Epoch: 65/200 Train accuracy: 6.24520e-01 Validation accuracy: 5.26200e-01 Training loss 1.04319e-02 Validation loss 1.48706e-02 Time taken: 0.74 seconds 
+Epoch: 66/200 Train accuracy: 6.23400e-01 Validation accuracy: 5.30500e-01 Training loss 1.04170e-02 Validation loss 1.46010e-02 Time taken: 0.74 seconds 
+Epoch: 67/200 Train accuracy: 6.23880e-01 Validation accuracy: 5.23800e-01 Training loss 1.04115e-02 Validation loss 1.50640e-02 Time taken: 0.73 seconds 
+Epoch: 68/200 Train accuracy: 6.26880e-01 Validation accuracy: 5.26200e-01 Training loss 1.03654e-02 Validation loss 1.47255e-02 Time taken: 0.73 seconds 
+Epoch: 69/200 Train accuracy: 6.24940e-01 Validation accuracy: 5.11700e-01 Training loss 1.03562e-02 Validation loss 1.53266e-02 Time taken: 0.74 seconds 
+Epoch: 70/200 Train accuracy: 6.28840e-01 Validation accuracy: 5.19600e-01 Training loss 1.02930e-02 Validation loss 1.49877e-02 Time taken: 0.74 seconds 
+Epoch: 71/200 Train accuracy: 6.27760e-01 Validation accuracy: 5.22800e-01 Training loss 1.02849e-02 Validation loss 1.48130e-02 Time taken: 0.78 seconds 
+Epoch: 72/200 Train accuracy: 6.31720e-01 Validation accuracy: 5.20900e-01 Training loss 1.02453e-02 Validation loss 1.48635e-02 Time taken: 0.74 seconds 
+Epoch: 73/200 Train accuracy: 6.28060e-01 Validation accuracy: 5.27800e-01 Training loss 1.02818e-02 Validation loss 1.48903e-02 Time taken: 0.74 seconds 
+Epoch: 74/200 Train accuracy: 6.29980e-01 Validation accuracy: 5.23400e-01 Training loss 1.02456e-02 Validation loss 1.48691e-02 Time taken: 0.74 seconds 
+Epoch: 75/200 Train accuracy: 6.28160e-01 Validation accuracy: 5.16300e-01 Training loss 1.02618e-02 Validation loss 1.49147e-02 Time taken: 0.74 seconds 
+Epoch: 76/200 Train accuracy: 6.32140e-01 Validation accuracy: 5.26100e-01 Training loss 1.01582e-02 Validation loss 1.48037e-02 Time taken: 0.74 seconds 
+Epoch: 77/200 Train accuracy: 6.30120e-01 Validation accuracy: 5.24300e-01 Training loss 1.02751e-02 Validation loss 1.48975e-02 Time taken: 0.74 seconds 
+Epoch: 78/200 Train accuracy: 6.28300e-01 Validation accuracy: 5.25100e-01 Training loss 1.02127e-02 Validation loss 1.50262e-02 Time taken: 0.74 seconds 
+Epoch: 79/200 Train accuracy: 6.29920e-01 Validation accuracy: 5.23300e-01 Training loss 1.01572e-02 Validation loss 1.47826e-02 Time taken: 0.74 seconds 
+Epoch: 80/200 Train accuracy: 6.33660e-01 Validation accuracy: 5.22300e-01 Training loss 1.01720e-02 Validation loss 1.50924e-02 Time taken: 0.74 seconds 
+Epoch: 81/200 Train accuracy: 6.35340e-01 Validation accuracy: 5.25300e-01 Training loss 1.01107e-02 Validation loss 1.47524e-02 Time taken: 0.74 seconds 
+Epoch: 82/200 Train accuracy: 6.32460e-01 Validation accuracy: 5.22500e-01 Training loss 1.01215e-02 Validation loss 1.50475e-02 Time taken: 0.74 seconds 
+Epoch: 83/200 Train accuracy: 6.36460e-01 Validation accuracy: 5.21000e-01 Training loss 1.00981e-02 Validation loss 1.50282e-02 Time taken: 0.74 seconds 
+Epoch: 84/200 Train accuracy: 6.33520e-01 Validation accuracy: 5.26100e-01 Training loss 1.01148e-02 Validation loss 1.48484e-02 Time taken: 0.74 seconds 
+Epoch: 85/200 Train accuracy: 6.33720e-01 Validation accuracy: 5.28900e-01 Training loss 1.00670e-02 Validation loss 1.47968e-02 Time taken: 0.75 seconds 
+Epoch: 86/200 Train accuracy: 6.35900e-01 Validation accuracy: 5.21500e-01 Training loss 1.00751e-02 Validation loss 1.50978e-02 Time taken: 0.78 seconds 
+Epoch: 87/200 Train accuracy: 6.36280e-01 Validation accuracy: 5.21900e-01 Training loss 1.00808e-02 Validation loss 1.51206e-02 Time taken: 0.74 seconds 
+Epoch: 88/200 Train accuracy: 6.34920e-01 Validation accuracy: 5.25900e-01 Training loss 1.00495e-02 Validation loss 1.48880e-02 Time taken: 0.74 seconds 
+Epoch: 89/200 Train accuracy: 6.39360e-01 Validation accuracy: 5.19100e-01 Training loss 1.00197e-02 Validation loss 1.51325e-02 Time taken: 0.78 seconds 
+Epoch: 90/200 Train accuracy: 6.38860e-01 Validation accuracy: 5.27400e-01 Training loss 1.00471e-02 Validation loss 1.48016e-02 Time taken: 0.76 seconds 
+Epoch: 91/200 Train accuracy: 6.36140e-01 Validation accuracy: 5.26000e-01 Training loss 9.96186e-03 Validation loss 1.50259e-02 Time taken: 0.76 seconds 
+Epoch: 92/200 Train accuracy: 6.37540e-01 Validation accuracy: 5.18200e-01 Training loss 1.00175e-02 Validation loss 1.51955e-02 Time taken: 0.76 seconds 
+Epoch: 93/200 Train accuracy: 6.37520e-01 Validation accuracy: 5.28400e-01 Training loss 9.97415e-03 Validation loss 1.49217e-02 Time taken: 0.76 seconds 
+Epoch: 94/200 Train accuracy: 6.38440e-01 Validation accuracy: 5.21300e-01 Training loss 9.93925e-03 Validation loss 1.48576e-02 Time taken: 0.78 seconds 
+Epoch: 95/200 Train accuracy: 6.38780e-01 Validation accuracy: 5.25200e-01 Training loss 9.92210e-03 Validation loss 1.49813e-02 Time taken: 0.78 seconds 
+Epoch: 96/200 Train accuracy: 6.38660e-01 Validation accuracy: 5.23000e-01 Training loss 9.92394e-03 Validation loss 1.50716e-02 Time taken: 0.78 seconds 
+Epoch: 97/200 Train accuracy: 6.38720e-01 Validation accuracy: 5.27500e-01 Training loss 9.91916e-03 Validation loss 1.49658e-02 Time taken: 0.80 seconds 
+Epoch: 98/200 Train accuracy: 6.38740e-01 Validation accuracy: 5.27700e-01 Training loss 9.92406e-03 Validation loss 1.50132e-02 Time taken: 0.82 seconds 
+Epoch: 99/200 Train accuracy: 6.40940e-01 Validation accuracy: 5.26900e-01 Training loss 9.92177e-03 Validation loss 1.50193e-02 Time taken: 0.78 seconds 
+Epoch: 100/200 Train accuracy: 6.42460e-01 Validation accuracy: 5.19400e-01 Training loss 9.87601e-03 Validation loss 1.51350e-02 Time taken: 0.78 seconds 
+Epoch: 101/200 Train accuracy: 6.39620e-01 Validation accuracy: 5.20800e-01 Training loss 9.91922e-03 Validation loss 1.51704e-02 Time taken: 0.78 seconds 
+Epoch: 102/200 Train accuracy: 6.41120e-01 Validation accuracy: 5.23000e-01 Training loss 9.85132e-03 Validation loss 1.51435e-02 Time taken: 0.78 seconds 
+Epoch: 103/200 Train accuracy: 6.39000e-01 Validation accuracy: 5.28000e-01 Training loss 9.87268e-03 Validation loss 1.49596e-02 Time taken: 0.78 seconds 
+Epoch: 104/200 Train accuracy: 6.44080e-01 Validation accuracy: 5.25000e-01 Training loss 9.84582e-03 Validation loss 1.50622e-02 Time taken: 0.78 seconds 
+Epoch: 105/200 Train accuracy: 6.40660e-01 Validation accuracy: 5.20100e-01 Training loss 9.88563e-03 Validation loss 1.50219e-02 Time taken: 0.80 seconds 
+Epoch: 106/200 Train accuracy: 6.42720e-01 Validation accuracy: 5.36800e-01 Training loss 9.82310e-03 Validation loss 1.48673e-02 Time taken: 0.78 seconds 
+Epoch: 107/200 Train accuracy: 6.42220e-01 Validation accuracy: 5.22500e-01 Training loss 9.82817e-03 Validation loss 1.51937e-02 Time taken: 0.78 seconds 
+Epoch: 108/200 Train accuracy: 6.45000e-01 Validation accuracy: 5.16800e-01 Training loss 9.77383e-03 Validation loss 1.54147e-02 Time taken: 0.79 seconds 
+Epoch: 109/200 Train accuracy: 6.45020e-01 Validation accuracy: 5.24700e-01 Training loss 9.75656e-03 Validation loss 1.51738e-02 Time taken: 0.78 seconds 
+Epoch: 110/200 Train accuracy: 6.42980e-01 Validation accuracy: 5.19300e-01 Training loss 9.83243e-03 Validation loss 1.50474e-02 Time taken: 0.82 seconds 
+Epoch: 111/200 Train accuracy: 6.44060e-01 Validation accuracy: 5.30300e-01 Training loss 9.76344e-03 Validation loss 1.49378e-02 Time taken: 0.81 seconds 
+Epoch: 112/200 Train accuracy: 6.46940e-01 Validation accuracy: 5.27300e-01 Training loss 9.76105e-03 Validation loss 1.50211e-02 Time taken: 0.79 seconds 
+Epoch: 113/200 Train accuracy: 6.44540e-01 Validation accuracy: 5.09600e-01 Training loss 9.76327e-03 Validation loss 1.55278e-02 Time taken: 0.79 seconds 
+Epoch: 114/200 Train accuracy: 6.44800e-01 Validation accuracy: 5.21200e-01 Training loss 9.70825e-03 Validation loss 1.50729e-02 Time taken: 0.79 seconds 
+Epoch: 115/200 Train accuracy: 6.44920e-01 Validation accuracy: 5.27500e-01 Training loss 9.74474e-03 Validation loss 1.49992e-02 Time taken: 0.79 seconds 
+Epoch: 116/200 Train accuracy: 6.46540e-01 Validation accuracy: 5.19400e-01 Training loss 9.73473e-03 Validation loss 1.52400e-02 Time taken: 0.79 seconds 
+Epoch: 117/200 Train accuracy: 6.46780e-01 Validation accuracy: 5.25600e-01 Training loss 9.71950e-03 Validation loss 1.51471e-02 Time taken: 0.79 seconds 
+Epoch: 118/200 Train accuracy: 6.43020e-01 Validation accuracy: 5.20900e-01 Training loss 9.76859e-03 Validation loss 1.52577e-02 Time taken: 0.79 seconds 
+Epoch: 119/200 Train accuracy: 6.45700e-01 Validation accuracy: 5.20900e-01 Training loss 9.72120e-03 Validation loss 1.51727e-02 Time taken: 0.79 seconds 
+Epoch: 120/200 Train accuracy: 6.49460e-01 Validation accuracy: 5.26200e-01 Training loss 9.67342e-03 Validation loss 1.50969e-02 Time taken: 0.79 seconds 
+Epoch: 121/200 Train accuracy: 6.46840e-01 Validation accuracy: 5.21900e-01 Training loss 9.67822e-03 Validation loss 1.52678e-02 Time taken: 0.79 seconds 
+Epoch: 122/200 Train accuracy: 6.45840e-01 Validation accuracy: 5.27300e-01 Training loss 9.65113e-03 Validation loss 1.50660e-02 Time taken: 0.79 seconds 
+Epoch: 123/200 Train accuracy: 6.44960e-01 Validation accuracy: 5.29300e-01 Training loss 9.70012e-03 Validation loss 1.49725e-02 Time taken: 0.79 seconds 
+Epoch: 124/200 Train accuracy: 6.48880e-01 Validation accuracy: 5.24400e-01 Training loss 9.65454e-03 Validation loss 1.52125e-02 Time taken: 0.79 seconds 
+Epoch: 125/200 Train accuracy: 6.47740e-01 Validation accuracy: 5.20900e-01 Training loss 9.66210e-03 Validation loss 1.53566e-02 Time taken: 0.77 seconds 
+Epoch: 126/200 Train accuracy: 6.48600e-01 Validation accuracy: 5.24400e-01 Training loss 9.60311e-03 Validation loss 1.53582e-02 Time taken: 0.76 seconds 
+Epoch: 127/200 Train accuracy: 6.47880e-01 Validation accuracy: 5.24300e-01 Training loss 9.67549e-03 Validation loss 1.51088e-02 Time taken: 0.73 seconds 
+Epoch: 128/200 Train accuracy: 6.50880e-01 Validation accuracy: 5.29200e-01 Training loss 9.62779e-03 Validation loss 1.51296e-02 Time taken: 0.73 seconds 
+Epoch: 129/200 Train accuracy: 6.49140e-01 Validation accuracy: 5.24300e-01 Training loss 9.60465e-03 Validation loss 1.51343e-02 Time taken: 0.74 seconds 
+Epoch: 130/200 Train accuracy: 6.51700e-01 Validation accuracy: 5.20300e-01 Training loss 9.58832e-03 Validation loss 1.52015e-02 Time taken: 4.04 seconds 
+Epoch: 131/200 Train accuracy: 6.51420e-01 Validation accuracy: 5.23200e-01 Training loss 9.56426e-03 Validation loss 1.51342e-02 Time taken: 4.72 seconds 
+Epoch: 132/200 Train accuracy: 6.48980e-01 Validation accuracy: 5.21000e-01 Training loss 9.62927e-03 Validation loss 1.53036e-02 Time taken: 0.77 seconds 
+Epoch: 133/200 Train accuracy: 6.49700e-01 Validation accuracy: 5.31400e-01 Training loss 9.59149e-03 Validation loss 1.51505e-02 Time taken: 0.78 seconds 
+Epoch: 134/200 Train accuracy: 6.49720e-01 Validation accuracy: 5.23500e-01 Training loss 9.55632e-03 Validation loss 1.52063e-02 Time taken: 0.78 seconds 
+Epoch: 135/200 Train accuracy: 6.50700e-01 Validation accuracy: 5.20200e-01 Training loss 9.54316e-03 Validation loss 1.53450e-02 Time taken: 0.83 seconds 
+Epoch: 136/200 Train accuracy: 6.50940e-01 Validation accuracy: 5.25300e-01 Training loss 9.51975e-03 Validation loss 1.51673e-02 Time taken: 1.10 seconds 
+Epoch: 137/200 Train accuracy: 6.52900e-01 Validation accuracy: 5.19900e-01 Training loss 9.51572e-03 Validation loss 1.53140e-02 Time taken: 0.80 seconds 
+Epoch: 138/200 Train accuracy: 6.52840e-01 Validation accuracy: 5.28700e-01 Training loss 9.55808e-03 Validation loss 1.50947e-02 Time taken: 0.78 seconds 
+Epoch: 139/200 Train accuracy: 6.50120e-01 Validation accuracy: 5.23200e-01 Training loss 9.55807e-03 Validation loss 1.52486e-02 Time taken: 0.78 seconds 
+Epoch: 140/200 Train accuracy: 6.51100e-01 Validation accuracy: 5.30400e-01 Training loss 9.54881e-03 Validation loss 1.50524e-02 Time taken: 0.78 seconds 
+Epoch: 141/200 Train accuracy: 6.54660e-01 Validation accuracy: 5.25200e-01 Training loss 9.46020e-03 Validation loss 1.51920e-02 Time taken: 0.77 seconds 
+Epoch: 142/200 Train accuracy: 6.51040e-01 Validation accuracy: 5.27700e-01 Training loss 9.53403e-03 Validation loss 1.52219e-02 Time taken: 0.78 seconds 
+Epoch: 143/200 Train accuracy: 6.52720e-01 Validation accuracy: 5.23300e-01 Training loss 9.48937e-03 Validation loss 1.51594e-02 Time taken: 0.78 seconds 
+Epoch: 144/200 Train accuracy: 6.52960e-01 Validation accuracy: 5.25100e-01 Training loss 9.46043e-03 Validation loss 1.51073e-02 Time taken: 1.86 seconds 
+Epoch: 145/200 Train accuracy: 6.52380e-01 Validation accuracy: 5.32200e-01 Training loss 9.47449e-03 Validation loss 1.49520e-02 Time taken: 0.75 seconds 
+Epoch: 146/200 Train accuracy: 6.54080e-01 Validation accuracy: 5.33400e-01 Training loss 9.48816e-03 Validation loss 1.49185e-02 Time taken: 0.77 seconds 
+Epoch: 147/200 Train accuracy: 6.53920e-01 Validation accuracy: 5.23300e-01 Training loss 9.49373e-03 Validation loss 1.52213e-02 Time taken: 0.74 seconds 
+Epoch: 148/200 Train accuracy: 6.54000e-01 Validation accuracy: 5.18900e-01 Training loss 9.47386e-03 Validation loss 1.54270e-02 Time taken: 0.74 seconds 
+Epoch: 149/200 Train accuracy: 6.56200e-01 Validation accuracy: 5.21500e-01 Training loss 9.42408e-03 Validation loss 1.52654e-02 Time taken: 0.74 seconds 
+Epoch: 150/200 Train accuracy: 6.53260e-01 Validation accuracy: 5.20100e-01 Training loss 9.45855e-03 Validation loss 1.54403e-02 Time taken: 0.79 seconds 
+Epoch: 151/200 Train accuracy: 6.56180e-01 Validation accuracy: 5.26000e-01 Training loss 9.40501e-03 Validation loss 1.53027e-02 Time taken: 0.78 seconds 
+Epoch: 152/200 Train accuracy: 6.55100e-01 Validation accuracy: 5.28200e-01 Training loss 9.41843e-03 Validation loss 1.51244e-02 Time taken: 0.79 seconds 
+Epoch: 153/200 Train accuracy: 6.57200e-01 Validation accuracy: 5.30300e-01 Training loss 9.40318e-03 Validation loss 1.49618e-02 Time taken: 0.79 seconds 
+Epoch: 154/200 Train accuracy: 6.55720e-01 Validation accuracy: 5.17100e-01 Training loss 9.42597e-03 Validation loss 1.54176e-02 Time taken: 0.79 seconds 
+Epoch: 155/200 Train accuracy: 6.53600e-01 Validation accuracy: 5.23300e-01 Training loss 9.46778e-03 Validation loss 1.52981e-02 Time taken: 0.79 seconds 
+Epoch: 156/200 Train accuracy: 6.58020e-01 Validation accuracy: 5.24200e-01 Training loss 9.37564e-03 Validation loss 1.51718e-02 Time taken: 0.79 seconds 
+Epoch: 157/200 Train accuracy: 6.57620e-01 Validation accuracy: 5.25600e-01 Training loss 9.37506e-03 Validation loss 1.52241e-02 Time taken: 0.79 seconds 
+Epoch: 158/200 Train accuracy: 6.54060e-01 Validation accuracy: 5.20600e-01 Training loss 9.40400e-03 Validation loss 1.55802e-02 Time taken: 0.78 seconds 
+Epoch: 159/200 Train accuracy: 6.54720e-01 Validation accuracy: 5.23500e-01 Training loss 9.35870e-03 Validation loss 1.53583e-02 Time taken: 0.77 seconds 
+Epoch: 160/200 Train accuracy: 6.57620e-01 Validation accuracy: 5.22500e-01 Training loss 9.38962e-03 Validation loss 1.53859e-02 Time taken: 0.77 seconds 
+Epoch: 161/200 Train accuracy: 6.58060e-01 Validation accuracy: 5.27100e-01 Training loss 9.32151e-03 Validation loss 1.52339e-02 Time taken: 0.77 seconds 
+Epoch: 162/200 Train accuracy: 6.55880e-01 Validation accuracy: 5.25200e-01 Training loss 9.36641e-03 Validation loss 1.52515e-02 Time taken: 0.77 seconds 
+Epoch: 163/200 Train accuracy: 6.57660e-01 Validation accuracy: 5.26400e-01 Training loss 9.39779e-03 Validation loss 1.52444e-02 Time taken: 0.76 seconds 
+Epoch: 164/200 Train accuracy: 6.57640e-01 Validation accuracy: 5.28800e-01 Training loss 9.37432e-03 Validation loss 1.53281e-02 Time taken: 0.76 seconds 
+Epoch: 165/200 Train accuracy: 6.58240e-01 Validation accuracy: 5.22500e-01 Training loss 9.33708e-03 Validation loss 1.55337e-02 Time taken: 0.77 seconds 
+Epoch: 166/200 Train accuracy: 6.58800e-01 Validation accuracy: 5.29200e-01 Training loss 9.30294e-03 Validation loss 1.52088e-02 Time taken: 0.78 seconds 
+Epoch: 167/200 Train accuracy: 6.58720e-01 Validation accuracy: 5.16100e-01 Training loss 9.33177e-03 Validation loss 1.53687e-02 Time taken: 0.81 seconds 
+Epoch: 168/200 Train accuracy: 6.55980e-01 Validation accuracy: 5.21700e-01 Training loss 9.34748e-03 Validation loss 1.54783e-02 Time taken: 0.77 seconds 
+Epoch: 169/200 Train accuracy: 6.57000e-01 Validation accuracy: 5.23300e-01 Training loss 9.34544e-03 Validation loss 1.51198e-02 Time taken: 0.77 seconds 
+Epoch: 170/200 Train accuracy: 6.59960e-01 Validation accuracy: 5.19800e-01 Training loss 9.27804e-03 Validation loss 1.55353e-02 Time taken: 0.77 seconds 
+Epoch: 171/200 Train accuracy: 6.59140e-01 Validation accuracy: 5.20900e-01 Training loss 9.31773e-03 Validation loss 1.52750e-02 Time taken: 0.78 seconds 
+Epoch: 172/200 Train accuracy: 6.55560e-01 Validation accuracy: 5.27800e-01 Training loss 9.37010e-03 Validation loss 1.52431e-02 Time taken: 0.79 seconds 
+Epoch: 173/200 Train accuracy: 6.60520e-01 Validation accuracy: 5.25200e-01 Training loss 9.24039e-03 Validation loss 1.52358e-02 Time taken: 0.79 seconds 
+Epoch: 174/200 Train accuracy: 6.58740e-01 Validation accuracy: 5.32500e-01 Training loss 9.26984e-03 Validation loss 1.50716e-02 Time taken: 0.80 seconds 
+Epoch: 175/200 Train accuracy: 6.61540e-01 Validation accuracy: 5.26500e-01 Training loss 9.22769e-03 Validation loss 1.52411e-02 Time taken: 0.83 seconds 
+Epoch: 176/200 Train accuracy: 6.59460e-01 Validation accuracy: 5.28400e-01 Training loss 9.30451e-03 Validation loss 1.51704e-02 Time taken: 0.80 seconds 
+Epoch: 177/200 Train accuracy: 6.58160e-01 Validation accuracy: 5.21500e-01 Training loss 9.28352e-03 Validation loss 1.55624e-02 Time taken: 0.79 seconds 
+Epoch: 178/200 Train accuracy: 6.59960e-01 Validation accuracy: 5.22300e-01 Training loss 9.32089e-03 Validation loss 1.56161e-02 Time taken: 0.79 seconds 
+Epoch: 179/200 Train accuracy: 6.59520e-01 Validation accuracy: 5.15700e-01 Training loss 9.28737e-03 Validation loss 1.58417e-02 Time taken: 0.79 seconds 
+Epoch: 180/200 Train accuracy: 6.59380e-01 Validation accuracy: 5.29700e-01 Training loss 9.28954e-03 Validation loss 1.52927e-02 Time taken: 0.79 seconds 
+Epoch: 181/200 Train accuracy: 6.58600e-01 Validation accuracy: 5.26400e-01 Training loss 9.27750e-03 Validation loss 1.54145e-02 Time taken: 0.80 seconds 
+Epoch: 182/200 Train accuracy: 6.60540e-01 Validation accuracy: 5.19100e-01 Training loss 9.25056e-03 Validation loss 1.54446e-02 Time taken: 0.73 seconds 
+Epoch: 183/200 Train accuracy: 6.63120e-01 Validation accuracy: 5.28700e-01 Training loss 9.19615e-03 Validation loss 1.53491e-02 Time taken: 0.73 seconds 
+Epoch: 184/200 Train accuracy: 6.61380e-01 Validation accuracy: 5.32000e-01 Training loss 9.23563e-03 Validation loss 1.52224e-02 Time taken: 0.73 seconds 
+Epoch: 185/200 Train accuracy: 6.61400e-01 Validation accuracy: 5.18800e-01 Training loss 9.24626e-03 Validation loss 1.55551e-02 Time taken: 0.73 seconds 
+Epoch: 186/200 Train accuracy: 6.59340e-01 Validation accuracy: 5.26400e-01 Training loss 9.24557e-03 Validation loss 1.53437e-02 Time taken: 0.73 seconds 
+Epoch: 187/200 Train accuracy: 6.61540e-01 Validation accuracy: 5.22700e-01 Training loss 9.18958e-03 Validation loss 1.53994e-02 Time taken: 0.73 seconds 
+Epoch: 188/200 Train accuracy: 6.63340e-01 Validation accuracy: 5.26900e-01 Training loss 9.21662e-03 Validation loss 1.52971e-02 Time taken: 0.74 seconds 
+Epoch: 189/200 Train accuracy: 6.61620e-01 Validation accuracy: 5.07500e-01 Training loss 9.19965e-03 Validation loss 1.59162e-02 Time taken: 0.74 seconds 
+Epoch: 190/200 Train accuracy: 6.61340e-01 Validation accuracy: 5.22900e-01 Training loss 9.22176e-03 Validation loss 1.54587e-02 Time taken: 0.74 seconds 
+Epoch: 191/200 Train accuracy: 6.60840e-01 Validation accuracy: 5.22700e-01 Training loss 9.20785e-03 Validation loss 1.56170e-02 Time taken: 0.74 seconds 
+Epoch: 192/200 Train accuracy: 6.62780e-01 Validation accuracy: 5.35100e-01 Training loss 9.20719e-03 Validation loss 1.51626e-02 Time taken: 0.74 seconds 
+Epoch: 193/200 Train accuracy: 6.61260e-01 Validation accuracy: 5.27100e-01 Training loss 9.15730e-03 Validation loss 1.52246e-02 Time taken: 0.74 seconds 
+Epoch: 194/200 Train accuracy: 6.60980e-01 Validation accuracy: 5.23100e-01 Training loss 9.20022e-03 Validation loss 1.54383e-02 Time taken: 0.74 seconds 
+Epoch: 195/200 Train accuracy: 6.62720e-01 Validation accuracy: 5.23900e-01 Training loss 9.21764e-03 Validation loss 1.53952e-02 Time taken: 0.74 seconds 
+Epoch: 196/200 Train accuracy: 6.65940e-01 Validation accuracy: 5.28800e-01 Training loss 9.11722e-03 Validation loss 1.54205e-02 Time taken: 0.75 seconds 
+Epoch: 197/200 Train accuracy: 6.64480e-01 Validation accuracy: 5.26700e-01 Training loss 9.14989e-03 Validation loss 1.54076e-02 Time taken: 0.78 seconds 
+Epoch: 198/200 Train accuracy: 6.62360e-01 Validation accuracy: 5.25800e-01 Training loss 9.17295e-03 Validation loss 1.52617e-02 Time taken: 0.74 seconds 
+Epoch: 199/200 Train accuracy: 6.63940e-01 Validation accuracy: 5.22000e-01 Training loss 9.14659e-03 Validation loss 1.54758e-02 Time taken: 0.74 seconds 
+Epoch: 200/200 Train accuracy: 6.65660e-01 Validation accuracy: 5.18200e-01 Training loss 9.12151e-03 Validation loss 1.55453e-02 Time taken: 0.74 seconds 
+Total time taken 0:02:59.867891
+Cleaning up intermediate feature (.pt) files
+Done
+
+
+working on file logs_IN100/in100-vitb16-l2-ep300/jepa-in100-ep300.pth.tar ...
+Directory logs_IN100/in100-vitb16-l2-ep300/classifiers for saving the classifiers is now present
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(16, 16), stride=(16, 16))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+Extracting features and saving them in memory..
+Extracting features...
+Done extracting features...
+ Creating datasets
+Created datasets...
+ Creating data loaders
+Done with data loaders
+Commencing training
+Epoch: 1/200 Train accuracy: 2.78940e-01 Validation accuracy: 3.80200e-01 Training loss 2.53891e-02 Validation loss 1.98956e-02 Time taken: 0.80 seconds 
+Epoch: 2/200 Train accuracy: 4.11140e-01 Validation accuracy: 4.11300e-01 Training loss 1.82349e-02 Validation loss 1.84442e-02 Time taken: 0.74 seconds 
+Epoch: 3/200 Train accuracy: 4.61800e-01 Validation accuracy: 4.39100e-01 Training loss 1.62592e-02 Validation loss 1.75889e-02 Time taken: 0.74 seconds 
+Epoch: 4/200 Train accuracy: 4.86040e-01 Validation accuracy: 4.46200e-01 Training loss 1.51734e-02 Validation loss 1.71908e-02 Time taken: 0.75 seconds 
+Epoch: 5/200 Train accuracy: 5.06080e-01 Validation accuracy: 4.57800e-01 Training loss 1.44263e-02 Validation loss 1.67651e-02 Time taken: 0.75 seconds 
+Epoch: 6/200 Train accuracy: 5.22820e-01 Validation accuracy: 4.67300e-01 Training loss 1.38199e-02 Validation loss 1.64387e-02 Time taken: 0.75 seconds 
+Epoch: 7/200 Train accuracy: 5.38120e-01 Validation accuracy: 4.77200e-01 Training loss 1.33152e-02 Validation loss 1.61182e-02 Time taken: 0.75 seconds 
+Epoch: 8/200 Train accuracy: 5.46280e-01 Validation accuracy: 4.77400e-01 Training loss 1.30163e-02 Validation loss 1.61584e-02 Time taken: 0.74 seconds 
+Epoch: 9/200 Train accuracy: 5.55020e-01 Validation accuracy: 4.74200e-01 Training loss 1.26700e-02 Validation loss 1.61083e-02 Time taken: 0.75 seconds 
+Epoch: 10/200 Train accuracy: 5.59300e-01 Validation accuracy: 4.80200e-01 Training loss 1.24520e-02 Validation loss 1.62297e-02 Time taken: 0.75 seconds 
+Epoch: 11/200 Train accuracy: 5.69580e-01 Validation accuracy: 4.83400e-01 Training loss 1.22119e-02 Validation loss 1.61643e-02 Time taken: 0.74 seconds 
+Epoch: 12/200 Train accuracy: 5.75320e-01 Validation accuracy: 4.88500e-01 Training loss 1.20353e-02 Validation loss 1.56921e-02 Time taken: 0.75 seconds 
+Epoch: 13/200 Train accuracy: 5.81740e-01 Validation accuracy: 4.96500e-01 Training loss 1.18034e-02 Validation loss 1.56852e-02 Time taken: 0.75 seconds 
+Epoch: 14/200 Train accuracy: 5.83160e-01 Validation accuracy: 4.82500e-01 Training loss 1.17099e-02 Validation loss 1.61328e-02 Time taken: 0.75 seconds 
+Epoch: 15/200 Train accuracy: 5.88000e-01 Validation accuracy: 4.92100e-01 Training loss 1.15882e-02 Validation loss 1.58728e-02 Time taken: 0.75 seconds 
+Epoch: 16/200 Train accuracy: 5.90180e-01 Validation accuracy: 4.89000e-01 Training loss 1.14494e-02 Validation loss 1.60677e-02 Time taken: 0.76 seconds 
+Epoch: 17/200 Train accuracy: 5.91560e-01 Validation accuracy: 4.92600e-01 Training loss 1.13794e-02 Validation loss 1.58277e-02 Time taken: 0.77 seconds 
+Epoch: 18/200 Train accuracy: 5.93680e-01 Validation accuracy: 4.93700e-01 Training loss 1.12492e-02 Validation loss 1.55743e-02 Time taken: 0.75 seconds 
+Epoch: 19/200 Train accuracy: 5.98720e-01 Validation accuracy: 4.94600e-01 Training loss 1.11478e-02 Validation loss 1.57941e-02 Time taken: 0.78 seconds 
+Epoch: 20/200 Train accuracy: 6.02660e-01 Validation accuracy: 4.98200e-01 Training loss 1.10600e-02 Validation loss 1.57641e-02 Time taken: 0.75 seconds 
+Epoch: 21/200 Train accuracy: 6.04480e-01 Validation accuracy: 4.98400e-01 Training loss 1.09803e-02 Validation loss 1.56573e-02 Time taken: 0.75 seconds 
+Epoch: 22/200 Train accuracy: 6.04120e-01 Validation accuracy: 4.98900e-01 Training loss 1.09433e-02 Validation loss 1.57364e-02 Time taken: 0.75 seconds 
+Epoch: 23/200 Train accuracy: 6.07880e-01 Validation accuracy: 4.95100e-01 Training loss 1.08547e-02 Validation loss 1.61156e-02 Time taken: 0.75 seconds 
+Epoch: 24/200 Train accuracy: 6.10940e-01 Validation accuracy: 4.99300e-01 Training loss 1.07635e-02 Validation loss 1.58260e-02 Time taken: 0.74 seconds 
+Epoch: 25/200 Train accuracy: 6.14560e-01 Validation accuracy: 4.96900e-01 Training loss 1.06732e-02 Validation loss 1.57954e-02 Time taken: 0.75 seconds 
+Epoch: 26/200 Train accuracy: 6.15120e-01 Validation accuracy: 5.04400e-01 Training loss 1.06440e-02 Validation loss 1.55417e-02 Time taken: 0.74 seconds 
+Epoch: 27/200 Train accuracy: 6.17240e-01 Validation accuracy: 4.93600e-01 Training loss 1.05972e-02 Validation loss 1.62251e-02 Time taken: 0.74 seconds 
+Epoch: 28/200 Train accuracy: 6.21460e-01 Validation accuracy: 5.02200e-01 Training loss 1.04490e-02 Validation loss 1.54928e-02 Time taken: 0.75 seconds 
+Epoch: 29/200 Train accuracy: 6.20160e-01 Validation accuracy: 5.00300e-01 Training loss 1.04496e-02 Validation loss 1.57673e-02 Time taken: 0.75 seconds 
+Epoch: 30/200 Train accuracy: 6.24860e-01 Validation accuracy: 4.92100e-01 Training loss 1.03346e-02 Validation loss 1.60347e-02 Time taken: 0.75 seconds 
+Epoch: 31/200 Train accuracy: 6.26460e-01 Validation accuracy: 5.05100e-01 Training loss 1.03326e-02 Validation loss 1.55510e-02 Time taken: 0.75 seconds 
+Epoch: 32/200 Train accuracy: 6.24960e-01 Validation accuracy: 5.09500e-01 Training loss 1.02926e-02 Validation loss 1.58255e-02 Time taken: 0.75 seconds 
+Epoch: 33/200 Train accuracy: 6.23780e-01 Validation accuracy: 4.92800e-01 Training loss 1.02784e-02 Validation loss 1.59401e-02 Time taken: 0.75 seconds 
+Epoch: 34/200 Train accuracy: 6.26820e-01 Validation accuracy: 4.98100e-01 Training loss 1.02444e-02 Validation loss 1.60245e-02 Time taken: 0.75 seconds 
+Epoch: 35/200 Train accuracy: 6.30560e-01 Validation accuracy: 5.05700e-01 Training loss 1.01511e-02 Validation loss 1.58514e-02 Time taken: 0.75 seconds 
+Epoch: 36/200 Train accuracy: 6.30900e-01 Validation accuracy: 5.07100e-01 Training loss 1.00992e-02 Validation loss 1.59801e-02 Time taken: 0.75 seconds 
+Epoch: 37/200 Train accuracy: 6.33100e-01 Validation accuracy: 4.91800e-01 Training loss 1.00660e-02 Validation loss 1.64009e-02 Time taken: 0.75 seconds 
+Epoch: 38/200 Train accuracy: 6.33980e-01 Validation accuracy: 5.01200e-01 Training loss 1.00228e-02 Validation loss 1.61653e-02 Time taken: 0.75 seconds 
+Epoch: 39/200 Train accuracy: 6.32900e-01 Validation accuracy: 5.05100e-01 Training loss 9.97084e-03 Validation loss 1.59641e-02 Time taken: 0.75 seconds 
+Epoch: 40/200 Train accuracy: 6.40380e-01 Validation accuracy: 5.08100e-01 Training loss 9.85759e-03 Validation loss 1.58429e-02 Time taken: 0.74 seconds 
+Epoch: 41/200 Train accuracy: 6.36940e-01 Validation accuracy: 5.02100e-01 Training loss 9.94054e-03 Validation loss 1.61436e-02 Time taken: 0.75 seconds 
+Epoch: 42/200 Train accuracy: 6.34880e-01 Validation accuracy: 5.00700e-01 Training loss 9.92947e-03 Validation loss 1.60947e-02 Time taken: 0.75 seconds 
+Epoch: 43/200 Train accuracy: 6.41340e-01 Validation accuracy: 5.01600e-01 Training loss 9.81069e-03 Validation loss 1.60016e-02 Time taken: 0.75 seconds 
+Epoch: 44/200 Train accuracy: 6.42040e-01 Validation accuracy: 5.05000e-01 Training loss 9.78814e-03 Validation loss 1.61742e-02 Time taken: 0.75 seconds 
+Epoch: 45/200 Train accuracy: 6.42120e-01 Validation accuracy: 5.04900e-01 Training loss 9.77248e-03 Validation loss 1.63457e-02 Time taken: 0.75 seconds 
+Epoch: 46/200 Train accuracy: 6.43500e-01 Validation accuracy: 4.90400e-01 Training loss 9.73518e-03 Validation loss 1.67074e-02 Time taken: 0.75 seconds 
+Epoch: 47/200 Train accuracy: 6.44840e-01 Validation accuracy: 5.03400e-01 Training loss 9.69537e-03 Validation loss 1.60255e-02 Time taken: 0.76 seconds 
+Epoch: 48/200 Train accuracy: 6.47800e-01 Validation accuracy: 5.06300e-01 Training loss 9.66197e-03 Validation loss 1.63136e-02 Time taken: 0.75 seconds 
+Epoch: 49/200 Train accuracy: 6.45920e-01 Validation accuracy: 5.00300e-01 Training loss 9.65129e-03 Validation loss 1.64735e-02 Time taken: 0.76 seconds 
+Epoch: 50/200 Train accuracy: 6.46580e-01 Validation accuracy: 5.03700e-01 Training loss 9.65357e-03 Validation loss 1.64158e-02 Time taken: 0.76 seconds 
+Epoch: 51/200 Train accuracy: 6.48320e-01 Validation accuracy: 5.05800e-01 Training loss 9.60956e-03 Validation loss 1.60862e-02 Time taken: 0.76 seconds 
+Epoch: 52/200 Train accuracy: 6.48920e-01 Validation accuracy: 5.00600e-01 Training loss 9.52078e-03 Validation loss 1.64715e-02 Time taken: 0.76 seconds 
+Epoch: 53/200 Train accuracy: 6.49620e-01 Validation accuracy: 5.07100e-01 Training loss 9.52225e-03 Validation loss 1.61678e-02 Time taken: 0.76 seconds 
+Epoch: 54/200 Train accuracy: 6.53400e-01 Validation accuracy: 5.09600e-01 Training loss 9.46924e-03 Validation loss 1.64096e-02 Time taken: 0.75 seconds 
+Epoch: 55/200 Train accuracy: 6.51780e-01 Validation accuracy: 5.05600e-01 Training loss 9.44514e-03 Validation loss 1.63940e-02 Time taken: 0.76 seconds 
+Epoch: 56/200 Train accuracy: 6.52640e-01 Validation accuracy: 5.02600e-01 Training loss 9.39491e-03 Validation loss 1.62868e-02 Time taken: 0.75 seconds 
+Epoch: 57/200 Train accuracy: 6.54660e-01 Validation accuracy: 4.92600e-01 Training loss 9.38938e-03 Validation loss 1.67924e-02 Time taken: 0.75 seconds 
+Epoch: 58/200 Train accuracy: 6.50540e-01 Validation accuracy: 5.10900e-01 Training loss 9.41542e-03 Validation loss 1.62424e-02 Time taken: 0.75 seconds 
+Epoch: 59/200 Train accuracy: 6.54280e-01 Validation accuracy: 5.04800e-01 Training loss 9.38048e-03 Validation loss 1.64416e-02 Time taken: 0.76 seconds 
+Epoch: 60/200 Train accuracy: 6.55460e-01 Validation accuracy: 4.99700e-01 Training loss 9.36673e-03 Validation loss 1.66405e-02 Time taken: 0.76 seconds 
+Epoch: 61/200 Train accuracy: 6.54860e-01 Validation accuracy: 5.08600e-01 Training loss 9.31242e-03 Validation loss 1.67083e-02 Time taken: 0.75 seconds 
+Epoch: 62/200 Train accuracy: 6.52380e-01 Validation accuracy: 5.00200e-01 Training loss 9.33409e-03 Validation loss 1.66771e-02 Time taken: 0.80 seconds 
+Epoch: 63/200 Train accuracy: 6.60180e-01 Validation accuracy: 5.03700e-01 Training loss 9.25309e-03 Validation loss 1.64884e-02 Time taken: 0.76 seconds 
+Epoch: 64/200 Train accuracy: 6.58860e-01 Validation accuracy: 5.04800e-01 Training loss 9.27144e-03 Validation loss 1.63811e-02 Time taken: 0.76 seconds 
+Epoch: 65/200 Train accuracy: 6.63380e-01 Validation accuracy: 4.95900e-01 Training loss 9.20598e-03 Validation loss 1.68145e-02 Time taken: 0.76 seconds 
+Epoch: 66/200 Train accuracy: 6.58120e-01 Validation accuracy: 5.06100e-01 Training loss 9.21804e-03 Validation loss 1.66883e-02 Time taken: 0.75 seconds 
+Epoch: 67/200 Train accuracy: 6.61060e-01 Validation accuracy: 4.97200e-01 Training loss 9.20740e-03 Validation loss 1.69964e-02 Time taken: 0.75 seconds 
+Epoch: 68/200 Train accuracy: 6.55880e-01 Validation accuracy: 5.09000e-01 Training loss 9.27091e-03 Validation loss 1.64978e-02 Time taken: 0.76 seconds 
+Epoch: 69/200 Train accuracy: 6.63800e-01 Validation accuracy: 5.03800e-01 Training loss 9.11265e-03 Validation loss 1.66145e-02 Time taken: 5.57 seconds 
+Epoch: 70/200 Train accuracy: 6.62200e-01 Validation accuracy: 5.06600e-01 Training loss 9.09770e-03 Validation loss 1.66601e-02 Time taken: 5.55 seconds 
+Epoch: 71/200 Train accuracy: 6.65720e-01 Validation accuracy: 5.04000e-01 Training loss 9.05669e-03 Validation loss 1.69319e-02 Time taken: 3.16 seconds 
+Epoch: 72/200 Train accuracy: 6.64700e-01 Validation accuracy: 4.93500e-01 Training loss 9.03171e-03 Validation loss 1.73086e-02 Time taken: 0.76 seconds 
+Epoch: 73/200 Train accuracy: 6.62020e-01 Validation accuracy: 5.13800e-01 Training loss 9.12626e-03 Validation loss 1.64813e-02 Time taken: 0.75 seconds 
+Epoch: 74/200 Train accuracy: 6.66940e-01 Validation accuracy: 5.07800e-01 Training loss 8.99928e-03 Validation loss 1.66406e-02 Time taken: 0.75 seconds 
+Epoch: 75/200 Train accuracy: 6.66820e-01 Validation accuracy: 5.00300e-01 Training loss 9.05925e-03 Validation loss 1.70568e-02 Time taken: 0.75 seconds 
+Epoch: 76/200 Train accuracy: 6.67740e-01 Validation accuracy: 5.07900e-01 Training loss 8.99432e-03 Validation loss 1.65390e-02 Time taken: 0.75 seconds 
+Epoch: 77/200 Train accuracy: 6.66880e-01 Validation accuracy: 5.07200e-01 Training loss 8.96490e-03 Validation loss 1.67222e-02 Time taken: 0.75 seconds 
+Epoch: 78/200 Train accuracy: 6.67540e-01 Validation accuracy: 5.01700e-01 Training loss 9.00375e-03 Validation loss 1.70297e-02 Time taken: 0.75 seconds 
+Epoch: 79/200 Train accuracy: 6.65900e-01 Validation accuracy: 5.00200e-01 Training loss 8.98827e-03 Validation loss 1.69443e-02 Time taken: 0.82 seconds 
+Epoch: 80/200 Train accuracy: 6.72940e-01 Validation accuracy: 5.06700e-01 Training loss 8.89853e-03 Validation loss 1.67096e-02 Time taken: 5.58 seconds 
+Epoch: 81/200 Train accuracy: 6.68540e-01 Validation accuracy: 5.11900e-01 Training loss 8.90942e-03 Validation loss 1.68262e-02 Time taken: 1.50 seconds 
+Epoch: 82/200 Train accuracy: 6.70480e-01 Validation accuracy: 5.01600e-01 Training loss 8.88136e-03 Validation loss 1.71525e-02 Time taken: 0.77 seconds 
+Epoch: 83/200 Train accuracy: 6.70800e-01 Validation accuracy: 5.01400e-01 Training loss 8.88515e-03 Validation loss 1.68856e-02 Time taken: 0.78 seconds 
+Epoch: 84/200 Train accuracy: 6.72440e-01 Validation accuracy: 5.02700e-01 Training loss 8.84031e-03 Validation loss 1.70973e-02 Time taken: 0.83 seconds 
+Epoch: 85/200 Train accuracy: 6.72080e-01 Validation accuracy: 5.08100e-01 Training loss 8.81232e-03 Validation loss 1.67124e-02 Time taken: 0.79 seconds 
+Epoch: 86/200 Train accuracy: 6.69620e-01 Validation accuracy: 5.12500e-01 Training loss 8.90001e-03 Validation loss 1.67810e-02 Time taken: 0.79 seconds 
+Epoch: 87/200 Train accuracy: 6.69160e-01 Validation accuracy: 4.99900e-01 Training loss 8.91003e-03 Validation loss 1.71253e-02 Time taken: 0.78 seconds 
+Epoch: 88/200 Train accuracy: 6.71380e-01 Validation accuracy: 5.01500e-01 Training loss 8.84429e-03 Validation loss 1.71104e-02 Time taken: 0.81 seconds 
+Epoch: 89/200 Train accuracy: 6.74820e-01 Validation accuracy: 5.05100e-01 Training loss 8.78628e-03 Validation loss 1.69268e-02 Time taken: 0.77 seconds 
+Epoch: 90/200 Train accuracy: 6.71640e-01 Validation accuracy: 5.01800e-01 Training loss 8.79649e-03 Validation loss 1.70134e-02 Time taken: 0.79 seconds 
+Epoch: 91/200 Train accuracy: 6.75260e-01 Validation accuracy: 5.03000e-01 Training loss 8.73805e-03 Validation loss 1.72666e-02 Time taken: 0.78 seconds 
+Epoch: 92/200 Train accuracy: 6.75600e-01 Validation accuracy: 5.11300e-01 Training loss 8.71830e-03 Validation loss 1.68957e-02 Time taken: 0.80 seconds 
+Epoch: 93/200 Train accuracy: 6.75500e-01 Validation accuracy: 5.07400e-01 Training loss 8.72645e-03 Validation loss 1.68351e-02 Time taken: 0.76 seconds 
+Epoch: 94/200 Train accuracy: 6.75940e-01 Validation accuracy: 5.06900e-01 Training loss 8.69398e-03 Validation loss 1.69320e-02 Time taken: 0.81 seconds 
+Epoch: 95/200 Train accuracy: 6.74120e-01 Validation accuracy: 5.01800e-01 Training loss 8.74107e-03 Validation loss 1.71882e-02 Time taken: 0.76 seconds 
+Epoch: 96/200 Train accuracy: 6.74180e-01 Validation accuracy: 5.02500e-01 Training loss 8.74198e-03 Validation loss 1.70214e-02 Time taken: 0.79 seconds 
+Epoch: 97/200 Train accuracy: 6.74300e-01 Validation accuracy: 5.06000e-01 Training loss 8.76470e-03 Validation loss 1.71763e-02 Time taken: 0.80 seconds 
+Epoch: 98/200 Train accuracy: 6.75720e-01 Validation accuracy: 5.03500e-01 Training loss 8.69102e-03 Validation loss 1.71072e-02 Time taken: 0.79 seconds 
+Epoch: 99/200 Train accuracy: 6.78780e-01 Validation accuracy: 5.12800e-01 Training loss 8.63481e-03 Validation loss 1.68311e-02 Time taken: 0.77 seconds 
+Epoch: 100/200 Train accuracy: 6.76100e-01 Validation accuracy: 5.00100e-01 Training loss 8.66323e-03 Validation loss 1.72736e-02 Time taken: 0.82 seconds 
+Epoch: 101/200 Train accuracy: 6.78120e-01 Validation accuracy: 5.07400e-01 Training loss 8.62148e-03 Validation loss 1.71449e-02 Time taken: 0.76 seconds 
+Epoch: 102/200 Train accuracy: 6.75160e-01 Validation accuracy: 5.11300e-01 Training loss 8.71449e-03 Validation loss 1.68221e-02 Time taken: 0.82 seconds 
+Epoch: 103/200 Train accuracy: 6.78100e-01 Validation accuracy: 5.09800e-01 Training loss 8.64339e-03 Validation loss 1.69295e-02 Time taken: 0.76 seconds 
+Epoch: 104/200 Train accuracy: 6.78060e-01 Validation accuracy: 5.08800e-01 Training loss 8.61796e-03 Validation loss 1.72553e-02 Time taken: 0.82 seconds 
+Epoch: 105/200 Train accuracy: 6.79860e-01 Validation accuracy: 5.07900e-01 Training loss 8.56652e-03 Validation loss 1.71791e-02 Time taken: 0.75 seconds 
+Epoch: 106/200 Train accuracy: 6.79740e-01 Validation accuracy: 5.05600e-01 Training loss 8.60018e-03 Validation loss 1.71025e-02 Time taken: 0.76 seconds 
+Epoch: 107/200 Train accuracy: 6.78960e-01 Validation accuracy: 4.98400e-01 Training loss 8.59431e-03 Validation loss 1.75639e-02 Time taken: 0.75 seconds 
+Epoch: 108/200 Train accuracy: 6.76600e-01 Validation accuracy: 5.05100e-01 Training loss 8.64670e-03 Validation loss 1.71510e-02 Time taken: 0.82 seconds 
+Epoch: 109/200 Train accuracy: 6.81480e-01 Validation accuracy: 5.16000e-01 Training loss 8.54349e-03 Validation loss 1.67589e-02 Time taken: 0.75 seconds 
+Epoch: 110/200 Train accuracy: 6.78460e-01 Validation accuracy: 5.10000e-01 Training loss 8.55222e-03 Validation loss 1.71719e-02 Time taken: 0.81 seconds 
+Epoch: 111/200 Train accuracy: 6.81800e-01 Validation accuracy: 5.04300e-01 Training loss 8.51237e-03 Validation loss 1.73295e-02 Time taken: 0.75 seconds 
+Epoch: 112/200 Train accuracy: 6.80660e-01 Validation accuracy: 5.06400e-01 Training loss 8.51530e-03 Validation loss 1.72167e-02 Time taken: 0.81 seconds 
+Epoch: 113/200 Train accuracy: 6.82820e-01 Validation accuracy: 5.09000e-01 Training loss 8.50928e-03 Validation loss 1.71721e-02 Time taken: 0.75 seconds 
+Epoch: 114/200 Train accuracy: 6.84960e-01 Validation accuracy: 5.03200e-01 Training loss 8.47326e-03 Validation loss 1.73005e-02 Time taken: 0.77 seconds 
+Epoch: 115/200 Train accuracy: 6.83080e-01 Validation accuracy: 5.01500e-01 Training loss 8.42971e-03 Validation loss 1.74924e-02 Time taken: 0.76 seconds 
+Epoch: 116/200 Train accuracy: 6.81260e-01 Validation accuracy: 5.09900e-01 Training loss 8.54767e-03 Validation loss 1.70956e-02 Time taken: 0.84 seconds 
+Epoch: 117/200 Train accuracy: 6.79060e-01 Validation accuracy: 5.07300e-01 Training loss 8.56045e-03 Validation loss 1.71788e-02 Time taken: 0.77 seconds 
+Epoch: 118/200 Train accuracy: 6.83420e-01 Validation accuracy: 5.06900e-01 Training loss 8.43070e-03 Validation loss 1.73286e-02 Time taken: 0.82 seconds 
+Epoch: 119/200 Train accuracy: 6.81500e-01 Validation accuracy: 5.04900e-01 Training loss 8.50981e-03 Validation loss 1.70823e-02 Time taken: 0.75 seconds 
+Epoch: 120/200 Train accuracy: 6.82380e-01 Validation accuracy: 5.06000e-01 Training loss 8.44454e-03 Validation loss 1.74494e-02 Time taken: 0.82 seconds 
+Epoch: 121/200 Train accuracy: 6.85220e-01 Validation accuracy: 5.09900e-01 Training loss 8.39531e-03 Validation loss 1.71602e-02 Time taken: 0.75 seconds 
+Epoch: 122/200 Train accuracy: 6.84400e-01 Validation accuracy: 5.06900e-01 Training loss 8.44821e-03 Validation loss 1.73214e-02 Time taken: 0.77 seconds 
+Epoch: 123/200 Train accuracy: 6.85520e-01 Validation accuracy: 4.99100e-01 Training loss 8.42725e-03 Validation loss 1.76330e-02 Time taken: 0.75 seconds 
+Epoch: 124/200 Train accuracy: 6.86160e-01 Validation accuracy: 5.01000e-01 Training loss 8.42784e-03 Validation loss 1.77946e-02 Time taken: 0.82 seconds 
+Epoch: 125/200 Train accuracy: 6.85560e-01 Validation accuracy: 5.06800e-01 Training loss 8.41698e-03 Validation loss 1.71761e-02 Time taken: 0.75 seconds 
+Epoch: 126/200 Train accuracy: 6.84800e-01 Validation accuracy: 5.05600e-01 Training loss 8.44636e-03 Validation loss 1.75464e-02 Time taken: 0.81 seconds 
+Epoch: 127/200 Train accuracy: 6.82400e-01 Validation accuracy: 4.99300e-01 Training loss 8.44533e-03 Validation loss 1.75643e-02 Time taken: 0.75 seconds 
+Epoch: 128/200 Train accuracy: 6.88600e-01 Validation accuracy: 5.08200e-01 Training loss 8.34620e-03 Validation loss 1.71462e-02 Time taken: 0.81 seconds 
+Epoch: 129/200 Train accuracy: 6.88500e-01 Validation accuracy: 4.94800e-01 Training loss 8.32098e-03 Validation loss 1.77853e-02 Time taken: 0.75 seconds 
+Epoch: 130/200 Train accuracy: 6.83540e-01 Validation accuracy: 5.03100e-01 Training loss 8.37652e-03 Validation loss 1.74648e-02 Time taken: 0.77 seconds 
+Epoch: 131/200 Train accuracy: 6.86120e-01 Validation accuracy: 5.03100e-01 Training loss 8.37917e-03 Validation loss 1.76435e-02 Time taken: 0.76 seconds 
+Epoch: 132/200 Train accuracy: 6.86620e-01 Validation accuracy: 5.09900e-01 Training loss 8.35646e-03 Validation loss 1.72257e-02 Time taken: 0.78 seconds 
+Epoch: 133/200 Train accuracy: 6.89280e-01 Validation accuracy: 4.95300e-01 Training loss 8.29740e-03 Validation loss 1.80313e-02 Time taken: 0.77 seconds 
+Epoch: 134/200 Train accuracy: 6.89040e-01 Validation accuracy: 5.06600e-01 Training loss 8.32219e-03 Validation loss 1.74164e-02 Time taken: 0.80 seconds 
+Epoch: 135/200 Train accuracy: 6.89020e-01 Validation accuracy: 5.01800e-01 Training loss 8.31787e-03 Validation loss 1.78107e-02 Time taken: 0.77 seconds 
+Epoch: 136/200 Train accuracy: 6.88080e-01 Validation accuracy: 5.05000e-01 Training loss 8.33601e-03 Validation loss 1.74732e-02 Time taken: 0.80 seconds 
+Epoch: 137/200 Train accuracy: 6.89420e-01 Validation accuracy: 4.86700e-01 Training loss 8.27794e-03 Validation loss 1.80444e-02 Time taken: 0.76 seconds 
+Epoch: 138/200 Train accuracy: 6.90320e-01 Validation accuracy: 4.99400e-01 Training loss 8.29250e-03 Validation loss 1.75430e-02 Time taken: 0.77 seconds 
+Epoch: 139/200 Train accuracy: 6.88100e-01 Validation accuracy: 5.07300e-01 Training loss 8.28901e-03 Validation loss 1.73593e-02 Time taken: 0.77 seconds 
+Epoch: 140/200 Train accuracy: 6.91440e-01 Validation accuracy: 4.98400e-01 Training loss 8.26403e-03 Validation loss 1.76965e-02 Time taken: 0.79 seconds 
+Epoch: 141/200 Train accuracy: 6.89660e-01 Validation accuracy: 5.08800e-01 Training loss 8.28054e-03 Validation loss 1.75435e-02 Time taken: 0.78 seconds 
+Epoch: 142/200 Train accuracy: 6.89160e-01 Validation accuracy: 5.08200e-01 Training loss 8.26497e-03 Validation loss 1.75113e-02 Time taken: 0.78 seconds 
+Epoch: 143/200 Train accuracy: 6.89600e-01 Validation accuracy: 5.01500e-01 Training loss 8.30303e-03 Validation loss 1.76012e-02 Time taken: 0.76 seconds 
+Epoch: 144/200 Train accuracy: 6.88980e-01 Validation accuracy: 5.08600e-01 Training loss 8.23294e-03 Validation loss 1.77014e-02 Time taken: 0.84 seconds 
+Epoch: 145/200 Train accuracy: 6.88500e-01 Validation accuracy: 5.06800e-01 Training loss 8.25415e-03 Validation loss 1.75261e-02 Time taken: 0.75 seconds 
+Epoch: 146/200 Train accuracy: 6.90820e-01 Validation accuracy: 5.14900e-01 Training loss 8.20770e-03 Validation loss 1.73809e-02 Time taken: 0.77 seconds 
+Epoch: 147/200 Train accuracy: 6.94460e-01 Validation accuracy: 5.07600e-01 Training loss 8.16404e-03 Validation loss 1.75691e-02 Time taken: 0.79 seconds 
+Epoch: 148/200 Train accuracy: 6.92480e-01 Validation accuracy: 5.04500e-01 Training loss 8.20090e-03 Validation loss 1.78289e-02 Time taken: 0.76 seconds 
+Epoch: 149/200 Train accuracy: 6.90600e-01 Validation accuracy: 5.08100e-01 Training loss 8.22329e-03 Validation loss 1.74539e-02 Time taken: 0.81 seconds 
+Epoch: 150/200 Train accuracy: 6.91920e-01 Validation accuracy: 5.02500e-01 Training loss 8.24778e-03 Validation loss 1.75890e-02 Time taken: 0.76 seconds 
+Epoch: 151/200 Train accuracy: 6.91020e-01 Validation accuracy: 5.02300e-01 Training loss 8.19349e-03 Validation loss 1.76464e-02 Time taken: 0.77 seconds 
+Epoch: 152/200 Train accuracy: 6.95060e-01 Validation accuracy: 5.06600e-01 Training loss 8.15526e-03 Validation loss 1.74771e-02 Time taken: 0.77 seconds 
+Epoch: 153/200 Train accuracy: 6.93280e-01 Validation accuracy: 5.02300e-01 Training loss 8.20853e-03 Validation loss 1.75962e-02 Time taken: 0.76 seconds 
+Epoch: 154/200 Train accuracy: 6.91360e-01 Validation accuracy: 5.08800e-01 Training loss 8.22206e-03 Validation loss 1.76331e-02 Time taken: 0.77 seconds 
+Epoch: 155/200 Train accuracy: 6.95440e-01 Validation accuracy: 5.08400e-01 Training loss 8.13207e-03 Validation loss 1.74997e-02 Time taken: 0.80 seconds 
+Epoch: 156/200 Train accuracy: 6.97320e-01 Validation accuracy: 4.99100e-01 Training loss 8.09051e-03 Validation loss 1.81343e-02 Time taken: 0.75 seconds 
+Epoch: 157/200 Train accuracy: 6.94600e-01 Validation accuracy: 5.09700e-01 Training loss 8.15473e-03 Validation loss 1.77063e-02 Time taken: 0.80 seconds 
+Epoch: 158/200 Train accuracy: 6.93840e-01 Validation accuracy: 4.98700e-01 Training loss 8.16372e-03 Validation loss 1.78422e-02 Time taken: 0.75 seconds 
+Epoch: 159/200 Train accuracy: 6.96100e-01 Validation accuracy: 5.06400e-01 Training loss 8.12073e-03 Validation loss 1.78566e-02 Time taken: 0.81 seconds 
+Epoch: 160/200 Train accuracy: 6.94120e-01 Validation accuracy: 5.06800e-01 Training loss 8.08663e-03 Validation loss 1.77181e-02 Time taken: 0.76 seconds 
+Epoch: 161/200 Train accuracy: 6.93580e-01 Validation accuracy: 5.02200e-01 Training loss 8.15037e-03 Validation loss 1.81207e-02 Time taken: 0.75 seconds 
+Epoch: 162/200 Train accuracy: 6.94500e-01 Validation accuracy: 5.09900e-01 Training loss 8.13434e-03 Validation loss 1.76148e-02 Time taken: 0.77 seconds 
+Epoch: 163/200 Train accuracy: 6.94840e-01 Validation accuracy: 5.08500e-01 Training loss 8.08057e-03 Validation loss 1.75071e-02 Time taken: 0.81 seconds 
+Epoch: 164/200 Train accuracy: 6.93860e-01 Validation accuracy: 5.00100e-01 Training loss 8.11596e-03 Validation loss 1.80303e-02 Time taken: 0.75 seconds 
+Epoch: 165/200 Train accuracy: 6.93140e-01 Validation accuracy: 5.06500e-01 Training loss 8.13075e-03 Validation loss 1.77432e-02 Time taken: 0.81 seconds 
+Epoch: 166/200 Train accuracy: 6.98680e-01 Validation accuracy: 5.03700e-01 Training loss 8.06941e-03 Validation loss 1.78978e-02 Time taken: 0.75 seconds 
+Epoch: 167/200 Train accuracy: 6.97820e-01 Validation accuracy: 5.04100e-01 Training loss 8.11034e-03 Validation loss 1.77986e-02 Time taken: 0.81 seconds 
+Epoch: 168/200 Train accuracy: 6.95260e-01 Validation accuracy: 5.03500e-01 Training loss 8.06109e-03 Validation loss 1.79096e-02 Time taken: 0.76 seconds 
+Epoch: 169/200 Train accuracy: 6.94860e-01 Validation accuracy: 5.02100e-01 Training loss 8.06905e-03 Validation loss 1.78829e-02 Time taken: 0.75 seconds 
+Epoch: 170/200 Train accuracy: 6.97200e-01 Validation accuracy: 4.96200e-01 Training loss 8.05434e-03 Validation loss 1.80848e-02 Time taken: 0.76 seconds 
+Epoch: 171/200 Train accuracy: 6.97080e-01 Validation accuracy: 5.09000e-01 Training loss 8.04008e-03 Validation loss 1.77370e-02 Time taken: 0.81 seconds 
+Epoch: 172/200 Train accuracy: 6.95680e-01 Validation accuracy: 5.03900e-01 Training loss 8.09195e-03 Validation loss 1.81487e-02 Time taken: 0.75 seconds 
+Epoch: 173/200 Train accuracy: 6.96840e-01 Validation accuracy: 5.05500e-01 Training loss 8.09422e-03 Validation loss 1.77793e-02 Time taken: 0.81 seconds 
+Epoch: 174/200 Train accuracy: 6.99820e-01 Validation accuracy: 4.98100e-01 Training loss 8.00488e-03 Validation loss 1.81396e-02 Time taken: 0.75 seconds 
+Epoch: 175/200 Train accuracy: 6.97000e-01 Validation accuracy: 5.01200e-01 Training loss 8.04983e-03 Validation loss 1.81137e-02 Time taken: 0.84 seconds 
+Epoch: 176/200 Train accuracy: 6.98140e-01 Validation accuracy: 5.02500e-01 Training loss 8.03363e-03 Validation loss 1.78004e-02 Time taken: 0.75 seconds 
+Epoch: 177/200 Train accuracy: 6.98160e-01 Validation accuracy: 5.07900e-01 Training loss 7.98457e-03 Validation loss 1.77264e-02 Time taken: 0.76 seconds 
+Epoch: 178/200 Train accuracy: 6.97700e-01 Validation accuracy: 5.07100e-01 Training loss 8.01886e-03 Validation loss 1.76393e-02 Time taken: 0.75 seconds 
+Epoch: 179/200 Train accuracy: 6.97180e-01 Validation accuracy: 5.10800e-01 Training loss 8.02670e-03 Validation loss 1.75156e-02 Time taken: 0.82 seconds 
+Epoch: 180/200 Train accuracy: 6.97660e-01 Validation accuracy: 5.01600e-01 Training loss 8.07120e-03 Validation loss 1.79986e-02 Time taken: 0.76 seconds 
+Epoch: 181/200 Train accuracy: 6.99700e-01 Validation accuracy: 4.99000e-01 Training loss 8.03292e-03 Validation loss 1.82287e-02 Time taken: 0.83 seconds 
+Epoch: 182/200 Train accuracy: 7.01860e-01 Validation accuracy: 5.14700e-01 Training loss 7.97030e-03 Validation loss 1.75580e-02 Time taken: 0.75 seconds 
+Epoch: 183/200 Train accuracy: 6.98640e-01 Validation accuracy: 5.03000e-01 Training loss 7.98951e-03 Validation loss 1.80357e-02 Time taken: 0.82 seconds 
+Epoch: 184/200 Train accuracy: 7.01300e-01 Validation accuracy: 5.09500e-01 Training loss 7.96304e-03 Validation loss 1.78022e-02 Time taken: 0.75 seconds 
+Epoch: 185/200 Train accuracy: 6.96900e-01 Validation accuracy: 5.04300e-01 Training loss 8.02378e-03 Validation loss 1.80201e-02 Time taken: 0.76 seconds 
+Epoch: 186/200 Train accuracy: 6.97080e-01 Validation accuracy: 5.05300e-01 Training loss 8.03904e-03 Validation loss 1.78913e-02 Time taken: 0.75 seconds 
+Epoch: 187/200 Train accuracy: 7.00480e-01 Validation accuracy: 4.97300e-01 Training loss 7.94857e-03 Validation loss 1.82433e-02 Time taken: 0.83 seconds 
+Epoch: 188/200 Train accuracy: 6.97360e-01 Validation accuracy: 5.08800e-01 Training loss 8.02695e-03 Validation loss 1.79770e-02 Time taken: 0.78 seconds 
+Epoch: 189/200 Train accuracy: 7.00440e-01 Validation accuracy: 5.09200e-01 Training loss 7.97276e-03 Validation loss 1.78801e-02 Time taken: 0.84 seconds 
+Epoch: 190/200 Train accuracy: 7.00560e-01 Validation accuracy: 4.97700e-01 Training loss 7.93744e-03 Validation loss 1.84270e-02 Time taken: 0.76 seconds 
+Epoch: 191/200 Train accuracy: 6.99180e-01 Validation accuracy: 4.99400e-01 Training loss 7.98307e-03 Validation loss 1.82312e-02 Time taken: 0.83 seconds 
+Epoch: 192/200 Train accuracy: 7.02700e-01 Validation accuracy: 5.08100e-01 Training loss 7.90391e-03 Validation loss 1.77581e-02 Time taken: 0.76 seconds 
+Epoch: 193/200 Train accuracy: 7.00280e-01 Validation accuracy: 5.01000e-01 Training loss 7.89653e-03 Validation loss 1.83043e-02 Time taken: 0.77 seconds 
+Epoch: 194/200 Train accuracy: 6.98840e-01 Validation accuracy: 4.97500e-01 Training loss 7.96670e-03 Validation loss 1.85119e-02 Time taken: 0.75 seconds 
+Epoch: 195/200 Train accuracy: 7.03880e-01 Validation accuracy: 5.08700e-01 Training loss 7.87815e-03 Validation loss 1.77233e-02 Time taken: 0.82 seconds 
+Epoch: 196/200 Train accuracy: 7.01960e-01 Validation accuracy: 5.07300e-01 Training loss 7.92047e-03 Validation loss 1.79589e-02 Time taken: 0.75 seconds 
+Epoch: 197/200 Train accuracy: 7.00860e-01 Validation accuracy: 4.99900e-01 Training loss 7.94744e-03 Validation loss 1.82598e-02 Time taken: 0.82 seconds 
+Epoch: 198/200 Train accuracy: 6.99100e-01 Validation accuracy: 5.06700e-01 Training loss 7.90048e-03 Validation loss 1.80973e-02 Time taken: 0.75 seconds 
+Epoch: 199/200 Train accuracy: 7.01920e-01 Validation accuracy: 5.09900e-01 Training loss 7.93233e-03 Validation loss 1.79887e-02 Time taken: 0.82 seconds 
+Epoch: 200/200 Train accuracy: 7.03440e-01 Validation accuracy: 5.01400e-01 Training loss 7.87578e-03 Validation loss 1.80438e-02 Time taken: 0.75 seconds 
+Total time taken 0:03:10.639267
+Cleaning up intermediate feature (.pt) files
+Done
+
+
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified

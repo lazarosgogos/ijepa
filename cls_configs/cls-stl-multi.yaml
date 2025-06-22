@@ -3,13 +3,13 @@ data:
   num_classes: 10
   train_dataset_path: datasets/stl10/train_images
   val_dataset_path: datasets/stl10/val_images
-  model_name: vit_base
+  model_name: vit_small # vit_base!
   batch_size: 128
   patch_size: 15
   probe_checkpoints: true
   probe_prefix: jepa-stl
 logging:
-  save_path: classifiers/jepa-stl-l2-seed2-classifier-pretrained-vitb
+  save_path: classifiers/jepa-stl-l2-classifier-pretrained-vits
   checkpoint_freq: 1000
 optimization:
   lr: 0.001
@@ -20,5 +20,5 @@ meta:
   device: cuda:0
 message: "Multi classification back to back"
 multi_probing:
-  - logs_STL_ep500/stl-l2-seed0/
-  - logs_STL_ep500/stl-l2-pkt-chunks-seed0/
+  - logs_STL_vits/stl-l2-pkt-chunks-seed1/  # cuda:0
+  # - logs_STL_vits/stl-l2-seed1/           # cuda:1

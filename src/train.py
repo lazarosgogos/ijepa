@@ -66,7 +66,7 @@ log_freq = 10
 
 # rng = np.random.Generator(np.random.PCG64())
 
-_GLOBAL_SEED = 0 # 
+_GLOBAL_SEED = 2 # 
 # seed is logged later on
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)

@@ -13,13 +13,14 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_IN100/in100-vitb16-l2-pkt-chunks-ep300-bs448-w40-nodiv
+  folder: logs_IN100/in100-vitb16-l2-pkt-chunks-ep300-bs448-w40-nodiv-seed2
   write_tag: jepa-in100
   checkpoint_freq: 150 # new addition
   logging_frequency: 3 # defaults to 3, for more concise logs
-  output_file: oin100-pretrain-vitb-l2-pkt-chunks-ep300-bs448-seed0-nodiv.out
+  output_file: oin100-pretrain-vitb-l2-pkt-chunks-ep300-bs448-seed2-nodiv.out
   train_suffix: train
   val_suffix: val
+  knn_every: 20
 mask:
   allow_overlap: false
   aspect_ratio:
@@ -67,4 +68,4 @@ pkt:
   T_max: 200
   final_alpha: 0.
   chunks_step: 256
-message: "ViT-B/16 L2 on IMAGENET100 seed 0 batch size 448 no div on PKT calculation"
+message: "ViT-B/16 L2 on IMAGENET100 seed 2 batch size 448 no div on PKT calculation"

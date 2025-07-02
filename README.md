@@ -47,9 +47,9 @@ The proposed approach consistently outperforms the original I-JEPA in downstream
 
 <table>
   <tr>
-    <th rowspan="2">Dataset</th>
-    <th colspan="2">KNN</th>
-    <th colspan="2">Linear</th>
+    <th rowspan="2" style="text-align:center;">Dataset</th>
+    <th colspan="2" style="text-align:center;">KNN</th>
+    <th colspan="2" style="text-align:center;">Linear Probing</th>
   </tr>
   <tr>
     <th>I-JEPA</th>
@@ -80,7 +80,7 @@ The proposed approach consistently outperforms the original I-JEPA in downstream
   </tr>
 </table>
 
-## Pretrained models for the original I-JEPA
+<!-- ## Pretrained models for the original I-JEPA
 
 <table>
   <tr>
@@ -131,7 +131,7 @@ The proposed approach consistently outperforms the original I-JEPA in downstream
     <td><a href="https://dl.fbaipublicfiles.com/ijepa/IN22K-vit.g.16-logs-rank.0.csv">logs</a></td>
     <td><a href="https://github.com/facebookresearch/ijepa/blob/main/configs/in22k_vitg16_ep44.yaml">configs</a></td>
   </tr>
-</table>
+</table> -->
 
 ## Code Structure
 
@@ -142,6 +142,8 @@ The proposed approach consistently outperforms the original I-JEPA in downstream
 │   ├── train.py              #   the I-JEPA training loop
 │   ├── helper.py             #   helper functions for init of models & opt/loading checkpoint
 │   ├── transforms.py         #   pre-train data transforms
+│   ├── PKT.py                #   implementation for matching probability distributions between representations
+│   ├── which_loss.py         #   various loss function combinations picked by config file
 │   ├── datasets              #   datasets, data loaders, ...
 │   ├── models                #   model definitions
 │   ├── masks                 #   mask collators, masking utilities, ...

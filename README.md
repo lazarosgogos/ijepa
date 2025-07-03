@@ -5,7 +5,7 @@ Official PyTorch codebase for the Probabilistic I-JEPA (the **Probabilistic Imag
 <!-- [\[arXiv\]](https://arxiv.org/pdf/2301.08243.pdf) --> 
 
 ## Method
-I-JEPA is a method for self-supervised learning. At a high level, I-JEPA predicts the representations of part of an image from the representations of other parts of the same image. We propose a probabilistic formulation, namely the Probabilistic I-JEPA, which involves matching the conditional probability distributions between the target and the predicted representations.
+I-JEPA is a method for self-supervised learning. At a high level, I-JEPA predicts the representations of part of an image from the representations of other parts of the same image. We propose a probabilistic formulation, namely the **Probabilistic I-JEPA**, which involves matching the conditional probability distributions between the target and the predicted representations.
 Notably, this approach learns semantic image features:
 1. without relying on pre-specified invariances to hand-crafted data transformations, which tend to be biased for particular downstream tasks,
 2. without having the model fill in pixel-level details, which tend to result in learning less semantically meaningful representations, 
@@ -17,7 +17,7 @@ Notably, this approach learns semantic image features:
 ### Probabilistic I-JEPA architecture
 ![pijepa](./src/pijepa.png)
 
-## Visualizations
+<!-- ## Visualizations
 
 As opposed to generative methods that have a pixel decoder, I-JEPA has a predictor that makes predictions in latent space.
 The predictor in I-JEPA can be seen as a primitive (and restricted) world-model that is able to model spatial uncertainty in a static image from a partially observable context.
@@ -29,19 +29,19 @@ The model correctly captures positional uncertainty and produces high-level obje
 ![ijepa-predictor-sketch](https://github.com/facebookresearch/ijepa/assets/7530871/9b66e461-fc8b-4b12-9f06-63ec4dfc1452)
 <sub>
 Caption: Illustrating how the predictor learns to model the semantics of the world. For each image, the portion outside of the blue box is encoded and given to the predictor as context. The predictor outputs a representation for what it expects to be in the region within the blue box. To visualize the prediction, we train a generative model that produces a sketch of the contents represented by the predictor output, and we show a sample output within the blue box. The predictor recognizes the semantics of what parts should be filled in (the top of the dog’s head, the bird’s leg, the wolf’s legs, the other side of the building).
-</sub>
+</sub> -->
 
-## Evaluations
+## Probabilistic I-JEPA evaluations
 
-I-JEPA pretraining is also computationally efficient.
+Probabilistic I-JEPA pretraining is also computationally efficient, with no impact in training time (compared to I-JEPA training times).
 It does not involve any overhead associated with applying more computationally intensive data augmentations to produce multiple views.
 Only one view of the image needs to be processed by the target encoder, and only the context blocks need to be processed by the context encoder.
-Empirically, I-JEPA learns strong off-the-shelf semantic representations without the use of hand-crafted view augmentations.
+Empirically, the Probabilistic I-JEPA learns stronger off-the-shelf semantic representations by leveraging the conditional probability distributions without the use of hand-crafted view augmentations.
 
-![1percenteval](https://github.com/facebookresearch/ijepa/assets/7530871/e6e5291f-ca51-43a4-a6cf-069811094ece)
-![lineareval](https://github.com/facebookresearch/ijepa/assets/7530871/d8cffa73-5350-444e-987a-7e131a86d767)
+<!-- ![1percenteval](https://github.com/facebookresearch/ijepa/assets/7530871/e6e5291f-ca51-43a4-a6cf-069811094ece)
+![lineareval](https://github.com/facebookresearch/ijepa/assets/7530871/d8cffa73-5350-444e-987a-7e131a86d767) -->
 
-### I-JEPA vs Probabilistic I-JEPA 
+<!-- ### I-JEPA vs Probabilistic I-JEPA  -->
 
 The proposed approach consistently outperforms the original I-JEPA in downstream classification tasks, as measured by both linear probing and k-NN evaluation. This is done with a negligent impact in the pretraining time needed.
 
@@ -184,8 +184,6 @@ python main_distributed.py \
 ### Using a trained encoder
 
 In order to use an encoder, load its weights into memory and extract features from images. Make sure the images are of the same size with those the encoder was trained on. Then these features can be used however one wishes.
-
-
 
 ### Requirements
 * Python 3.8 (or newer)

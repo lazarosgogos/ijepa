@@ -9,9 +9,9 @@
 #SBATCH --mail-user=lazarosg@csd.auth.gr
 #SBATCH -p ampere
 #SBATCH --gres=gpu:1
-#SBATCH --dependency=afterok:1932831
+#SBATCH --dependency=afterok:2298703
 
-module load gcc miniconda3 cuda
+module load gcc/13.2.0  miniconda3 cuda
 source $CONDA_PROFILE/conda.sh
 conda activate ijepa
 export PATH=$CONDA_PREFIX/bin:$PATH

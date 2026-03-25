@@ -66,7 +66,7 @@ log_freq = 10
 
 # rng = np.random.Generator(np.random.PCG64())
 
-_GLOBAL_SEED = 2 # 
+_GLOBAL_SEED = 0 # 
 # seed is logged later on
 np.random.seed(_GLOBAL_SEED)
 torch.manual_seed(_GLOBAL_SEED)
@@ -189,11 +189,13 @@ def main(args, resume_preempt=False):
     ref_alpha = args['pkt'].get('ref_alpha', 1.)
     T_max_alpha = args['pkt'].get('T_max', 200)
     final_alpha = args['pkt'].get('final_alpha', 0.)
-    pkt_scale = args['pkt'].get('pkt_scale', 1.0)
     """
+    pkt_scale = args['pkt'].get('pkt_scale', 1.0)
+
     chunks_step = args['pkt'].get('chunks_step', 256)
 
     # force_cudnn_initialization()
+    
     writer_dest = os.path.join(folder, f'tensorboard-{tag}')
     dump = os.path.join(folder, 'params-ijepa.yaml')
     with open(dump, 'w') as f:
@@ -470,6 +472,8 @@ def main(args, resume_preempt=False):
                     z = forward_context()
                     # if not use_pkt_scheduler:
                     loss = loss_fn(z, h, chunks_step=chunks_step) # pkt scale default to 1
+                    loss = loss_fn(z, h, pkt_scale=pkt_scale, chunks_step=chunks_step)
+
                     
                     # loss = loss / accumulate_grads_every
                     # else:

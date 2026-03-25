@@ -11,7 +11,7 @@
 #SBATCH --gres=gpu:4
 #SBATCH --qos=ampere-extd
 
-module load gcc miniconda3 cuda
+module load gcc/13.2.0 miniconda3 cuda
 source $CONDA_PROFILE/conda.sh
 conda activate ijepa
 export PATH=$CONDA_PREFIX/bin:$PATH
@@ -19,5 +19,5 @@ export PATH=$CONDA_PREFIX/bin:$PATH
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 python main.py  \
-	--fname configs/in100_vitb16_ep300_bs448.yaml \
+	--fname configs/in100_vitb16_ep300_bs448_scale10e-1.yaml \
 	--devices cuda:0 cuda:1 cuda:2 cuda:3

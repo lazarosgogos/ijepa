@@ -75,44 +75,50 @@ torch.backends.cudnn.benchmark = True
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
 
-# Add this function after the imports but before main()
-def evaluate_knn(encoder, train_loader, test_loader, device='cuda'):
-    """
-    Perform KNN evaluation on model representations
-    """
+def _extract_features(encoder, loader, device):
+    n_samples = len(loader.dataset)
+
     encoder.eval()
-    train_features, train_labels = [], []
-    test_features, test_labels = [], []
-    
-    with torch.no_grad():
-        for images, labels in train_loader:
-            features = encoder(images.to(device)).mean(dim=1)  # Get embeddings
-            train_features.append(features.cpu().numpy())
-            train_labels.append(np.array(labels))
-            
-        for images, labels in test_loader:
-            features = encoder(images.to(device)).mean(dim=1)
-            test_features.append(features.cpu().numpy())
-            test_labels.append(np.array(labels))
-    
-    train_features = np.concatenate(train_features)
-    train_labels = np.concatenate(train_labels).astype(int)
-    test_features = np.concatenate(test_features)
-    test_labels = np.concatenate(test_labels).astype(int)
+    features_buf = None
+    labels_buf = np.empty(n_samples, dtype=np.int64)
+
+    offset = 0
+    with torch.inference_mode():
+        for images, labels in loader:
+            images = images.to(device, non_blocking=True)
+            feats = encoder(images).mean(dim=1)   # [B, D]
+            feats_np = feats.cpu().numpy()
+
+            if features_buf is None:
+                features_buf = np.empty((n_samples, feats_np.shape[1]), dtype=feats_np.dtype)
+
+            bsz = feats_np.shape[0]
+            features_buf[offset:offset + bsz] = feats_np
+            labels_buf[offset:offset + bsz] = labels.numpy() if torch.is_tensor(labels) else np.asarray(labels, dtype=np.int64)
+            offset += bsz
+
+    if offset != n_samples:
+        raise ValueError(f"Expected {n_samples} samples, got {offset}.")
+
+    return features_buf, labels_buf
 
 
-    # KNN classifier
-    classifier = KNeighborsClassifier(n_neighbors=5)
+def evaluate_knn(encoder, train_loader, test_loader, device="cuda"):
+    """
+    Perform KNN evaluation on model representations.
+    """
+    encoder = encoder.to(device)
+
+    train_features, train_labels = _extract_features(encoder, train_loader, device)
+    test_features, test_labels = _extract_features(encoder, test_loader, device)
+
+    classifier = KNeighborsClassifier(n_neighbors=5, n_jobs=-1)
     classifier.fit(train_features, train_labels)
 
-    # accuracy = classifier.score(test_features, test_labels)
-    # Calculate train and test accuracy
     train_accuracy = classifier.score(train_features, train_labels)
     test_accuracy = classifier.score(test_features, test_labels)
-    
+
     return train_accuracy, test_accuracy
-    
-    # return accuracy
 
 def main(args, resume_preempt=False):
 
@@ -560,7 +566,7 @@ def main(args, resume_preempt=False):
         logger.info('avg. loss %.8e' % loss_meter.avg)
         # logger.info('avg. loss L2: %e avg. loss PKT %e avg. cross sim matrix mse; %e ' % (loss_l2_meter.avg, loss_pkt_meter.avg, mse_meter.avg))
         save_checkpoint(epoch+1)
-        if (epoch + 1) % knn_every == 0 and rank == 0:  # Only evaluate KNN on main process
+        if (epoch + 1) % knn_every == 0 and rank == 0 and knn_every != -1:  # Only evaluate KNN on main process
             knn_acc_train, knn_acc_test = evaluate_knn(encoder, train_loader, test_loader, device)
             logger.info(f'\tEpoch {epoch + 1}, KNN accuracy train: {knn_acc_train:.5e}, KNN accuracy train: {knn_acc_test:.5e}')
             knn_csv_logger.log(epoch+1, knn_acc_train, knn_acc_test)

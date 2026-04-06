@@ -150,7 +150,7 @@ def L2_PKT_chunks(z,h, **kwargs):
     loss_pkt += PKTClass.cosine_similarity_loss(z_[i:i+chunks_step],h_[i:i+chunks_step])  
     # loss_L2 += L2(z_[i:i+step],h_[i:i+step])
 
-  return (loss_pkt*pkt_scale + loss_L2)/(vsize/chunks_step)
+  return loss_L2 + (loss_pkt*pkt_scale)/(vsize/chunks_step)
 
 def PKT_chunks(z,h, **kwargs):
   """ Scale PKT after performing it in chunks of the patches """

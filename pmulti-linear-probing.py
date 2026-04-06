@@ -119,6 +119,8 @@ class LinearProbe():
         self.patch_size = args['data']['patch_size']
         self.probe_checkpoints = args['data'].get('probe_checkpoints', False) # default to False
         self.probe_prefix = args['data'].get('probe_prefix', None) # default to None
+        self.num_workers = args['data'].get('num_workers', 1) # default to 1
+        self.pin_mem = args['data'].get('pin_mem', False) # defaults to false
 
 
         # -- LOGGING
@@ -188,8 +190,8 @@ class LinearProbe():
         # feature_extractor = FeatureExtractor(self.encoder)
         extraction_time_start = time.perf_counter()
         logger.info('Extracting features and saving them in memory..')
-        self.train_loader_images = DataLoader(self.train_dataset_images, batch_size=self.batch_size)
-        self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size)
+        self.train_loader_images = DataLoader(self.train_dataset_images, batch_size=self.batch_size, num_workers=self.num_workers, pin_memory=self.pin_mem, prefetch_factor=4, persistent_workers=True)
+        self.val_loader_images = DataLoader(self.val_dataset_images, batch_size=self.batch_size, num_workers=self.num_workers, pin_memory=self.pin_mem, prefetch_factor=4, persistent_workers=True)
 
         """
         self.save_features(self.encoder, self.train_loader_images, self.train_features_file_path, self.device)
@@ -204,12 +206,12 @@ class LinearProbe():
         """
         self.logger = logger
         self.logger.info('Extracting features...')
-        train_features, train_labels = self.extract_features(self.encoder, self.train_loader_images, self.device)
-        val_features, val_labels = self.extract_features(self.encoder, self.val_loader_images, self.device)
+        self.train_features, self.train_labels = self.extract_features(self.encoder, self.train_loader_images, self.device)
+        self.val_features, self.val_labels = self.extract_features(self.encoder, self.val_loader_images, self.device)
         self.logger.info(f'Time taken to extract features: {time.perf_counter() - extraction_time_start}')
         # Create datasets directly from memory
-        self.train_dataset_features = torch.utils.data.TensorDataset(train_features, train_labels)
-        self.val_dataset_features = torch.utils.data.TensorDataset(val_features, val_labels)
+        self.train_dataset_features = torch.utils.data.TensorDataset(self.train_features, self.train_labels)
+        self.val_dataset_features = torch.utils.data.TensorDataset(self.val_features, self.val_labels)
 
         # Create data loaders
         self.train_loader_features = DataLoader(self.train_dataset_features, batch_size=self.batch_size, shuffle=True, pin_memory=True)
@@ -238,34 +240,83 @@ class LinearProbe():
         
         return torch.cat(all_features, dim=0), torch.cat(all_labels, dim=0)
     """
+    # The following code runs but is inefficient for IN-1K
+    # def extract_features(self, encoder, loader, device='cuda'):
+    #     # Count the total number of batches first
+    #     total_samples = len(loader.dataset)
+        
+    #     # Allocate memory only once!
+    #     # Pre-allocate tensors with known shape
+    #     feature_dim = VIT_EMBED_DIMS[self.model_name] 
+    #     all_features = torch.zeros(total_samples, feature_dim, device='cpu')
+    #     all_labels = torch.zeros(total_samples, dtype=torch.long, device='cpu')
+        
+    #     with torch.no_grad():
+    #         encoder.eval()
+    #         start_idx = 0
+    #         for inputs, labels in loader:
+    #             inputs, labels = inputs.to(device), labels.to(device)
+    #             batch_size = inputs.size(0)
+                
+    #             # Extract features directly to pre-allocated tensor
+    #             output = encoder(inputs)
+    #             output = torch.mean(output, dim=1, dtype=output.dtype)
+                
+    #             # Copy to pre-allocated tensor
+    #             all_features[start_idx:start_idx+batch_size] = output.cpu()
+    #             all_labels[start_idx:start_idx+batch_size] = labels.cpu()
+                
+    #             start_idx += batch_size
+        
+    #     return all_features, all_labels
+
     def extract_features(self, encoder, loader, device='cuda'):
-        # Count the total number of batches first
         total_samples = len(loader.dataset)
-        
-        # Allocate memory only once!
-        # Pre-allocate tensors with known shape
-        feature_dim = VIT_EMBED_DIMS[self.model_name] 
-        all_features = torch.zeros(total_samples, feature_dim, device='cpu')
-        all_labels = torch.zeros(total_samples, dtype=torch.long, device='cpu')
-        
-        with torch.no_grad():
-            encoder.eval()
-            start_idx = 0
+        feature_dim = VIT_EMBED_DIMS[self.model_name]
+
+        # Store directly on GPU (use FP16 to reduce memory/bandwidth)
+        all_features = torch.empty(
+            total_samples, feature_dim,
+            device=device, dtype=torch.float32
+        )
+        all_labels = torch.empty(
+            total_samples,
+            device=device, dtype=torch.long
+        )
+
+        encoder.eval()
+        start_idx = 0
+
+        with torch.no_grad(): #, torch.cuda.amp.autocast():
             for inputs, labels in loader:
-                inputs, labels = inputs.to(device), labels.to(device)
-                batch_size = inputs.size(0)
-                
-                # Extract features directly to pre-allocated tensor
+                # Non-blocking transfer from CPU → GPU
+                inputs = inputs.to(device, non_blocking=True)
+                labels = labels.to(device, non_blocking=True)
+
+                # Forward pass
                 output = encoder(inputs)
+
+                # Use CLS token (faster than mean pooling for ViT)
                 output = torch.mean(output, dim=1, dtype=output.dtype)
-                
-                # Copy to pre-allocated tensor
-                all_features[start_idx:start_idx+batch_size] = output.cpu()
-                all_labels[start_idx:start_idx+batch_size] = labels.cpu()
-                
+
+                batch_size = inputs.size(0)
+
+                # Direct write (no CPU round-trip)
+                all_features[start_idx:start_idx + batch_size] = output
+                all_labels[start_idx:start_idx + batch_size] = labels
+
                 start_idx += batch_size
-        
+
         return all_features, all_labels
+    def iterate_batches(self, features, labels, batch_size, shuffle=True):
+        if shuffle:
+            idx = torch.randperm(features.size(0), device=features.device)
+        else:
+            idx = torch.arange(features.size(0), device=features.device)
+
+        for i in range(0, features.size(0), batch_size):
+            batch_idx = idx[i:i + batch_size]
+            yield features[batch_idx], labels[batch_idx]
     def save_checkpoint(self, epoch):
         '''Save a checkpoint of a given model & an optimizer. 
         Every `checkpoint_freq` epochs save the model in a different file as well for post-use'''
@@ -314,7 +365,9 @@ class LinearProbe():
             running_loss = 0.0
             train_correct = 0
             total_train = 0
-            for inputs, labels in self.train_loader_features:
+            for inputs, labels in self.iterate_batches(self.train_features, self.train_labels, 
+                                                       self.batch_size, shuffle=True):
+            # for inputs, labels in self.train_loader_features:
                 # send data to appropriate device
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
                 
@@ -339,7 +392,9 @@ class LinearProbe():
             total_val = 0
             val_running_loss = 0.0
             with torch.no_grad():
-                for inputs, labels in self.val_loader_features:
+                for inputs, labels in self.iterate_batches(self.val_features, self.val_labels, 
+                                                       self.batch_size, shuffle=False):
+                # for inputs, labels in self.val_loader_features:
                     inputs, labels = inputs.to(self.device),\
                                         labels.to(self.device)
                     outputs = self.model(inputs)

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#SBATCH -J PIJEPA
+#SBATCH -t 4-00:00:00
+#SBATCH --mem=128G
+#SBATCH -c 10
+#SBATCH -n 1
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=lazarosg@csd.auth.gr
+#SBATCH -p h100
+#SBATCH --gres=gpu:4
+#SBATCH --qos=ampere-extd
+
+# module load gcc/13.2.0 miniconda3 cuda
+module load gcc/14.2.0 python/3.14.0 py-pip/25.1.1-wzrtv4o
+
+# source $CONDA_PROFILE/conda.sh
+# conda activate ijepa
+# export PATH=$CONDA_PREFIX/bin:$PATH
+
+# export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+python main.py  \
+	--fname configs/in100_vitb16_ep300_bs448_scale10e-1.yaml \
+	--devices cuda:0 cuda:1 cuda:2 cuda:3

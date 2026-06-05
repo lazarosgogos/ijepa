@@ -30,6 +30,8 @@ import re
 import copy
 import gc
 
+from src.datasets.imagenet1k import ImageNet
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '--fname', type=str,
@@ -182,7 +184,17 @@ class LinearProbe():
         ])
 
         self.train_dataset_images = ImageFolder(root=self.train_dataset_path, transform=self.transform)
-        self.val_dataset_images = ImageFolder(root=self.val_dataset_path, transform=self.transform)
+        # self.val_dataset_images = ImageFolder(root=self.val_dataset_path, transform=self.transform)
+        self.val_dataset_images = ImageNet(
+            root=self.val_dataset_path,
+            image_folder='',              # important
+            transform=self.transform,
+            train=False,
+            copy_data=False,
+            val_suffix='',
+            val_label_csv=args['data']['val_label_csv'],
+            train_dir_override=self.train_dataset_path,
+        )
         # Replace the current feature extraction and loading logic in the LinearProbe.__init__ with:
 
         

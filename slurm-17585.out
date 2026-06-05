@@ -1,0 +1,26 @@
+INFO:root:called-params cls_configs/cls-in1k-multi.yaml
+INFO:root:loaded params....
+{   'data': {   'batch_size': 1024,
+                'crop_size': 224,
+                'model_name': 'vit_base',
+                'num_classes': 1000,
+                'num_workers': 16,
+                'patch_size': 16,
+                'pin_mem': True,
+                'probe_checkpoints': True,
+                'probe_prefix': 'jepa-in1k',
+                'train_dataset_path': 'datasets/imagenet/ILSVRC/Data/CLS-LOC/train',
+                'val_dataset_path': 'datasets/imagenet/ILSVRC/Data/CLS-LOC/val',
+                'val_label_csv': '/home/lazarosg/ijepa/datasets/imagenet/LOC_val_solution.csv'},
+    'logging': {   'checkpoint_freq': 1000,
+                   'eval_output': 'ocls-jepa-in1k-l2-ep100-seed0.out',
+                   'log_dir': 'logs_IN1K/in1k-vitb16-l2-ep300-bs256-google',
+                   'log_file': 'stats-in1k-l2-ep100-seed0.csv',
+                   'save_path': 'classifiers/jepa-stl-l2-ep300-seed0-classifier-pretrained-vitb'},
+    'meta': {'device': 'cuda:0'},
+    'multi_probing': ['logs_IN1K/in1k-vitb16-l2-ep300-bs256-google'],
+    'optimization': {   'epochs': 200,
+                        'lr': 0.001,
+                        'use_last_n_blocks': 1,
+                        'use_normalization': False}}
+INFO:root:Time taken to complete whole task: 0.02572751697152853

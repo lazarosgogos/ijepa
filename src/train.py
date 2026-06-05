@@ -153,6 +153,7 @@ def main(args, resume_preempt=False):
     image_folder = args['data']['image_folder']
     crop_size = args['data']['crop_size']
     crop_scale = args['data']['crop_scale']
+    val_label_csv = args['data'].get('val_label_csv', 'LOC_val_solution.csv')
     # --
 
     # -- MASK
@@ -228,6 +229,7 @@ def main(args, resume_preempt=False):
     latest_path = os.path.join(folder, f'{tag}-latest.pth.tar')
     output_file = os.path.join(folder, output_file)
     logger.addHandler(logging.FileHandler(output_file)) # add auto output ;)
+    # val_label_csv = os.path.join(root_path, val_label_csv)
     load_path = None
     if load_model:
         load_path = os.path.join(folder, r_file) if r_file is not None else latest_path
@@ -331,7 +333,8 @@ def main(args, resume_preempt=False):
         copy_data=copy_data,
         shuffle=False,
         train_suffix=train_suffix,
-        val_suffix=val_suffix, )
+        val_suffix=val_suffix, 
+        val_label_csv=val_label_csv)
     ipe = len(unsupervised_loader) # iterations per epoch
 
     # -- init optimizer and scheduler

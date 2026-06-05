@@ -19,5 +19,5 @@ export PATH=$CONDA_PREFIX/bin:$PATH
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 python main.py  \
-	--fname configs/in100_vitb16_ep300_bs448_scale10e1_pkt.yaml \
+	--fname configs/in1k_vitb16_ep300-pkt.yaml \
 	--devices cuda:0 cuda:1 cuda:2 cuda:3

@@ -1,0 +1,248 @@
+INFO:root:called-params configs/in1k_vitb16_ep300.yaml
+INFO:root:loaded params...
+{   'data': {   'batch_size': 256,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 224,
+                'image_folder': 'imagenet',
+                'num_workers': 10,
+                'pin_mem': True,
+                'root_path': 'datasets/',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 30,
+                   'folder': 'logs_IN1K/in1k-vitb16-l2-ep300-bs256',
+                   'knn_every': -1,
+                   'logging_frequency': 3,
+                   'output_file': 'oin1k-pretrain-vitb-l2-ep300-bs256.out',
+                   'train_suffix': 'train',
+                   'val_suffix': 'val',
+                   'write_tag': 'jepa-in1k'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 10,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 16,
+                'pred_mask_scale': [0.15, 0.2]},
+    'message': 'ViT-B/16 L2+PKT on Imagenet1K seed 0 batch size 256',
+    'meta': {   'copy_data': False,
+                'load_checkpoint': False,
+                'model_name': 'vit_base',
+                'pred_depth': 6,
+                'pred_emb_dim': 384,
+                'read_checkpoint': None,
+                'use_bfloat16': True},
+    'optimization': {   'accumulate_grads_every': 1,
+                        'ema': [0.996, 1.0],
+                        'epochs': 300,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'L2',
+                        'lr': 0.001,
+                        'pkt_scale': 1.0,
+                        'start_lr': 0.0002,
+                        'variance_weight': 0.0,
+                        'warmup': 40,
+                        'weight_decay': 0.04},
+    'pkt': {   'T_max': 200,
+               'chunks_step': 256,
+               'final_alpha': 0.0,
+               'ref_alpha': 1.0,
+               'start_alpha': 1.0,
+               'use_pkt_scheduler': False,
+               'warmup_steps_alpha': 100}}
+CRITICAL:root:PRETRAINING
+{   'data': {   'batch_size': 256,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 224,
+                'image_folder': 'imagenet',
+                'num_workers': 10,
+                'pin_mem': True,
+                'root_path': 'datasets/',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 30,
+                   'folder': 'logs_IN1K/in1k-vitb16-l2-ep300-bs256',
+                   'knn_every': -1,
+                   'logging_frequency': 3,
+                   'output_file': 'oin1k-pretrain-vitb-l2-ep300-bs256.out',
+                   'train_suffix': 'train',
+                   'val_suffix': 'val',
+                   'write_tag': 'jepa-in1k'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 10,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 16,
+                'pred_mask_scale': [0.15, 0.2]},
+    'message': 'ViT-B/16 L2+PKT on Imagenet1K seed 0 batch size 256',
+    'meta': {   'copy_data': False,
+                'load_checkpoint': False,
+                'model_name': 'vit_base',
+                'pred_depth': 6,
+                'pred_emb_dim': 384,
+                'read_checkpoint': None,
+                'use_bfloat16': True},
+    'optimization': {   'accumulate_grads_every': 1,
+                        'ema': [0.996, 1.0],
+                        'epochs': 300,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'L2',
+                        'lr': 0.001,
+                        'pkt_scale': 1.0,
+                        'start_lr': 0.0002,
+                        'variance_weight': 0.0,
+                        'warmup': 40,
+                        'weight_decay': 0.04},
+    'pkt': {   'T_max': 200,
+               'chunks_step': 256,
+               'final_alpha': 0.0,
+               'ref_alpha': 1.0,
+               'start_alpha': 1.0,
+               'use_pkt_scheduler': False,
+               'warmup_steps_alpha': 100}}
+INFO:root:Running... (rank: 0/2)
+CRITICAL:root:PRETRAINING
+INFO:root:Initialized (rank/world-size) 0/2
+INFO:root:train.py: _GLOBAL_SEED=0
+INFO:root:VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(16, 16), stride=(16, 16))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+INFO:root:making imagenet data transforms
+INFO:root:data-path datasets/imagenet/train/
+Process Process-1:
+Traceback (most recent call last):
+  File "/apps/nefeli/software-stack/site/linux-x86_64/gcc-14.2.0/python-3.14.0-c3klipsvd65vfrugs22q5xuqnuppvsi2/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/apps/nefeli/software-stack/site/linux-x86_64/gcc-14.2.0/python-3.14.0-c3klipsvd65vfrugs22q5xuqnuppvsi2/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lazarosg/ijepa/main.py", line 101, in process_main
+    app_main(args=params)
+    ~~~~~~~~^^^^^^^^^^^^^
+  File "/home/lazarosg/ijepa/src/train.py", line 291, in main
+    _, unsupervised_loader, unsupervised_sampler = make_imagenet1k(
+                                                   ~~~~~~~~~~~~~~~^
+            transform=transform,
+            ^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+            drop_last=True,
+            ^^^^^^^^^^^^^^^
+            shuffle=True)
+            ^^^^^^^^^^^^^
+  File "/home/lazarosg/ijepa/src/datasets/imagenet1k.py", line 207, in make_imagenet1k
+    dataset = ImageNet(
+        root=root_path,
+    ...<4 lines>...
+        index_targets=False
+    )
+  File "/home/lazarosg/ijepa/src/datasets/imagenet1k.py", line 76, in __init__
+    dataset = torchvision.datasets.ImageFolder(
+        root=data_path,
+        transform=transform
+    )
+  File "/home/lazarosg/ijepa/myenv/lib/python3.14/site-packages/torchvision/datasets/folder.py", line 328, in __init__
+    super().__init__(
+    ~~~~~~~~~~~~~~~~^
+        root,
+        ^^^^^
+    ...<5 lines>...
+        allow_empty=allow_empty,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/lazarosg/ijepa/myenv/lib/python3.14/site-packages/torchvision/datasets/folder.py", line 149, in __init__
+    classes, class_to_idx = self.find_classes(self.root)
+                            ~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/lazarosg/ijepa/myenv/lib/python3.14/site-packages/torchvision/datasets/folder.py", line 234, in find_classes
+    return find_classes(directory)
+  File "/home/lazarosg/ijepa/myenv/lib/python3.14/site-packages/torchvision/datasets/folder.py", line 41, in find_classes
+    classes = sorted(entry.name for entry in os.scandir(directory) if entry.is_dir())
+                                             ~~~~~~~~~~^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'datasets/imagenet/train/'
+Process Process-2:
+Traceback (most recent call last):
+  File "/apps/nefeli/software-stack/site/linux-x86_64/gcc-14.2.0/python-3.14.0-c3klipsvd65vfrugs22q5xuqnuppvsi2/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/apps/nefeli/software-stack/site/linux-x86_64/gcc-14.2.0/python-3.14.0-c3klipsvd65vfrugs22q5xuqnuppvsi2/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lazarosg/ijepa/main.py", line 101, in process_main
+    app_main(args=params)
+    ~~~~~~~~^^^^^^^^^^^^^
+  File "/home/lazarosg/ijepa/src/train.py", line 291, in main
+    _, unsupervised_loader, unsupervised_sampler = make_imagenet1k(
+                                                   ~~~~~~~~~~~~~~~^
+            transform=transform,
+            ^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+            drop_last=True,
+            ^^^^^^^^^^^^^^^
+            shuffle=True)
+            ^^^^^^^^^^^^^
+  File "/home/lazarosg/ijepa/src/datasets/imagenet1k.py", line 207, in make_imagenet1k
+    dataset = ImageNet(
+        root=root_path,
+    ...<4 lines>...
+        index_targets=False
+    )
+  File "/home/lazarosg/ijepa/src/datasets/imagenet1k.py", line 76, in __init__
+    dataset = torchvision.datasets.ImageFolder(
+        root=data_path,
+        transform=transform
+    )
+  File "/home/lazarosg/ijepa/myenv/lib/python3.14/site-packages/torchvision/datasets/folder.py", line 328, in __init__
+    super().__init__(
+    ~~~~~~~~~~~~~~~~^
+        root,
+        ^^^^^
+    ...<5 lines>...
+        allow_empty=allow_empty,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/lazarosg/ijepa/myenv/lib/python3.14/site-packages/torchvision/datasets/folder.py", line 149, in __init__
+    classes, class_to_idx = self.find_classes(self.root)
+                            ~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/lazarosg/ijepa/myenv/lib/python3.14/site-packages/torchvision/datasets/folder.py", line 234, in find_classes
+    return find_classes(directory)
+  File "/home/lazarosg/ijepa/myenv/lib/python3.14/site-packages/torchvision/datasets/folder.py", line 41, in find_classes
+    classes = sorted(entry.name for entry in os.scandir(directory) if entry.is_dir())
+                                             ~~~~~~~~~~^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'datasets/imagenet/train/'
+[rank0]:[W602 07:07:34.565974094 ProcessGroupNCCL.cpp:1524] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank1]:[W602 07:07:34.626715066 ProcessGroupNCCL.cpp:1524] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())

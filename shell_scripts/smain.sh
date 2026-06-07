@@ -43,4 +43,4 @@ nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python main.py --fname configs/in
 nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python main.py --fname configs/stl-train.yaml --devices cuda:0 &> logs_STL_ep500/stl-l2-seed0/ostl-PRETRAIN.out &
 
 # evaulation
-nohup /media/data/lazarosg/miniconda3/envs/ijepa/bin/python main.py     --fname configs/iic-eval.yaml     --devices cuda:0 cuda:1     --eval 1     &> logs_PKT_full/iic-train-PKT-seed21/evaluation.out &
+nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python main.py --fname configs/iic-eval.yaml --devices cuda:0 --eval 1 &> logs_PKT_chunks_different_seeds/iic-train-l2-seed3/o-EVAL.out &

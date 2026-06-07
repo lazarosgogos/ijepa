@@ -78,14 +78,14 @@ def process_main(rank, fname, world_size, devices, test=0):
 
             m = re.search(r'-ep(\d+)', v) # find the epoch number
             m = int(m.group(1))
-            rel = [10, 20, 100, 200, 300, 400, 500] 
+            rel = [500] 
             # rel = [100]
             if m in rel: # if the epoch number is in the relevant ones
                 return True
             else: 
                 return False
         
-        # tarfiles = list(filter(relevant, tarfiles)) # this should only grab the relevant file
+        tarfiles = list(filter(relevant, tarfiles)) # this should only grab the relevant file
         logger.info('tarfiles: ' + str(tarfiles))
         
         # tarfiles has a  list of names of all tarballs with this desired prefix

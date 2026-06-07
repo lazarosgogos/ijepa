@@ -100,7 +100,7 @@ def cross_similarity_loss(output_net, target_net, eps=0.0000001):
     return sdiag + w*sltri
 
 
-# take inter-image similarity 
+# take inter-image similarity
 def cosine_similarity_loss_inter(output_net, target_net, output_net_2, target_net_2, eps=0.0000001):
     # Normalize each vector by its norm
     output_net_norm = torch.sqrt(torch.sum(output_net ** 2, dim=1, keepdim=True))
@@ -193,7 +193,7 @@ def get_similarity_distribution(output_net, target_net, eps=0.0000001):
     target_similarity = (target_similarity + 1.0) / 2.0
 
     return model_similarity.view(-1), target_similarity.view(-1) # maybe get only upper triangular with .triu()?
-    
+
     # # Transform them into probabilities
     # model_similarity = model_similarity / torch.sum(model_similarity, dim=1, keepdim=True)
     # target_similarity = target_similarity / torch.sum(target_similarity, dim=1, keepdim=True)
@@ -202,3 +202,42 @@ def get_similarity_distribution(output_net, target_net, eps=0.0000001):
     # loss = torch.mean(target_similarity * torch.log((target_similarity + eps) / (model_similarity + eps)))
 
     # return loss
+
+
+def get_difference(output_net, target_net, eps=0.0000001):
+    """Return similarities for model and target sim matrices."""
+    # Normalize each vector by its norm
+    # print('panw',output_net)
+    output_net_norm = torch.sqrt(torch.sum(output_net**2, dim=1, keepdim=True))
+    output_net = output_net / (output_net_norm + eps)
+    output_net[output_net != output_net] = 0
+
+    target_net_norm = torch.sqrt(torch.sum(target_net**2, dim=1, keepdim=True))
+    target_net = target_net / (target_net_norm + eps)
+    target_net[target_net != target_net] = 0
+
+    # Calculate the cosine similarity
+    # print('katw',output_net)
+    model_similarity = torch.mm(output_net, output_net.transpose(0, 1))
+    target_similarity = torch.mm(target_net, target_net.transpose(0, 1))
+
+    # Scale cosine similarity to 0..1
+    model_similarity = (model_similarity + 1.0) / 2.0
+    target_similarity = (target_similarity + 1.0) / 2.0
+
+    # return model_similarity.view(-1), target_similarity.view(-1) # maybe get only upper triangular with .triu()?
+
+    # Transform them into probabilities
+    # model_similarity = model_similarity / torch.sum(
+    #     model_similarity, dim=1, keepdim=True
+    # )
+    # target_similarity = target_similarity / torch.sum(
+    #     target_similarity, dim=1, keepdim=True
+    # )
+
+    difference = torch.abs(torch.sub(model_similarity, target_similarity))
+
+    # # Calculate the KL-divergence
+    loss = torch.mean(target_similarity * torch.log((target_similarity + eps) / (model_similarity + eps)))
+
+    return loss, difference

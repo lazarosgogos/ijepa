@@ -5,7 +5,7 @@ data:
   - 0.3
   - 1.0
   crop_size: 150
-  image_folder: intel-image-classification/
+  image_folder: iic/
   num_workers: 0
   pin_mem: true
   root_path: datasets
@@ -13,8 +13,9 @@ data:
   use_gaussian_blur: false
   use_horizontal_flip: false
 logging:
-  folder: logs_PKT_cross/iic-train-l2-pkt-cross-seed43
-  write_tag: jepa_iic_PKT_seed-0-ep____.pth.tar
+  folder: logs_PKT_chunks_different_seeds/iic-train-l2-seed4/
+  # folder: logs_PKT_chunks_different_seeds/iic-train-l2-pkt-chunks-seed4/
+  write_tag: jepa-iic
   checkpoint_freq: 100 # new addition
   logging_frequency: 1 # defaults to 3, more concise logs
   output_file: oiic-evaluate-l2-pkt-chunks-MSE-seed43-matrices.out
@@ -40,11 +41,11 @@ meta:
   copy_data: false          # default: false
   load_checkpoint: true
   model_name: vit_base
-  pred_depth: 12
+  pred_depth: 6
   pred_emb_dim: 384
   # this should append the -ep500.pth.tar appropriately
   # to the read_checkpoint
-  read_checkpoint: jepa-iic-l2-pkt-cross-seed43    # default: null
+  read_checkpoint: jepa-iic   # default: null
   use_bfloat16: false       # default: true
 optimization:
   ema:
@@ -61,3 +62,8 @@ optimization:
   loss_function: PKT
   # message: "third try at full PKT for reproducibility"
   evaluate: True           # get similarity distributions?
+
+# /home/lazarosg/miniconda3/envs/ijepa/bin/python main.py --fname configs/iic-eval.yaml --devices cuda:0 --eval 1 &> logs_PKT_chunks_different_seeds/iic-train-l2-pkt-chunks-seed4/o-EVAL.out
+# /home/lazarosg/miniconda3/envs/ijepa/bin/python main.py --fname configs/iic-eval.yaml --devices cuda:0 --eval 1 &> logs_PKT_chunks_different_seeds/iic-train-l2-seed4/o-EVAL.out
+
+# /home/lazarosg/miniconda3/envs/ijepa/bin/python main.py --fname configs/iic-eval-pkt.yaml --devices cuda:0 --eval 1 &> logs_PKT_chunks_different_seeds/iic-train-l2-pkt-chunks-seed4/o-EVAL.out && /home/lazarosg/miniconda3/envs/ijepa/bin/python main.py --fname configs/iic-eval.yaml --devices cuda:0 --eval 1 &> logs_PKT_chunks_different_seeds/iic-train-l2-seed4/o-EVAL.out

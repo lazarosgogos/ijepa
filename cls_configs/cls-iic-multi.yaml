@@ -1,8 +1,8 @@
 data:
   crop_size: 150
   num_classes: 6
-  train_dataset_path: datasets/intel-image-classification/train
-  val_dataset_path: datasets/intel-image-classification/val
+  train_dataset_path: datasets/iic/train
+  val_dataset_path: datasets/iic/val
   model_name: vit_base
   batch_size: 128
   patch_size: 15
@@ -21,12 +21,29 @@ optimization:
   use_last_n_blocks: 1 # not yet supported
   use_normalization: false # use layer_norm and dropout layer
 meta:
-  device: cuda:1
+  device: cuda:0
 # message: "Multi classification based on PKT cross sim matrix MSE seed 0"
 multi_probing:
   # - logs_PKT_chunks/iic-train-l2-seed0 # use cuda:0
   # - logs_PKT_chunks/iic-train-l2-seed1 # use cuda:0
   # - logs_PKT_chunks/iic-train-l2-seed2 # use cuda:0
-  - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0 # use cuda:1
-  - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed1 # use cuda:1
-  - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed2 # use cuda:1
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0 # use cuda:1
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed1 # use cuda:1
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed2 # use cuda:1
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep250
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep750
+  # - logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000
+  # - logs_PKT_chunks/iic-train-l2-seed0-KNN-ep250
+  # - logs_PKT_chunks/iic-train-l2-seed0-KNN-ep750
+  # - logs_PKT_chunks/iic-train-l2-seed0-KNN-ep1000
+  - logs_PKT_chunks_different_seeds/iic-train-l2-pkt-chunks-seed3-pred12
+  - logs_PKT_chunks_different_seeds/iic-train-l2-pkt-chunks-seed4-pred12
+  # - logs_PKT_chunks_different_seeds/iic-train-l2-pkt-chunks-seed5
+  - logs_PKT_chunks_different_seeds/iic-train-l2-seed3-pred12
+  - logs_PKT_chunks_different_seeds/iic-train-l2-seed4-pred12
+  # - logs_PKT_chunks_different_seeds/iic-train-l2-seed5
+
+# nohup /home/lazarosg/miniconda3/envs/ijepa/bin/python pmulti-linear-probing.py --fname cls_configs/cls-iic-multi.yaml &> logs_PKT_chunks_different_seeds/iic-train-l2-seed3-pred12/oiic-DOWNSTREAM-ALL.out &
+
+
+# python pmulti-linear-probing.py --fname cls_configs/cls-iic-multi.yaml

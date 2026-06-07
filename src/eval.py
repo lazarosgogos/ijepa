@@ -61,7 +61,7 @@ log_freq = 10
 # checkpoint_freq = 200
 # --
 
-# rng = np.random.Generator(np.random.PCG64()) 
+# rng = np.random.Generator(np.random.PCG64())
 
 _GLOBAL_SEED = 0 
 # seed is logged later on
@@ -71,7 +71,6 @@ torch.backends.cudnn.benchmark = True
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
-
 
 
 def force_cudnn_initialization():
@@ -176,12 +175,9 @@ def main(args, resume_preempt=False):
     # tensorboard_dir = os.path.join(folder, tensorboard_dir)
     logger.addHandler(logging.FileHandler(output_file)) # add auto output ;)
 
-
     load_path = None
     if load_model:
         load_path = os.path.join(folder, r_file) if r_file is not None else latest_path
-
-
 
     # -- init model
     encoder, predictor = init_model(
@@ -280,19 +276,18 @@ def main(args, resume_preempt=False):
             next(momentum_scheduler)
             mask_collator.step()
 
-
     # -- TRAINING LOOP
     start_time = time.perf_counter() # get starting time
     # for epoch in range(start_epoch, num_epochs):
     start_time_epoch = time.perf_counter()
     logger.info('Starting')
 
-
-    
     all_model_sims, all_target_sims, cross_sims = [], [], []
     for itr, (udata, masks_enc, masks_pred) in enumerate(unsupervised_loader):
         logger.info('Iteration: %d' % itr)
-        if itr == 1: break
+        index = 129
+        if itr < index: continue
+        if itr > index: break
         def load_imgs():
             # -- unsupervised imgs
             imgs = udata[0].to(device, non_blocking=True)
@@ -323,12 +318,11 @@ def main(args, resume_preempt=False):
                 return z
 
             def loss_fn(z, h):
-                # this should be fully functional, as proven by L2 
+                # this should be fully functional, as proven by L2
                 final_loss = which_loss.__dict__[loss_function](z,h)
                 # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
                 loss = AllReduce.apply(final_loss)
                 return loss
-                
 
             # Step 1. Forward
             with torch.no_grad():
@@ -337,21 +331,26 @@ def main(args, resume_preempt=False):
                 z = z.view(64, 4, *z.size()[1:])
                 h = h.view(64, 4, *h.size()[1:])
                 logger.info(h.size())
-                
+
                 z = z[0]
                 h = h[0] # get ALL blocks from 0th (first) image, theoretically
                 logger.info(h.size())
                 z = z.view(-1, 768)
                 h = h.view(-1, 768)
-                
-                model_sim, target_sim, cross = PKT.get_similarity_matrices(z, h)
 
-            return model_sim, target_sim, cross
-        (model_sim, target_sim, cross_sim), etime = gpu_timer(train_step)
+                # model_sim, target_sim, cross = PKT.get_similarity_matrices(z, h)
+                loss, difference = PKT.get_difference(z, h)
 
-        all_model_sims. append(model_sim.detach().cpu().numpy())
-        all_target_sims.append(target_sim.detach().cpu().numpy())
-        cross_sims.append(cross_sim.detach().cpu().numpy())
+            # return model_sim, target_sim, cross
+            return loss, difference
+        # (model_sim, target_sim, cross_sim), etime = gpu_timer(train_step)
+        (loss, difference), etime = gpu_timer(train_step)
+
+        # all_model_sims. append(model_sim.detach().cpu().numpy())
+        # all_target_sims.append(target_sim.detach().cpu().numpy())
+        # cross_sims.append(cross_sim.detach().cpu().numpy())
+        difference = difference.detach().cpu().numpy()
+        loss = loss.detach().cpu().numpy()
 
     # logger.info('All model similarities: %s', str(all_model_sims[:5000]))
     # logger.info('All target similarities: %s',str(all_target_sims[:5000]))
@@ -359,22 +358,22 @@ def main(args, resume_preempt=False):
     # after all iterations
     # save_checkpoint(epoch+1)
 
-
-    # -- Visualize weights using Summary Writer - old method with no filtering# 
+    # -- Visualize weights using Summary Writer - old method with no filtering#
     # ep = '-ep100'
-    import re
-    match_ = re.search(r'ep(\d+)', r_file) # extract the number based on the checkpoint
-    ep = match_.group(1)
-    writer = SummaryWriter(f'runs/l2-{ep}')
-    # logger.critical(str(len(all_model_sims)))
-    all_params = []
-    for idx, (name, param) in enumerate(encoder.named_parameters()):
-        # logger.info('epoch: %s, name: %s, param: %s ' 
-        #             % (ep, name, param))
-        # logger.info('extending params epoch: %s, name: %s' % (ep, name))
-        all_params.extend(param.view(-1).detach().cpu().numpy())
-        writer.add_histogram(name, param, 
-                             global_step=idx, bins=1000)
+    if 1 == 0:
+        import re
+        match_ = re.search(r'ep(\d+)', r_file) # extract the number based on the checkpoint
+        ep = match_.group(1)
+        writer = SummaryWriter(f'runs/l2-{ep}')
+        # logger.critical(str(len(all_model_sims)))
+        all_params = []
+        for idx, (name, param) in enumerate(encoder.named_parameters()):
+            # logger.info('epoch: %s, name: %s, param: %s '
+            #             % (ep, name, param))
+            # logger.info('extending params epoch: %s, name: %s' % (ep, name))
+            all_params.extend(param.view(-1).detach().cpu().numpy())
+            writer.add_histogram(name, param, 
+                                global_step=idx, bins=1000)
     """
         outfile_params = os.path.join(folder, f'params-ep{ep}.png')
         ub = max(all_params)
@@ -392,6 +391,102 @@ def main(args, resume_preempt=False):
         writer.close()
     """
     if plot_matrices:
+        # index = 12
+        # lb = 0
+        # ub = 1
+        # fig = plt.figure(figsize=(10,10), dpi=300)
+        # plt.imshow(difference, interpolation="nearest", vmax=0.599)
+        # # plt.colorbar()
+        # plt.colorbar(fraction=0.046, pad=0.04)
+        # plt.title(f'KL divergence: {loss}')
+        # outfile = os.path.join(folder, f'difference-matrix-ep{pretrain_epoch}.png')
+        # plt.savefig(outfile)
+        # plt.close()
+        import matplotlib.pyplot as plt
+        import matplotlib.patches as patches
+        from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, mark_inset
+
+        fig, ax = plt.subplots(figsize=(10,10), dpi=300)
+
+        im = ax.imshow(difference, interpolation="nearest", vmax=0.599)
+        # plt.colorbar(im, fraction=0.046, pad=0.04)
+        cbar = plt.colorbar(im, fraction=0.046, pad=0.04)
+        cbar.set_label(
+            "Context-Target Gram Matrix Divergence", rotation=90, fontsize=14
+        )
+        cbar.ax.tick_params(labelsize=10)
+
+        # ax.set_title(f'KL divergence: {loss}')
+
+        # --- Region definition ---
+        x, y = 5, 38
+        w, h = 6, 6
+
+        # --- Main red rectangle ---
+        rect = patches.Rectangle((x, y), w, h, linewidth=2, edgecolor='red', facecolor='none')
+        ax.add_patch(rect)
+
+        # --- Zoomed inset (bigger + outside) ---
+        axins = zoomed_inset_axes(ax, zoom=6, loc='upper left',
+                                bbox_to_anchor=(-0.7, 1),  # push outside
+                                bbox_transform=ax.transAxes)
+
+        axins.imshow(difference, interpolation="nearest", vmax=0.599)
+        import numpy as np
+
+        sub = difference[y : y + h, x : x + w]
+
+        for i in range(1, h):
+            for j in range(1, w):
+                val = sub[i, j]
+                axins.text(
+                    j + x,  # center of cell (x coord in data space)
+                    i + y,  # center of cell (y coord in data space)
+                    f"{val:.2f}",  # format (adjust precision if needed)
+                    ha="center",
+                    va="center",
+                    fontsize=14,
+                    color="white" if val < 0.3 else "black",  # contrast heuristic
+                )
+        # Limit inset to the selected region
+        axins.set_xlim(x, x + w)
+        axins.set_ylim(y+h, y)  # invert y-axis for imshow
+
+        axins.set_xticks([])
+        axins.set_yticks([])
+
+        # Style inset border
+        for spine in axins.spines.values():
+            spine.set_edgecolor('red')
+            spine.set_linewidth(1.5)
+
+        # --- Connect the two rectangles ---
+        # mark_inset(ax, axins, loc1=4, loc2=4, fc="none", ec="red", linewidth=1.5)
+        from matplotlib.patches import ConnectionPatch
+
+        con1 = ConnectionPatch(xyA=(x, y), coordsA=ax.transData,
+                            xyB=(1, 1), coordsB=axins.transAxes,
+                            color="red", linewidth=1.5)
+
+        con2 = ConnectionPatch(xyA=(x, y+h), coordsA=ax.transData,
+                            xyB=(1, 0), coordsB=axins.transAxes,
+                            color="red", linewidth=1.5)
+
+        fig.add_artist(con1)
+        fig.add_artist(con2)
+
+        # Save
+        outfile = os.path.join(folder, f'difference-matrix-ep{pretrain_epoch}.png')
+        plt.savefig(outfile, bbox_inches='tight')  # important when placing outside
+        plt.close()
+
+    if plot_matrices and 1 == 0:
+        all_model_sims = np.array(all_model_sims)
+        all_target_sims = np.array(all_target_sims)
+        logger.critical(str("shape of all model sims" + all_model_sims.shape))
+        all_model_sims = all_model_sims.mean() # extact mean
+        all_target_sims = all_target_sims.mean()
+        # i guess the shape is []
         ri = torch.randint(0, len(all_model_sims), (1,)) # pick a random image from the batch
         lb = min(all_model_sims[ri].min(), all_target_sims[ri].min(), cross_sims[ri].min()) # lower bound
         ub = max(all_model_sims[ri].max(), all_target_sims[ri].max(), cross_sims[ri].max()) # upper bound
@@ -408,7 +503,7 @@ def main(args, resume_preempt=False):
         plt.show()
         plt.suptitle('Evaluation of %s' % (r_file))
         # outfile = os.path.join(folder, f'sims-PKT-ep{ep}.png')
-        outfile = os.path.join(folder, f'sim_matrices_cross{ep}.png')
+        outfile = os.path.join(folder, f'sim_matrices_avg{ep}.png')
         plt.savefig(outfile)
         fig.clear()
         plt.close()
@@ -422,19 +517,18 @@ def main(args, resume_preempt=False):
     plt.hist(all_target_sims, bins=100, range=(0. , 1.), fc=(1, 0, 0, 0.5), label='Target sims')
     plt.legend()
     """
-    
+
     """
     plt.xlabel('Values distribution')
     plt.ylabel('Count')
     """
-    
+
     time_epoch = time.perf_counter() - start_time_epoch
     logger.info('time taken for epoch %s' % str(datetime.timedelta(seconds=time_epoch)))
 
-
     total_time = time.perf_counter() - start_time
     logger.info('Total pretraining time %s' % str(datetime.timedelta(seconds = total_time)))
-    
+
 
 if __name__ == "__main__":
     main()

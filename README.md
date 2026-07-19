@@ -1,21 +1,21 @@
 # Probabilistic I-JEPA
 
-Official PyTorch codebase for the Probabilistic I-JEPA (the **Probabilistic Image-based Joint-Embedding Predictive Architecture**). [\[JEPAs\]](https://ai.facebook.com/blog/yann-lecun-advances-in-ai-research/) [\[blogpost\]](https://ai.facebook.com/blog/yann-lecun-ai-model-i-jepa/)  
-<!-- published @ CVPR-23 -->
-<!-- [\[arXiv\]](https://arxiv.org/pdf/2301.08243.pdf) --> 
+Official PyTorch implementation of **Probabilistic Image-based Joint Embedding Predictive Architecture (P-IJEPA)**.
+
+[[Paper](https://doi.org/10.1016/j.patrec.2026.07.005)] [[JEPAs](https://ai.facebook.com/blog/yann-lecun-advances-in-ai-research/)] [[I-JEPA blog post](https://ai.facebook.com/blog/yann-lecun-ai-model-i-jepa/)]
+
+> Lazaros Gogos, Dimitrios Katsikas, Nikolaos Passalis, and Anastasios Tefas. “Probabilistic image-based joint embedding predictive architecture.” *Pattern Recognition Letters*, 207:234–240, 2026.
 
 ## Method
-I-JEPA is a method for self-supervised learning. At a high level, I-JEPA predicts the representations of part of an image from the representations of other parts of the same image. We propose a probabilistic formulation, namely the **Probabilistic I-JEPA**, which involves matching the conditional probability distributions between the target and the predicted representations.
-Notably, this approach learns semantic image features:
-1. without relying on pre-specified invariances to hand-crafted data transformations, which tend to be biased for particular downstream tasks,
-2. without having the model fill in pixel-level details, which tend to result in learning less semantically meaningful representations, 
-3. and by matching the conditional probability distributions it manages to output richer image representations.
+I-JEPA learns visual representations by predicting the latent representations of masked target blocks from a visible context block. Its pointwise reconstruction objective, however, focuses on matching individual target representations and does not explicitly preserve the local geometry among patches.
+
+P-IJEPA augments the pointwise objective with probabilistic knowledge transfer. It models the conditional probability distributions of the target and predicted patch representations using kernel density estimation and pairwise cosine similarities, then aligns them with a KL-divergence loss. The combined objective preserves both representation-level correspondence and the local geometric relationships between patches, encouraging richer semantic representations without pixel-level reconstruction or strong hand-crafted view augmentations.
 
 <!-- ### I-JEPA architecture
 ![ijepa](https://github.com/facebookresearch/ijepa/assets/7530871/dbad94ab-ac35-433b-8b4c-ca227886d311) -->
 
 ### Probabilistic I-JEPA architecture
-![pijepa](./src/pijepa.png)
+![pijepa](./src/pijepa-final.png)
 
 <!-- ## Visualizations
 
@@ -33,52 +33,46 @@ Caption: Illustrating how the predictor learns to model the semantics of the wor
 
 ## Probabilistic I-JEPA evaluations
 
-Probabilistic I-JEPA pretraining is also computationally efficient, with no impact in training time (compared to I-JEPA training times).
-It does not involve any overhead associated with applying more computationally intensive data augmentations to produce multiple views.
-Only one view of the image needs to be processed by the target encoder, and only the context blocks need to be processed by the context encoder.
-Empirically, the Probabilistic I-JEPA learns stronger off-the-shelf semantic representations by leveraging the conditional probability distributions without the use of hand-crafted view augmentations.
+The paper evaluates frozen representations with k-NN classification, linear probing, and transfer learning. P-IJEPA consistently improves on I-JEPA across the reported datasets, architectures, and pretraining lengths.
+
+### ViT-B results
+
+Validation accuracy after 500 epochs of pretraining (mean ± standard deviation over three seeds):
+
+| Dataset | I-JEPA k-NN | P-IJEPA k-NN | I-JEPA linear | P-IJEPA linear |
+|---|---:|---:|---:|---:|
+| IIC | 57.84 ± 1.70 | **59.57 ± 1.69** | 78.74 ± 0.59 | **80.13 ± 0.48** |
+| STL-10 | 38.07 ± 1.77 | **42.75 ± 1.03** | 68.82 ± 0.29 | **72.44 ± 0.52** |
+| ImageNet-100 | 39.16 ± 1.26 | **44.92 ± 2.81** | 56.79 ± 1.18 | **58.20 ± 1.04** |
+
+### CNN-JEPA results
+
+The same probabilistic objective also improves CNN-JEPA with a ResNet-50 backbone after 200 epochs of pretraining:
+
+| Dataset | CNN-JEPA k-NN | Proposed k-NN | CNN-JEPA linear | Proposed linear |
+|---|---:|---:|---:|---:|
+| IIC | 89.10 | **89.33** | 92.07 | **92.30** |
+| CIFAR-10 | 56.33 | **57.40** | 72.91 | **74.69** |
+| CIFAR-100 | 28.47 | **29.00** | 48.58 | **49.00** |
+| STL-10 | 58.44 | **58.53** | 72.84 | **73.60** |
+| ImageNet-100 | 59.46 | **59.80** | 76.84 | **77.26** |
+
+### Transfer learning
+
+Linear-probe accuracy after pretraining on ImageNet-100:
+
+| Evaluation dataset | I-JEPA | P-IJEPA | Improvement |
+|---|---:|---:|---:|
+| CIFAR-10 | 75.32 | **78.29** | +2.97 |
+| CIFAR-100 | 51.86 | **55.62** | +3.76 |
+| STL-10 | 75.77 | **77.48** | +1.71 |
+
+P-IJEPA also produces lower context-target Gram-matrix divergence, indicating better preservation of pairwise relationships between target patches. The best reported weighting for the probabilistic term is `beta = 1`.
+
+The distribution-matching objective introduces limited computational overhead. On IIC, per-epoch time changes from 1:21 to 1:22 and GPU memory usage from 7.60 GB to 7.80 GB; the corresponding figures are 6:36 to 6:41 with unchanged 8.15 GB memory on STL-10, and 3:00 to 3:15 with 20.05 GB to 21.25 GB memory on ImageNet-100.
 
 <!-- ![1percenteval](https://github.com/facebookresearch/ijepa/assets/7530871/e6e5291f-ca51-43a4-a6cf-069811094ece)
 ![lineareval](https://github.com/facebookresearch/ijepa/assets/7530871/d8cffa73-5350-444e-987a-7e131a86d767) -->
-
-<!-- ### I-JEPA vs Probabilistic I-JEPA  -->
-
-The proposed approach consistently outperforms the original I-JEPA in downstream classification tasks, as measured by both linear probing and k-NN evaluation. This is done with a negligent impact in the pretraining time needed.
-
-<table>
-  <tr>
-    <th rowspan="2" style="text-align:center;">Dataset</th>
-    <th colspan="2" style="text-align:center;">KNN</th>
-    <th colspan="2" style="text-align:center;">Linear Probing</th>
-  </tr>
-  <tr>
-    <th>I-JEPA</th>
-    <th>Probabilistic I-JEPA</th>
-    <th>I-JEPA</th>
-    <th>Probabilistic I-JEPA</th>
-  </tr>
-  <tr>
-    <td>IIC</td>
-    <td>57.55</td>
-    <td><strong>58.46</strong> <span style="color: gray;">(+0.91)</span></td>
-    <td>78.23</td>
-    <td><strong>80.43</strong> <span style="color: gray;">(+2.20)</span></td>
-  </tr>
-  <tr>
-    <td>STL-10</td>
-    <td>37.91</td>
-    <td><strong>42.75</strong> <span style="color: gray;">(+4.84)</span></td>
-    <td>68.75</td>
-    <td><strong>72.52</strong> <span style="color: gray;">(+3.77)</span></td>
-  </tr>
-  <tr>
-    <td>ImageNet100</td>
-    <td>37.16</td>
-    <td><strong>43.41</strong> <span style="color: gray;">(+6.25)</span></td>
-    <td>56.46</td>
-    <td><strong>57.54</strong> <span style="color: gray;">(+1.08)</span></td>
-  </tr>
-</table>
 
 <!-- ## Pretrained models for the original I-JEPA
 
@@ -166,7 +160,7 @@ python main.py \
 ```
 *Note: This example is just used for illustrative purposes, as the ViT-H/14 config should be run on 16 A100 80G GPUs for an effective batch-size of 2048, in order to reproduce our results.*
 
-To run the Probabilistic I-JEPA, make sure the loss function in the config file is set to *L2_PKT*. 
+To run P-IJEPA, set the loss function in the config file to `L2_PKT`. This combines the original L2 representation-matching loss with the probabilistic distribution-matching loss described in the paper.
 
 <!-- ### Multi-GPU training
 In the multi-GPU setting, the implementation starts from [main_distributed.py](main_distributed.py), which, in addition to parsing the config file, also allows for specifying details about distributed training. For distributed training, we use the popular open-source [submitit](https://github.com/facebookincubator/submitit) tool and provide examples for a SLURM cluster.
@@ -195,11 +189,28 @@ In order to use an encoder, load its weights into memory and extract features fr
 See the [LICENSE](./LICENSE) file for details about the license under which this code is made available.
 
 ## Citation
-If you find the [original repository](https://github.com/facebookresearch/ijepa) useful in your research, please consider giving a star :star: and a citation
+If you use this code or method in your research, please cite:
+
+```bibtex
+@article{gogos2026probabilistic,
+  title   = {Probabilistic image-based joint embedding predictive architecture},
+  author  = {Gogos, Lazaros and Katsikas, Dimitrios and Passalis, Nikolaos and Tefas, Anastasios},
+  journal = {Pattern Recognition Letters},
+  volume  = {207},
+  pages   = {234--240},
+  year    = {2026},
+  doi     = {10.1016/j.patrec.2026.07.005}
+}
 ```
+
+This implementation builds on the [original I-JEPA repository](https://github.com/facebookresearch/ijepa):
+
+```bibtex
 @article{assran2023self,
   title={Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture},
   author={Assran, Mahmoud and Duval, Quentin and Misra, Ishan and Bojanowski, Piotr and Vincent, Pascal and Rabbat, Michael and LeCun, Yann and Ballas, Nicolas},
-  journal={arXiv preprint arXiv:2301.08243},
+  journal={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={15619--15629},
   year={2023}
 }
+```

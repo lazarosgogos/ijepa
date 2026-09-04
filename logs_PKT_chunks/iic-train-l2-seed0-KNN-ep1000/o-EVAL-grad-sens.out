@@ -1,0 +1,136 @@
+called-params configs/iic-eval.yaml
+loaded params...
+{   'data': {   'batch_size': 64,
+                'color_jitter_strength': 0.0,
+                'crop_scale': [0.3, 1.0],
+                'crop_size': 150,
+                'image_folder': 'iic/',
+                'num_workers': 0,
+                'pin_mem': True,
+                'root_path': 'datasets',
+                'use_color_distortion': False,
+                'use_gaussian_blur': False,
+                'use_horizontal_flip': False},
+    'logging': {   'checkpoint_freq': 100,
+                   'folder': 'logs_PKT_chunks/iic-train-l2-seed0-KNN-ep1000',
+                   'logging_frequency': 1,
+                   'output_file': 'oiic-evaluate-l2-wPlot.out',
+                   'plot_matrices': False,
+                   'tensorboard_dir': 'eval_tb/',
+                   'use_tensorboard': True,
+                   'write_tag': 'jepa-iic'},
+    'mask': {   'allow_overlap': False,
+                'aspect_ratio': [0.75, 1.5],
+                'enc_mask_scale': [0.85, 1.0],
+                'min_keep': 1,
+                'num_enc_masks': 1,
+                'num_pred_masks': 4,
+                'patch_size': 15,
+                'pred_mask_scale': [0.15, 0.2]},
+    'meta': {   'copy_data': False,
+                'evaluate_latest_only': False,
+                'load_checkpoint': True,
+                'model_name': 'vit_base',
+                'pred_depth': 6,
+                'pred_emb_dim': 384,
+                'read_checkpoint': 'jepa-iic',
+                'use_bfloat16': False},
+    'optimization': {   'ema': [0.996, 1.0],
+                        'epochs': 500,
+                        'evaluate': True,
+                        'final_lr': 1e-06,
+                        'final_weight_decay': 0.4,
+                        'ipe_scale': 1.0,
+                        'loss_function': 'L2',
+                        'lr': 0.001,
+                        'start_lr': 0.0002,
+                        'warmup': 40,
+                        'weight_decay': 0.04},
+    'sensitivity': {   'corruption_ratios': [0.0, 0.05, 0.1, 0.2, 0.3],
+                       'enabled': True,
+                       'objectives': ['L2']}}
+Running... (rank: 0/1)
+CRITICAL:root:EVALUATING
+tarfiles: ['logs_PKT_chunks/iic-train-l2-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar']
+working on file logs_PKT_chunks/iic-train-l2-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar out of ['logs_PKT_chunks/iic-train-l2-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar']...
+Initialized (rank/world-size) 0/1
+train.py: _GLOBAL_SEED=0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+['encoder', 'predictor', 'target_encoder', 'opt', 'scaler', 'epoch', 'loss', 'batch_size', 'world_size', 'lr']
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Target-representation corruption gradient-norm sensitivity:
+corruption_ratio, L2_all_clean_mean, L2_all_corrupted_mean, L2_all_abs_delta_mean, L2_all_rel_delta_mean, L2_all_rel_delta_median, L2_all_rel_delta_p95, L2_all_rel_delta_p99, L2_corrupted_only_abs_delta_mean, L2_corrupted_only_abs_delta_median, L2_corrupted_only_abs_delta_p95, L2_corrupted_only_abs_delta_p99, L2_corrupted_only_rel_delta_mean, L2_corrupted_only_rel_delta_median, L2_corrupted_only_rel_delta_p95, L2_corrupted_only_rel_delta_p99, L2_num_patches, L2_num_corrupted_patches
+0.00000000e+00, 3.34925593e-02, 3.34925593e-02, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 444416, 0
+5.00000000e-02, 3.34925593e-02, 3.50935345e-02, 1.60097532e-03, 6.82320069e-02, 0.00000000e+00, 0.00000000e+00, 2.17929228e+00, 3.19962039e-02, 3.01694978e-02, 7.45014961e-02, 8.91512389e-02, 1.36359270e+00, 9.52283708e-01, 4.20135628e+00, 6.50343578e+00, 444416, 22234
+1.00000000e-01, 3.34925593e-02, 3.67173728e-02, 3.22481340e-03, 1.37748191e-01, 0.00000000e+00, 9.70376908e-01, 3.17738628e+00, 3.22330194e-02, 3.02485285e-02, 7.51552568e-02, 9.05243979e-02, 1.37685288e+00, 9.69868419e-01, 4.27198773e+00, 6.56296597e+00, 444416, 44460
+2.00000000e-01, 3.34925593e-02, 3.98904273e-02, 6.39786812e-03, 2.74000257e-01, 0.00000000e+00, 1.87037107e+00, 4.29887640e+00, 3.19951874e-02, 3.01049657e-02, 7.54500965e-02, 9.09977628e-02, 1.37026429e+00, 9.64941784e-01, 4.30058777e+00, 6.72876465e+00, 444416, 88870
+3.00000000e-01, 3.34925593e-02, 4.31402854e-02, 9.64772595e-03, 4.13126069e-01, 0.00000000e+00, 2.44925843e+00, 4.94306815e+00, 3.21551708e-02, 3.01444370e-02, 7.54747995e-02, 9.10863451e-02, 1.37691079e+00, 9.66067518e-01, 4.28968447e+00, 6.78855085e+00, 444416, 133338
+Saved target corruption sensitivity CSV to: logs_PKT_chunks/iic-train-l2-seed0-KNN-ep1000/target-corruption-gradient-norm-sensitivity-ep1000.csv
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 116195.359375
+mean_loss: 0.26145628094673157
+median_loss: 0.18526065349578857
+max_loss: 3.025003433227539
+top_1pct_loss_share: 0.05883011309213484
+top_5pct_loss_share: 0.19814630949520226
+top_10pct_loss_share: 0.3191676921262588
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 15000.4072265625
+grad_norm_mean_loss: 0.03375307470560074
+grad_norm_median_loss: 0.03106282651424408
+grad_norm_max_loss: 0.12551982700824738
+grad_norm_top_1pct_loss_share: 0.026407854438456977
+grad_norm_top_5pct_loss_share: 0.10781637633926214
+grad_norm_top_10pct_loss_share: 0.19279313836336603
+time taken for epoch 0:00:55.509880
+Total pretraining time 0:00:55.509908

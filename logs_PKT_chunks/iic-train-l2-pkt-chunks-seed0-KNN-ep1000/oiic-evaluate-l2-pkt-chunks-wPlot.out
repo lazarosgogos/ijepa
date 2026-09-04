@@ -1,0 +1,1751 @@
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+torch.Size([4096, 4096])
+Iteration: 1
+torch.Size([5120, 5120])
+Iteration: 2
+torch.Size([5120, 5120])
+Iteration: 3
+torch.Size([3072, 3072])
+Iteration: 4
+torch.Size([4096, 4096])
+Iteration: 5
+torch.Size([5120, 5120])
+Iteration: 6
+torch.Size([4096, 4096])
+Iteration: 7
+torch.Size([4096, 4096])
+Iteration: 8
+torch.Size([5120, 5120])
+Iteration: 9
+torch.Size([5120, 5120])
+Iteration: 10
+Per-patch MSE tail analysis:
+num_patches: 207618048
+total_loss: 1755.9686279296875
+mean_loss: 8.457687727059238e-06
+median_loss: 1.2075869335603784e-06
+max_loss: 0.0012675112811848521
+top_1pct_loss_share: 0.33825822155809965
+top_5pct_loss_share: 1.0607874440515555
+top_10pct_loss_share: 1.6317188272837584
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 45056
+grad_norm_total_loss: 1902.8701171875
+grad_norm_mean_loss: 0.04223344475030899
+grad_norm_median_loss: 0.04115709662437439
+grad_norm_max_loss: 0.12285755574703217
+grad_norm_top_1pct_loss_share: 0.024115040887685592
+grad_norm_top_5pct_loss_share: 0.10112101938939892
+grad_norm_top_10pct_loss_share: 0.1852383054688667
+time taken for epoch 0:00:22.582435
+Total pretraining time 0:00:22.582457
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+torch.Size([])
+Iteration: 1
+torch.Size([])
+Iteration: 2
+torch.Size([])
+Iteration: 3
+torch.Size([])
+Iteration: 4
+torch.Size([])
+Iteration: 5
+torch.Size([])
+Iteration: 6
+torch.Size([])
+Iteration: 7
+torch.Size([])
+Iteration: 8
+torch.Size([])
+Iteration: 9
+torch.Size([])
+Iteration: 10
+Per-patch MSE tail analysis:
+num_patches: 10
+total_loss: 8.577659900765866e-05
+mean_loss: 8.577660082664806e-06
+median_loss: 8.586855983594432e-06
+max_loss: 1.0006804586737417e-05
+top_1pct_loss_share: 0.11666124213952511
+top_5pct_loss_share: 0.11666124213952511
+top_10pct_loss_share: 0.11666124213952511
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 45056
+grad_norm_total_loss: 1902.8701171875
+grad_norm_mean_loss: 0.04223344475030899
+grad_norm_median_loss: 0.04115709662437439
+grad_norm_max_loss: 0.12285755574703217
+grad_norm_top_1pct_loss_share: 0.024115040887685592
+grad_norm_top_5pct_loss_share: 0.10112101938939892
+grad_norm_top_10pct_loss_share: 0.1852383054688667
+time taken for epoch 0:00:02.908936
+Total pretraining time 0:00:02.908964
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+torch.Size([4096])
+Iteration: 1
+torch.Size([5120])
+Iteration: 2
+torch.Size([5120])
+Iteration: 3
+torch.Size([3072])
+Iteration: 4
+torch.Size([4096])
+Iteration: 5
+torch.Size([5120])
+Iteration: 6
+torch.Size([4096])
+Iteration: 7
+torch.Size([4096])
+Iteration: 8
+torch.Size([5120])
+Iteration: 9
+torch.Size([5120])
+Iteration: 10
+Per-patch MSE tail analysis:
+num_patches: 45056
+total_loss: 0.3836089074611664
+mean_loss: 8.514047294738702e-06
+median_loss: 8.231315405282658e-06
+max_loss: 0.00011867684224853292
+top_1pct_loss_share: 0.07203027743872856
+top_5pct_loss_share: 0.2339307177352874
+top_10pct_loss_share: 0.3780751673875072
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 45056
+grad_norm_total_loss: 1902.8701171875
+grad_norm_mean_loss: 0.04223344475030899
+grad_norm_median_loss: 0.04115709662437439
+grad_norm_max_loss: 0.12285755574703217
+grad_norm_top_1pct_loss_share: 0.024115040887685592
+grad_norm_top_5pct_loss_share: 0.10112101938939892
+grad_norm_top_10pct_loss_share: 0.1852383054688667
+time taken for epoch 0:00:04.201110
+Total pretraining time 0:00:04.201136
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+torch.Size([4096])
+Iteration: 1
+torch.Size([5120])
+Iteration: 2
+torch.Size([5120])
+Iteration: 3
+torch.Size([3072])
+Iteration: 4
+torch.Size([4096])
+Iteration: 5
+torch.Size([5120])
+Iteration: 6
+torch.Size([4096])
+Iteration: 7
+torch.Size([4096])
+Iteration: 8
+torch.Size([5120])
+Iteration: 9
+torch.Size([5120])
+Iteration: 10
+Per-patch MSE tail analysis:
+num_patches: 45056
+total_loss: 0.383608877658844
+mean_loss: 8.514046385244e-06
+median_loss: 6.984097126405686e-06
+max_loss: 0.0001173253622255288
+top_1pct_loss_share: 0.055768970883431954
+top_5pct_loss_share: 0.17134416084553353
+top_10pct_loss_share: 0.26708633414901967
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 45056
+grad_norm_total_loss: 1902.8701171875
+grad_norm_mean_loss: 0.04223344475030899
+grad_norm_median_loss: 0.04115709662437439
+grad_norm_max_loss: 0.12285755574703217
+grad_norm_top_1pct_loss_share: 0.024115040887685592
+grad_norm_top_5pct_loss_share: 0.10112101938939892
+grad_norm_top_10pct_loss_share: 0.1852383054688667
+time taken for epoch 0:00:03.410838
+Total pretraining time 0:00:03.410866
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+torch.Size([4096])
+Iteration: 1
+torch.Size([5120])
+Iteration: 2
+torch.Size([5120])
+Iteration: 3
+torch.Size([3072])
+Iteration: 4
+torch.Size([4096])
+Iteration: 5
+torch.Size([5120])
+Iteration: 6
+torch.Size([4096])
+Iteration: 7
+torch.Size([4096])
+Iteration: 8
+torch.Size([5120])
+Iteration: 9
+torch.Size([5120])
+Iteration: 10
+Per-patch MSE tail analysis:
+num_patches: 45056
+total_loss: 0.3836089074611664
+mean_loss: 8.514047294738702e-06
+median_loss: 8.231315405282658e-06
+max_loss: 0.00011867684224853292
+top_1pct_loss_share: 0.07203027743872856
+top_5pct_loss_share: 0.2339307177352874
+top_10pct_loss_share: 0.3780751673875072
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 45056
+grad_norm_total_loss: 1902.8701171875
+grad_norm_mean_loss: 0.04223344475030899
+grad_norm_median_loss: 0.04115709662437439
+grad_norm_max_loss: 0.12285755574703217
+grad_norm_top_1pct_loss_share: 0.024115040887685592
+grad_norm_top_5pct_loss_share: 0.10112101938939892
+grad_norm_top_10pct_loss_share: 0.1852383054688667
+time taken for epoch 0:00:05.557928
+Total pretraining time 0:00:05.557956
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+torch.Size([4096])
+Iteration: 1
+torch.Size([5120])
+Iteration: 2
+torch.Size([5120])
+Iteration: 3
+torch.Size([3072])
+Iteration: 4
+torch.Size([4096])
+Iteration: 5
+torch.Size([5120])
+Iteration: 6
+torch.Size([4096])
+Iteration: 7
+torch.Size([4096])
+Iteration: 8
+torch.Size([5120])
+Iteration: 9
+torch.Size([5120])
+Iteration: 10
+Per-patch MSE tail analysis:
+num_patches: 45056
+total_loss: 0.3836089074611664
+mean_loss: 8.514047294738702e-06
+median_loss: 8.231315405282658e-06
+max_loss: 0.00011867684224853292
+top_1pct_loss_share: 0.07203027743872856
+top_5pct_loss_share: 0.2339307177352874
+top_10pct_loss_share: 0.3780751673875072
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 45056
+grad_norm_total_loss: 1902.8701171875
+grad_norm_mean_loss: 0.04223344475030899
+grad_norm_median_loss: 0.04115709662437439
+grad_norm_max_loss: 0.12285755574703217
+grad_norm_top_1pct_loss_share: 0.024115040887685592
+grad_norm_top_5pct_loss_share: 0.10112101938939892
+grad_norm_top_10pct_loss_share: 0.1852383054688667
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:04.321994
+Total pretraining time 0:00:04.322020
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 2.576531171798706
+mean_loss: 5.797566245746566e-06
+median_loss: 5.608314950222848e-06
+max_loss: 0.00017842344823293388
+top_1pct_loss_share: 0.11636863933715533
+top_5pct_loss_share: 0.3537541102763966
+top_10pct_loss_share: 0.5542146555557149
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:40.611117
+Total pretraining time 0:00:40.611154
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 144304.125
+mean_loss: 0.3247050642967224
+median_loss: 0.2198277711868286
+max_loss: 3.396157741546631
+top_1pct_loss_share: 0.05667663598168971
+top_5pct_loss_share: 0.1985191539916132
+top_10pct_loss_share: 0.3271686187071922
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:38.326834
+Total pretraining time 0:00:38.326859
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 100
+total_loss: 0.0005793521413579583
+mean_loss: 5.793521268060431e-06
+median_loss: 5.8612049542716704e-06
+max_loss: 1.2815580703318119e-05
+top_1pct_loss_share: 0.022120537387294973
+top_5pct_loss_share: 0.09082139863846721
+top_10pct_loss_share: 0.1724263839326351
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:42.169740
+Total pretraining time 0:00:42.169766
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 100
+total_loss: 38.02660369873047
+mean_loss: 0.3802660405635834
+median_loss: 0.37694329023361206
+max_loss: 0.5970177054405212
+top_1pct_loss_share: 0.015700000719771165
+top_5pct_loss_share: 0.06995864751637317
+top_10pct_loss_share: 0.13127804725029357
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 111104
+grad_norm_total_loss: 4502.9384765625
+grad_norm_mean_loss: 0.0405290387570858
+grad_norm_median_loss: 0.03903280198574066
+grad_norm_max_loss: 0.12950821220874786
+grad_norm_top_1pct_loss_share: 0.02493177367740987
+grad_norm_top_5pct_loss_share: 0.1042863733837865
+grad_norm_top_10pct_loss_share: 0.1897975584085826
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:16.057968
+Total pretraining time 0:00:16.057994
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 100
+total_loss: 0.003076499328017235
+mean_loss: 3.07649934256915e-05
+median_loss: 2.9857535992050543e-05
+max_loss: 5.07232834934257e-05
+top_1pct_loss_share: 0.01648733774504551
+top_5pct_loss_share: 0.07488293285545713
+top_10pct_loss_share: 0.14053114686655974
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 111104
+grad_norm_total_loss: 4502.9384765625
+grad_norm_mean_loss: 0.0405290387570858
+grad_norm_median_loss: 0.03903280198574066
+grad_norm_max_loss: 0.12950821220874786
+grad_norm_top_1pct_loss_share: 0.02493177367740987
+grad_norm_top_5pct_loss_share: 0.1042863733837865
+grad_norm_top_10pct_loss_share: 0.1897975584085826
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:19.554356
+Total pretraining time 0:00:19.554382
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 100
+total_loss: 0.0005793521413579583
+mean_loss: 5.793521268060431e-06
+median_loss: 5.8612049542716704e-06
+max_loss: 1.2815580703318119e-05
+top_1pct_loss_share: 0.022120537387294973
+top_5pct_loss_share: 0.09082139863846721
+top_10pct_loss_share: 0.1724263839326351
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:39.084680
+Total pretraining time 0:00:39.084707
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 2.576531171798706
+mean_loss: 5.797566245746566e-06
+median_loss: 4.314978923503077e-06
+max_loss: 0.0001173253622255288
+top_1pct_loss_share: 0.06732735104108495
+top_5pct_loss_share: 0.20275348612974015
+top_10pct_loss_share: 0.31078501363267697
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:40.152572
+Total pretraining time 0:00:40.152600
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 2.576531171798706
+mean_loss: 5.797566245746566e-06
+median_loss: 4.314978923503077e-06
+max_loss: 0.0001173253622255288
+top_1pct_loss_share: 0.06732735104108495
+top_5pct_loss_share: 0.20275348612974015
+top_10pct_loss_share: 0.31078501363267697
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:27.707073
+Total pretraining time 0:00:27.707103
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 100
+total_loss: 0.0005793521413579583
+mean_loss: 5.793521268060431e-06
+median_loss: 5.8612049542716704e-06
+max_loss: 1.2815580703318119e-05
+top_1pct_loss_share: 0.022120537387294973
+top_5pct_loss_share: 0.09082139863846721
+top_10pct_loss_share: 0.1724263839326351
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:30.346584
+Total pretraining time 0:00:30.346613
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 0.5177413821220398
+mean_loss: 1.1649926818790846e-06
+median_loss: 8.209153179450368e-07
+max_loss: 8.230298590206075e-06
+top_1pct_loss_share: 0.046317386172804655
+top_5pct_loss_share: 0.1750052295240103
+top_10pct_loss_share: 0.2961668538780619
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 34261.25390625
+grad_norm_mean_loss: 0.07709275186061859
+grad_norm_median_loss: 0.07710754126310349
+grad_norm_max_loss: 0.0795237123966217
+grad_norm_top_1pct_loss_share: 0.010160581360070899
+grad_norm_top_5pct_loss_share: 0.050640640461317395
+grad_norm_top_10pct_loss_share: 0.1011119065462181
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/ordered-loss-ep1000.png
+time taken for epoch 0:00:33.134180
+Total pretraining time 0:00:33.134211
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+Starting
+Iteration: 0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+Starting
+Iteration: 0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Target-representation corruption sensitivity:
+corruption_ratio, PKT_clean, PKT_corrupted, PKT_relative_increase
+0.000000, 0.000001, 0.000001, 0.000000
+0.050000, 0.000001, 0.000001, 0.017567
+0.100000, 0.000001, 0.000001, 0.030508
+0.200000, 0.000001, 0.000001, 0.062759
+0.300000, 0.000001, 0.000001, 0.092277
+Saved target corruption sensitivity CSV to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/target-corruption-sensitivity-ep1000.csv
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 0.517741322517395
+mean_loss: 1.1649925681922468e-06
+median_loss: 1.167766185972141e-06
+max_loss: 2.39877772401087e-06
+top_1pct_loss_share: 0.019708878811796747
+top_5pct_loss_share: 0.08793867998164458
+top_10pct_loss_share: 0.16393668884806323
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 34261.25390625
+grad_norm_mean_loss: 0.07709275186061859
+grad_norm_median_loss: 0.07710754126310349
+grad_norm_max_loss: 0.0795237123966217
+grad_norm_top_1pct_loss_share: 0.010160581360070899
+grad_norm_top_5pct_loss_share: 0.050640640461317395
+grad_norm_top_10pct_loss_share: 0.1011119065462181
+time taken for epoch 0:00:58.081123
+Total pretraining time 0:00:58.081151
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Target-representation corruption sensitivity:
+corruption_ratio, PKT_clean, PKT_corrupted, PKT_relative_increase
+0.000000, 0.000006, 0.000006, 0.000000
+0.050000, 0.000006, 0.000007, 0.209657
+0.100000, 0.000006, 0.000008, 0.412820
+0.200000, 0.000006, 0.000010, 0.795167
+0.300000, 0.000006, 0.000012, 1.133722
+Saved target corruption sensitivity CSV to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/target-corruption-sensitivity-ep1000.csv
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 2.576530933380127
+mean_loss: 5.797565790999215e-06
+median_loss: 5.908198545512278e-06
+max_loss: 1.2815580703318119e-05
+top_1pct_loss_share: 0.021736879489900482
+top_5pct_loss_share: 0.09024682041434459
+top_10pct_loss_share: 0.17154219018957959
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+time taken for epoch 0:00:58.149646
+Total pretraining time 0:00:58.149666
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Target-representation corruption sensitivity:
+corruption_ratio, PKT_all_clean_mean, PKT_all_corrupted_mean, PKT_all_abs_delta_mean, PKT_all_rel_delta_mean, PKT_all_rel_delta_median, PKT_all_rel_delta_p95, PKT_all_rel_delta_p99, PKT_corrupted_only_abs_delta_mean, PKT_corrupted_only_abs_delta_median, PKT_corrupted_only_abs_delta_p95, PKT_corrupted_only_abs_delta_p99, PKT_corrupted_only_rel_delta_mean, PKT_corrupted_only_rel_delta_median, PKT_corrupted_only_rel_delta_p95, PKT_corrupted_only_rel_delta_p99, PKT_num_patches, PKT_num_corrupted_patches
+0.000000, 0.000006, 0.000006, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 444416, 0
+0.050000, 0.000006, 0.000007, 0.000001, 0.290813, 0.168134, 0.370531, 4.674203, 0.000011, 0.000008, 0.000035, 0.000049, 2.743416, 1.787627, 8.698331, 13.034975, 444416, 22234
+0.100000, 0.000006, 0.000008, 0.000002, 0.564874, 0.341805, 1.842190, 6.755659, 0.000011, 0.000008, 0.000035, 0.000049, 2.783544, 1.840947, 8.789921, 13.403847, 444416, 44460
+0.200000, 0.000006, 0.000010, 0.000004, 1.084563, 0.717932, 3.969915, 8.604512, 0.000011, 0.000009, 0.000034, 0.000046, 2.874981, 2.010460, 8.608118, 13.297587, 444416, 88870
+0.300000, 0.000006, 0.000012, 0.000006, 1.561331, 1.124074, 5.127402, 9.520223, 0.000012, 0.000009, 0.000032, 0.000045, 2.965022, 2.196023, 8.399760, 12.931319, 444416, 133338
+Saved target corruption sensitivity CSV to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/target-corruption-sensitivity-ep1000.csv
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 2.576531171798706
+mean_loss: 5.797566245746566e-06
+median_loss: 4.314978923503077e-06
+max_loss: 0.0001173253622255288
+top_1pct_loss_share: 0.06732735104108495
+top_5pct_loss_share: 0.20275348612974015
+top_10pct_loss_share: 0.31078501363267697
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+time taken for epoch 0:01:11.564134
+Total pretraining time 0:01:11.564154
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Target-representation corruption sensitivity:
+corruption_ratio, PKT_all_clean_mean, PKT_all_corrupted_mean, PKT_all_abs_delta_mean, PKT_all_rel_delta_mean, PKT_all_rel_delta_median, PKT_all_rel_delta_p95, PKT_all_rel_delta_p99, PKT_corrupted_only_abs_delta_mean, PKT_corrupted_only_abs_delta_median, PKT_corrupted_only_abs_delta_p95, PKT_corrupted_only_abs_delta_p99, PKT_corrupted_only_rel_delta_mean, PKT_corrupted_only_rel_delta_median, PKT_corrupted_only_rel_delta_p95, PKT_corrupted_only_rel_delta_p99, PKT_num_patches, PKT_num_corrupted_patches
+0.00000000e+00, 5.79352169e-06, 5.79352169e-06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 444416, 0
+5.00000000e-02, 5.79352169e-06, 6.95077857e-06, 1.15725688e-06, 2.88009423e-01, 1.65662933e-01, 3.66020932e-01, 4.60710718e+00, 1.08833346e-05, 7.66422380e-06, 3.52640065e-05, 4.84075264e-05, 2.73078914e+00, 1.73850535e+00, 8.89896293e+00, 1.35659936e+01, 444416, 22234
+1.00000000e-01, 5.79352169e-06, 8.08828136e-06, 2.29475965e-06, 5.68663485e-01, 3.46150097e-01, 1.85007253e+00, 6.72481357e+00, 1.11812070e-05, 8.03956413e-06, 3.50700380e-05, 4.83731813e-05, 2.79039737e+00, 1.84841192e+00, 8.73170202e+00, 1.32582503e+01, 444416, 44460
+2.00000000e-01, 5.79352169e-06, 1.01685604e-05, 4.37503879e-06, 1.09451891e+00, 7.27241580e-01, 3.99947987e+00, 8.65347851e+00, 1.14251987e-05, 8.71171943e-06, 3.37112425e-05, 4.69416514e-05, 2.89701608e+00, 2.02965236e+00, 8.65746632e+00, 1.31364478e+01, 444416, 88870
+3.00000000e-01, 5.79352169e-06, 1.20182800e-05, 6.22475829e-06, 1.56148809e+00, 1.12281723e+00, 5.14354773e+00, 9.58807786e+00, 1.16445685e-05, 9.21070475e-06, 3.23735559e-05, 4.48235477e-05, 2.96917547e+00, 2.19983046e+00, 8.45045025e+00, 1.29177254e+01, 444416, 133338
+Saved target corruption sensitivity CSV to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/target-corruption-sensitivity-ep1000.csv
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 2.576531171798706
+mean_loss: 5.797566245746566e-06
+median_loss: 4.314978923503077e-06
+max_loss: 0.0001173253622255288
+top_1pct_loss_share: 0.06732735104108495
+top_5pct_loss_share: 0.20275348612974015
+top_10pct_loss_share: 0.31078501363267697
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+time taken for epoch 0:01:08.442452
+Total pretraining time 0:01:08.442473
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 999 with msg: <All keys matched successfully>
+loaded optimizers from epoch 999
+read-path: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/jepa-iic-ep1000.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Target-representation corruption gradient-norm sensitivity:
+corruption_ratio, PKT_all_clean_mean, PKT_all_corrupted_mean, PKT_all_abs_delta_mean, PKT_all_rel_delta_mean, PKT_all_rel_delta_median, PKT_all_rel_delta_p95, PKT_all_rel_delta_p99, PKT_corrupted_only_abs_delta_mean, PKT_corrupted_only_abs_delta_median, PKT_corrupted_only_abs_delta_p95, PKT_corrupted_only_abs_delta_p99, PKT_corrupted_only_rel_delta_mean, PKT_corrupted_only_rel_delta_median, PKT_corrupted_only_rel_delta_p95, PKT_corrupted_only_rel_delta_p99, PKT_num_patches, PKT_num_corrupted_patches
+0.00000000e+00, 9.38757308e-07, 9.38757308e-07, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 444416, 0
+5.00000000e-02, 9.38757308e-07, 1.01160622e-06, 7.28489198e-08, 1.73263934e-01, 1.84174157e-02, 3.17673483e-01, 4.80860478e+00, 1.31255852e-06, 1.12481684e-06, 3.88685674e-06, 5.68194038e-06, 2.85227846e+00, 1.83941020e+00, 9.33162993e+00, 1.50913748e+01, 444416, 22234
+1.00000000e-01, 9.38757308e-07, 1.08314935e-06, 1.44392038e-07, 3.45612428e-01, 5.69106106e-02, 1.76487386e+00, 6.77187716e+00, 1.27234081e-06, 1.08322424e-06, 3.90787550e-06, 5.81740431e-06, 2.74371544e+00, 1.75703070e+00, 8.98863131e+00, 1.48311122e+01, 444416, 44460
+2.00000000e-01, 9.38757308e-07, 1.22239361e-06, 2.83636292e-07, 6.86855262e-01, 1.92003357e-01, 3.81313823e+00, 8.63186432e+00, 1.20061502e-06, 1.00800624e-06, 3.81403928e-06, 5.69650296e-06, 2.62256493e+00, 1.67473527e+00, 8.63509096e+00, 1.42966664e+01, 444416, 88870
+3.00000000e-01, 9.38757308e-07, 1.34827457e-06, 4.09517250e-07, 9.96453217e-01, 3.90871136e-01, 4.79936391e+00, 9.48944098e+00, 1.12042830e-06, 9.45831461e-07, 3.64108140e-06, 5.54520736e-06, 2.48158464e+00, 1.58470662e+00, 8.22056764e+00, 1.38775432e+01, 444416, 133338
+Saved target corruption sensitivity CSV to: logs_PKT_chunks/iic-train-l2-pkt-chunks-seed0-KNN-ep1000/target-corruption-gradient-norm-sensitivity-ep1000.csv
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 2.576531171798706
+mean_loss: 5.797566245746566e-06
+median_loss: 4.314978923503077e-06
+max_loss: 0.0001173253622255288
+top_1pct_loss_share: 0.06732735104108495
+top_5pct_loss_share: 0.20275348612974015
+top_10pct_loss_share: 0.31078501363267697
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 16427.197265625
+grad_norm_mean_loss: 0.036963559687137604
+grad_norm_median_loss: 0.033836908638477325
+grad_norm_max_loss: 0.13299745321273804
+grad_norm_top_1pct_loss_share: 0.02639944460792619
+grad_norm_top_5pct_loss_share: 0.11003913901595878
+grad_norm_top_10pct_loss_share: 0.19920631098983738
+time taken for epoch 0:01:54.911026
+Total pretraining time 0:01:54.911052

@@ -1,0 +1,71 @@
+VisionTransformer(
+  (patch_embed): PatchEmbed(
+    (proj): Conv2d(3, 768, kernel_size=(15, 15), stride=(15, 15))
+  )
+  (blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+)
+making imagenet data transforms
+data-path datasets/iic/train/
+Initialized ImageNet
+ImageNet dataset created
+ImageNet unsupervised data loader created
+Using AdamW
+loaded pretrained encoder from epoch 250 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 250 with msg: <All keys matched successfully>
+loaded pretrained encoder from epoch 250 with msg: <All keys matched successfully>
+loaded optimizers from epoch 250
+read-path: logs_PKT_chunks/iic-train-l2-seed0-KNN-ep250/jepa-iic-ep250.pth.tar
+Starting
+Iteration: 0
+Iteration: 10
+Iteration: 20
+Iteration: 30
+Iteration: 40
+Iteration: 50
+Iteration: 60
+Iteration: 70
+Iteration: 80
+Iteration: 90
+Iteration: 100
+Per-patch MSE tail analysis:
+num_patches: 444416
+total_loss: 130647.25
+mean_loss: 0.2939751148223877
+median_loss: 0.19387653470039368
+max_loss: 3.2721614837646484
+top_1pct_loss_share: 0.06023088890122065
+top_5pct_loss_share: 0.21083099900208385
+top_10pct_loss_share: 0.3428053941529577
+
+
+Per-patch representation-gradient-norm tail analysis:
+grad_norm_num_patches: 444416
+grad_norm_total_loss: 15443.6220703125
+grad_norm_mean_loss: 0.03475037217140198
+grad_norm_median_loss: 0.03177693858742714
+grad_norm_max_loss: 0.1305469572544098
+grad_norm_top_1pct_loss_share: 0.02754344035756569
+grad_norm_top_5pct_loss_share: 0.11473803341779502
+grad_norm_top_10pct_loss_share: 0.20612958777923912
+Saved ordered loss plot to: logs_PKT_chunks/iic-train-l2-seed0-KNN-ep250/ordered-loss-ep250.png
+time taken for epoch 0:00:29.520037
+Total pretraining time 0:00:29.520064

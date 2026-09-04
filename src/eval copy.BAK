@@ -1,0 +1,708 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# All rights reserved.
+#
+# This source code is licensed under the license found in the
+# LICENSE file in the root directory of this source tree.
+#
+
+import os
+
+# -- FOR DISTRIBUTED TRAINING ENSURE ONLY 1 DEVICE VISIBLE PER PROCESS
+try:
+    # -- WARNING: IF DOING DISTRIBUTED TRAINING ON A NON-SLURM CLUSTER, MAKE
+    # --          SURE TO UPDATE THIS TO GET LOCAL-RANK ON NODE, OR ENSURE
+    # --          THAT YOUR JOBS ARE LAUNCHED WITH ONLY 1 DEVICE VISIBLE
+    # --          TO EACH PROCESS
+    os.environ['CUDA_VISIBLE_DEVICES'] = os.environ['SLURM_LOCALID']
+except Exception:
+    pass
+
+import copy
+import logging
+import sys
+import yaml
+import matplotlib.pyplot as plt
+import numpy as np
+
+import torch
+import torch.multiprocessing as mp
+import torch.nn.functional as F
+from torch.nn.parallel import DistributedDataParallel
+
+from src.masks.multiblock import MaskCollator as MBMaskCollator
+from src.masks.utils import apply_masks
+from src.utils.distributed import (
+    init_distributed,
+    AllReduce
+)
+from src.utils.logging import (
+    CSVLogger,
+    gpu_timer,
+    grad_logger,
+    AverageMeter)
+from src.utils.tensors import repeat_interleave_batch
+from src.datasets.imagenet1k import make_imagenet1k
+
+from src.helper import (
+    load_checkpoint,
+    init_model,
+    init_opt)
+from src.transforms import make_transforms
+
+from src import PKT
+from src import which_loss
+from torch.utils.tensorboard import SummaryWriter
+
+import time
+import datetime
+# --
+log_timings = True
+log_freq = 10
+# checkpoint_freq = 200
+# --
+
+# rng = np.random.Generator(np.random.PCG64())
+
+_GLOBAL_SEED = 0 
+# seed is logged later on
+np.random.seed(_GLOBAL_SEED)
+torch.manual_seed(_GLOBAL_SEED)
+torch.backends.cudnn.benchmark = True
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger()
+
+
+def representation_metrics(X, eps=1e-12):
+    """
+    X: [N, D]
+    """
+
+    X = X.float()
+    X = X - X.mean(dim=0, keepdim=True)
+
+    N, D = X.shape
+
+    C = (X.T @ X) / max(N - 1, 1)
+
+    eigvals = torch.linalg.eigvalsh(C)
+    eigvals = torch.clamp(eigvals, min=0)
+
+    probs = eigvals / (eigvals.sum() + eps)
+
+    entropy = -(probs * torch.log(probs + eps)).sum()
+
+    effective_rank = torch.exp(entropy)
+
+    max_rank = min(N - 1, D)
+
+    normalized_entropy = entropy / torch.log(
+        torch.tensor(float(max_rank), device=X.device)
+    )
+
+    normalized_effective_rank = effective_rank / max_rank
+
+    return {
+        "vne": entropy.item(),
+        "vne_norm": normalized_entropy.item(),
+        "effective_rank": effective_rank.item(),
+        "effective_rank_norm": normalized_effective_rank.item(),
+        "eigenvalues": eigvals.detach().cpu(),
+    }
+
+
+def compute_tail_metrics(losses, top_fracs=(0.01, 0.05, 0.10)):
+    """
+    losses: 1D tensor of per-patch losses, shape [N]
+
+    Returns:
+        dict containing total loss concentration statistics.
+    """
+
+    losses = losses.float().detach().cpu()
+    losses = losses[torch.isfinite(losses)]
+
+    sorted_losses, _ = torch.sort(losses, descending=True)
+
+    total_loss = sorted_losses.sum().item()
+    mean_loss = sorted_losses.mean().item()
+    median_loss = sorted_losses.median().item()
+    max_loss = sorted_losses.max().item()
+
+    results = {
+        "num_patches": int(sorted_losses.numel()),
+        "total_loss": total_loss,
+        "mean_loss": mean_loss,
+        "median_loss": median_loss,
+        "max_loss": max_loss,
+    }
+
+    for frac in top_fracs:
+        k = max(1, int(frac * sorted_losses.numel()))
+        top_loss = sorted_losses[:k].sum().item()
+        results[f"top_{int(frac * 100)}pct_loss_share"] = top_loss / total_loss
+
+    return results
+
+
+def main(args, resume_preempt=False):
+    # ----------------------------------------------------------------------- #
+    #  PASSED IN PARAMS FROM CONFIG FILE
+    # ----------------------------------------------------------------------- #
+
+    # -- META
+    use_bfloat16 = args['meta']['use_bfloat16']
+    model_name = args['meta']['model_name']
+    load_model = args['meta']['load_checkpoint'] or resume_preempt
+    r_file = args['meta']['read_checkpoint']
+    copy_data = args['meta']['copy_data']
+    pred_depth = args['meta']['pred_depth']
+    pred_emb_dim = args['meta']['pred_emb_dim']
+    if not torch.cuda.is_available():
+        device = torch.device('cpu')
+    else:
+        device = torch.device('cuda:0')
+        torch.cuda.set_device(device)
+    # run_svd = args['meta'].get('svd', False)
+
+    # -- DATA
+    use_gaussian_blur = args['data']['use_gaussian_blur']
+    use_horizontal_flip = args['data']['use_horizontal_flip']
+    use_color_distortion = args['data']['use_color_distortion']
+    color_jitter = args['data']['color_jitter_strength']
+    # --
+    batch_size = args['data']['batch_size']
+    pin_mem = args['data']['pin_mem']
+    num_workers = args['data']['num_workers']
+    root_path = args['data']['root_path']
+    image_folder = args['data']['image_folder']
+    crop_size = args['data']['crop_size']
+    crop_scale = args['data']['crop_scale']
+    # --
+
+    # -- MASK
+    allow_overlap = args['mask']['allow_overlap']  # whether to allow overlap b/w context and target blocks
+    patch_size = args['mask']['patch_size']  # patch-size for model training
+    num_enc_masks = args['mask']['num_enc_masks']  # number of context blocks
+    min_keep = args['mask']['min_keep']  # min number of patches in context block
+    enc_mask_scale = args['mask']['enc_mask_scale']  # scale of context blocks
+    num_pred_masks = args['mask']['num_pred_masks']  # number of target blocks
+    pred_mask_scale = args['mask']['pred_mask_scale']  # scale of target blocks
+    aspect_ratio = args['mask']['aspect_ratio']  # aspect ratio of target blocks
+    # --
+
+    # -- OPTIMIZATION
+    ema = args['optimization']['ema']
+    ipe_scale = args['optimization']['ipe_scale']  # scheduler scale factor (def: 1.0)
+    wd = float(args['optimization']['weight_decay'])
+    final_wd = float(args['optimization']['final_weight_decay'])
+    num_epochs = args['optimization']['epochs']
+    warmup = args['optimization']['warmup']
+    start_lr = args['optimization']['start_lr']
+    lr = args['optimization']['lr']
+    final_lr = args['optimization']['final_lr']
+    loss_function = args['optimization'].get('loss_function', 'L2') # get the loss function, use L2 if no loss fn definition was found in the config file
+    # evaluate = args['optimization'].get('evaluate', False) # print sim distributions only, do NOT pretrain
+
+    # -- LOGGING
+    folder = args['logging']['folder']
+    tag = args['logging']['write_tag']
+    checkpoint_freq = args['logging'].get('checkpoint_freq', 100) # get default frequency, default to 100 otherwise
+    logging_frequency = args['logging'].get('logging_frequency', 3) # default to 3
+    output_file = args['logging'].get('output_file', tag)
+    plot_matrices = args['logging'].get('plot_matrices', True)
+    tensorboard_dir = folder # args['logging'].get('tensorboard_dir', 'runs/')
+    use_tensorboard = args['logging'].get('use_tensorboard', False)
+
+    # force_cudnn_initialization()
+    dump = os.path.join(folder, 'params-ijepa.yaml')
+    with open(dump, 'w') as f:
+        yaml.dump(args, f)
+    # ----------------------------------------------------------------------- #
+
+    try:
+        mp.set_start_method('spawn')
+    except Exception:
+        pass
+
+    # -- init torch distributed backend
+    world_size, rank = init_distributed()
+    logger.info(f'Initialized (rank/world-size) {rank}/{world_size}')
+    if rank > 0:
+        logger.setLevel(logging.ERROR)
+    logger.info(f'train.py: {_GLOBAL_SEED=}') # log seed
+    # -- log/checkpointing paths
+    log_file = os.path.join(folder, f'{tag}_r{rank}.csv')
+    save_path = os.path.join(folder, f'{tag}' + '-ep{epoch}.pth.tar')
+    latest_path = os.path.join(folder, f'{tag}-latest.pth.tar')
+    output_file = os.path.join(folder, output_file)
+    # tensorboard_dir = os.path.join(folder, tensorboard_dir)
+    logger.addHandler(logging.FileHandler(output_file)) # add auto output ;)
+
+    load_path = None
+    if load_model:
+        load_path = os.path.join(folder, r_file) if r_file is not None else latest_path
+
+    # -- init model
+    encoder, predictor = init_model(
+        device=device,
+        patch_size=patch_size,
+        crop_size=crop_size,
+        pred_depth=pred_depth,
+        pred_emb_dim=pred_emb_dim,
+        model_name=model_name,
+        use_tensorboard=use_tensorboard,
+        tensorboard_dir=tensorboard_dir
+        )
+    import re
+    match_ = re.search(r'ep(\d+)', r_file) # extract the number based on the checkpoint
+    pretrain_epoch = match_.group(1)
+    # pretrain_epoch = 1000
+    target_encoder = copy.deepcopy(encoder)
+    if use_tensorboard:
+        encoder.init_summary_writer('context_encoder', pretrain_epoch)
+        target_encoder.init_summary_writer('target_encoder', pretrain_epoch)
+        predictor.init_summary_writer('predictor', pretrain_epoch)
+
+    # -- make data transforms
+    mask_collator = MBMaskCollator(
+        input_size=crop_size,
+        patch_size=patch_size,
+        pred_mask_scale=pred_mask_scale,
+        enc_mask_scale=enc_mask_scale,
+        aspect_ratio=aspect_ratio,
+        nenc=num_enc_masks,
+        npred=num_pred_masks,
+        allow_overlap=allow_overlap,
+        min_keep=min_keep)
+
+    transform = make_transforms(
+        crop_size=crop_size,
+        crop_scale=crop_scale,
+        gaussian_blur=use_gaussian_blur,
+        horizontal_flip=use_horizontal_flip,
+        color_distortion=use_color_distortion,
+        color_jitter=color_jitter)
+
+    # -- init data-loaders/samplers
+    _, unsupervised_loader, unsupervised_sampler = make_imagenet1k(
+            transform=transform,
+            batch_size=batch_size,
+            collator=mask_collator,
+            pin_mem=pin_mem,
+            training=True,
+            num_workers=num_workers,
+            world_size=world_size,
+            rank=rank,
+            root_path=root_path,
+            image_folder=image_folder,
+            copy_data=copy_data,
+            drop_last=True)
+    ipe = len(unsupervised_loader)
+
+    # -- init optimizer and scheduler
+    optimizer, scaler, scheduler, wd_scheduler = init_opt(
+        encoder=encoder,
+        predictor=predictor,
+        wd=wd,
+        final_wd=final_wd,
+        start_lr=start_lr,
+        ref_lr=lr,
+        final_lr=final_lr,
+        iterations_per_epoch=ipe,
+        warmup=warmup,
+        num_epochs=num_epochs,
+        ipe_scale=ipe_scale,
+        use_bfloat16=use_bfloat16)
+    encoder = DistributedDataParallel(encoder, static_graph=True)
+    predictor = DistributedDataParallel(predictor, static_graph=True)
+    target_encoder = DistributedDataParallel(target_encoder)
+    for p in target_encoder.parameters():
+        p.requires_grad = False
+
+    # -- momentum schedule
+    momentum_scheduler = (ema[0] + i*(ema[1]-ema[0])/(ipe*num_epochs*ipe_scale)
+                          for i in range(int(ipe*num_epochs*ipe_scale)+1))
+
+    start_epoch = 0
+    # -- load training checkpoint
+    if load_model:
+        encoder, predictor, target_encoder, optimizer, scaler, start_epoch = load_checkpoint(
+            device=device,
+            r_path=load_path,
+            encoder=encoder,
+            predictor=predictor,
+            target_encoder=target_encoder,
+            opt=optimizer,
+            scaler=scaler)
+        # for _ in range(start_epoch*ipe):
+        #     scheduler.step()
+        #     wd_scheduler.step()
+        #     next(momentum_scheduler)
+        #     mask_collator.step()
+
+    # -- TRAINING LOOP
+    start_time = time.perf_counter() # get starting time
+    # for epoch in range(start_epoch, num_epochs):
+    start_time_epoch = time.perf_counter()
+    logger.info('Starting')
+
+    all_model_sims, all_target_sims, cross_sims = [], [], []
+    all_z = []
+    all_h = []
+    all_patch_losses = []
+    all_patch_grad_norms = []
+
+    num_eval_batches = 100
+    for itr, (udata, masks_enc, masks_pred) in enumerate(unsupervised_loader):
+        if itr % (num_eval_batches // 10) == 0:
+            logger.info('Iteration: %d' % itr)
+        if itr >= num_eval_batches:
+            break
+        def load_imgs():
+            # -- unsupervised imgs
+            imgs = udata[0].to(device, non_blocking=True)
+            masks_1 = [u.to(device, non_blocking=True) for u in masks_enc]
+            masks_2 = [u.to(device, non_blocking=True) for u in masks_pred]
+            return (imgs, masks_1, masks_2)
+        imgs, masks_enc, masks_pred = load_imgs()
+
+        def train_step():
+            _new_lr = scheduler.step()
+            _new_wd = wd_scheduler.step()
+            # --
+
+            def forward_target():
+                with torch.no_grad():
+                    h = target_encoder(imgs)
+                    h = F.layer_norm(h, (h.size(-1),))  # normalize over feature-dim
+                    B = len(h)
+                    # -- create targets (masked regions of h)
+                    h = apply_masks(h, masks_pred)
+                    h = repeat_interleave_batch(h, B, repeat=len(masks_enc))
+                    return h
+
+            def forward_context():
+                z = encoder(imgs, masks_enc)
+                z = predictor(z, masks_enc, masks_pred)
+                # logger.critical('z[:100] values: %s' % (str(z[:100])))
+                return z
+
+            def loss_fn(z, h):
+                # this should be fully functional, as proven by L2
+                final_loss = which_loss.__dict__[loss_function](z,h)
+                # loss_l2 = F.smooth_l1_loss(z, h) # initial loss
+                loss = AllReduce.apply(final_loss)
+                return loss
+
+            # Step 1. Forward
+            with torch.no_grad():
+                h = forward_target()
+                z = forward_context()
+                # z = encoder(imgs, masks_enc)
+                # z = z.view(64, 4, *z.size()[1:])
+                # h = h.view(64, 4, *h.size()[1:])
+                # logger.info(h.size())
+
+                # z = z[0]
+                # h = h[0] # get ALL blocks from 0th (first) image, theoretically
+                # logger.info(h.size())
+                # z = z.view(-1, 768)
+                # h = h.view(-1, 768)
+
+                # model_sim, target_sim, cross = PKT.get_similarity_matrices(z, h)
+                # loss, difference = PKT.get_difference(z, h)
+                z = z.reshape(-1, z.size(-1))
+                h = h.reshape(-1, h.size(-1))
+
+                # all_z.append(z.detach().cpu())
+                # all_h.append(h.detach().cpu())
+                # Per-patch loss: one scalar loss per patch/token.
+                # Shape before mean: [num_patches, embedding_dim]
+                # Shape after mean:  [num_patches]
+                if loss_function == 'L2':
+                    per_patch_mse = ((z - h) ** 2).mean(dim=-1)
+                    # logger.info(per_patch_mse.size())
+                else:
+                    per_patch_mse = PKT.cosine_similarity_loss(z, h)
+                # logger.info(per_patch_mse.size())
+                D = z.size(-1)
+                per_patch_grad_norm = (2.0 / D) * torch.norm(z - h, p=2, dim=-1)
+
+            # return model_sim, target_sim, cross
+            return per_patch_mse, per_patch_grad_norm
+        # (model_sim, target_sim, cross_sim), etime = gpu_timer(train_step)
+        (per_patch_mse, per_patch_grad_norm), etime = gpu_timer(train_step)
+
+        # all_model_sims. append(model_sim.detach().cpu().numpy())
+        # all_target_sims.append(target_sim.detach().cpu().numpy())
+        # cross_sims.append(cross_sim.detach().cpu().numpy())
+        all_patch_losses.append(per_patch_mse.reshape(-1).detach().cpu())
+        all_patch_grad_norms.append(per_patch_grad_norm.detach().cpu())
+        # difference = difference.detach().cpu().numpy()
+        # loss = loss.detach().cpu().numpy()
+
+    # logger.info('All model similarities: %s', str(all_model_sims[:5000]))
+    # logger.info('All target similarities: %s',str(all_target_sims[:5000]))
+
+    # after all iterations
+    # save_checkpoint(epoch+1)
+
+    # -- Visualize weights using Summary Writer - old method with no filtering#
+    # ep = '-ep100'
+    if 1 == 0:
+        import re
+        match_ = re.search(r'ep(\d+)', r_file) # extract the number based on the checkpoint
+        ep = match_.group(1)
+        writer = SummaryWriter(f'runs/l2-{ep}')
+        # logger.critical(str(len(all_model_sims)))
+        all_params = []
+        for idx, (name, param) in enumerate(encoder.named_parameters()):
+            # logger.info('epoch: %s, name: %s, param: %s '
+            #             % (ep, name, param))
+            # logger.info('extending params epoch: %s, name: %s' % (ep, name))
+            all_params.extend(param.view(-1).detach().cpu().numpy())
+            writer.add_histogram(name, param, 
+                                global_step=idx, bins=1000)
+    """
+        outfile_params = os.path.join(folder, f'params-ep{ep}.png')
+        ub = max(all_params)
+        lb = min(all_params)
+        plt.figure(figsize=(10,10),dpi=300)
+        plt.yscale('log')
+        plt.hist(all_params, bins=1000, range=(lb, ub))
+        # plt.hist(all_params,)
+        plt.title('Params')
+        plt.ylabel('param count')
+        plt.xlabel('param value')
+        # plt.savefig(outfile_params)
+        plt.close()
+        del all_params
+        writer.close()
+    """
+    # Z = torch.cat(all_z, dim=0)
+    # H = torch.cat(all_h, dim=0)
+    # logger.info(f'Z shape: {Z.shape}')
+
+    # z_metrics = representation_metrics(Z)
+    # h_metrics = representation_metrics(H)
+
+    # logger.info(
+    #     f"Context Encoder:"
+    #     f" VNE={z_metrics['vne']:.4f}"
+    #     f" NormVNE={z_metrics['vne_norm']:.4f}"
+    #     f" EffRank={z_metrics['effective_rank']:.4f}"
+    #     f" NormEffRank={z_metrics['effective_rank_norm']:.4f}"
+    # )
+
+    # logger.info(
+    #     f"Target Encoder:"
+    #     f" VNE={h_metrics['vne']:.4f}"
+    #     f" NormVNE={h_metrics['vne_norm']:.4f}"
+    #     f" EffRank={h_metrics['effective_rank']:.4f}"
+    #     f" NormEffRank={h_metrics['effective_rank_norm']:.4f}"
+    # )
+    all_patch_losses = torch.cat(all_patch_losses, dim=0)
+    # all_patch_losses = torch.tensor(all_patch_losses)
+    all_patch_grad_norms = torch.cat(all_patch_grad_norms, dim=0)
+
+    tail_metrics = compute_tail_metrics(all_patch_losses)
+    grad_tail_metrics = compute_tail_metrics(all_patch_grad_norms)
+
+    logger.info("Per-patch MSE tail analysis:")
+    for k, v in tail_metrics.items():
+        logger.info(f"{k}: {v}")
+
+    logger.info('\n')
+    logger.info("Per-patch representation-gradient-norm tail analysis:")
+    for k, v in grad_tail_metrics.items():
+        logger.info(f"grad_norm_{k}: {v}")
+
+    if plot_matrices:
+        import numpy as np
+        import matplotlib.pyplot as plt
+
+        # ------------------------------------------------------------
+        # Plot ordered per-patch losses.
+        #
+        # Option A, active:
+        #   x-axis = individual patches ordered by descending loss
+        #   y-axis = per-patch loss
+        #
+        # Option B, commented:
+        #   x-axis = individual patches ordered by descending loss
+        #   y-axis = cumulative loss up to that patch
+        # ------------------------------------------------------------
+        # Batch-level alternative:
+        # To plot batches instead of individual patches, store one scalar per batch
+        # during the evaluation loop, e.g.:
+        #
+        #     batch_loss = per_patch_mse.sum()
+        #     all_batch_losses.append(batch_loss.detach().cpu())
+        #
+        # Then after the loop:
+        #
+        #     all_batch_losses = torch.stack(all_batch_losses)
+        #     sorted_batch_losses, _ = torch.sort(all_batch_losses, descending=True)
+        #     y_values = sorted_batch_losses.numpy()
+        #     x_values = np.arange(1, len(y_values) + 1)
+        sorted_patch_losses, _ = torch.sort(all_patch_losses, descending=True)
+
+        # Option A: raw sorted per-patch losses
+        y_values = sorted_patch_losses.numpy()
+        ylabel = "Per-patch loss"
+
+        # Option B: cumulative sorted loss
+        # Uncomment these two lines instead of Option A if needed.
+        # y_values = torch.cumsum(sorted_patch_losses, dim=0).numpy()
+        # ylabel = "Cumulative MSE loss"
+
+        x_values = np.arange(1, len(y_values) + 1)
+
+        fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
+
+        ax.plot(x_values, y_values, linewidth=1.0)
+
+        ax.set_title(f"Ordered per-patch loss, epoch {pretrain_epoch}")
+        ax.set_xlabel("Patch rank, sorted by descending loss")
+        ax.set_ylabel(ylabel)
+
+        ax.grid(True, alpha=0.3)
+
+        outfile = os.path.join(folder, f"ordered-loss-ep{pretrain_epoch}.png")
+        plt.savefig(outfile, bbox_inches="tight")
+        plt.close()
+
+        logger.info(f"Saved ordered loss plot to: {outfile}")
+
+    if plot_matrices and  1== 0:
+        import matplotlib.pyplot as plt
+        import matplotlib.patches as patches
+        from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, mark_inset
+
+        fig, ax = plt.subplots(figsize=(10,10), dpi=300)
+
+        im = ax.imshow(difference, interpolation="nearest", vmax=0.599)
+        # plt.colorbar(im, fraction=0.046, pad=0.04)
+        cbar = plt.colorbar(im, fraction=0.046, pad=0.04)
+        cbar.set_label(
+            "Context-Target Gram Matrix Divergence", rotation=90, fontsize=14
+        )
+        cbar.ax.tick_params(labelsize=10)
+
+        # ax.set_title(f'KL divergence: {loss}')
+
+        # --- Region definition ---
+        x, y = 5, 38
+        w, h = 6, 6
+
+        # --- Main red rectangle ---
+        rect = patches.Rectangle((x, y), w, h, linewidth=2, edgecolor='red', facecolor='none')
+        ax.add_patch(rect)
+
+        # --- Zoomed inset (bigger + outside) ---
+        axins = zoomed_inset_axes(ax, zoom=6, loc='upper left',
+                                bbox_to_anchor=(-0.7, 1),  # push outside
+                                bbox_transform=ax.transAxes)
+
+        axins.imshow(difference, interpolation="nearest", vmax=0.599)
+        import numpy as np
+
+        sub = difference[y : y + h, x : x + w]
+
+        for i in range(1, h):
+            for j in range(1, w):
+                val = sub[i, j]
+                axins.text(
+                    j + x,  # center of cell (x coord in data space)
+                    i + y,  # center of cell (y coord in data space)
+                    f"{val:.2f}",  # format (adjust precision if needed)
+                    ha="center",
+                    va="center",
+                    fontsize=14,
+                    color="white" if val < 0.3 else "black",  # contrast heuristic
+                )
+        # Limit inset to the selected region
+        axins.set_xlim(x, x + w)
+        axins.set_ylim(y+h, y)  # invert y-axis for imshow
+
+        axins.set_xticks([])
+        axins.set_yticks([])
+
+        # Style inset border
+        for spine in axins.spines.values():
+            spine.set_edgecolor('red')
+            spine.set_linewidth(1.5)
+
+        # --- Connect the two rectangles ---
+        # mark_inset(ax, axins, loc1=4, loc2=4, fc="none", ec="red", linewidth=1.5)
+        from matplotlib.patches import ConnectionPatch
+
+        con1 = ConnectionPatch(xyA=(x, y), coordsA=ax.transData,
+                            xyB=(1, 1), coordsB=axins.transAxes,
+                            color="red", linewidth=1.5)
+
+        con2 = ConnectionPatch(xyA=(x, y+h), coordsA=ax.transData,
+                            xyB=(1, 0), coordsB=axins.transAxes,
+                            color="red", linewidth=1.5)
+
+        fig.add_artist(con1)
+        fig.add_artist(con2)
+
+        # Save
+        outfile = os.path.join(folder, f'difference-matrix-ep{pretrain_epoch}.png')
+        plt.savefig(outfile, bbox_inches='tight')  # important when placing outside
+        plt.close()
+
+    if plot_matrices and 1 == 0:
+        all_model_sims = np.array(all_model_sims)
+        all_target_sims = np.array(all_target_sims)
+        logger.critical(str("shape of all model sims" + all_model_sims.shape))
+        all_model_sims = all_model_sims.mean() # extact mean
+        all_target_sims = all_target_sims.mean()
+        # i guess the shape is []
+        ri = torch.randint(0, len(all_model_sims), (1,)) # pick a random image from the batch
+        lb = min(all_model_sims[ri].min(), all_target_sims[ri].min(), cross_sims[ri].min()) # lower bound
+        ub = max(all_model_sims[ri].max(), all_target_sims[ri].max(), cross_sims[ri].max()) # upper bound
+        lb = 0.
+        ub = 1.
+        fig = plt.figure(figsize=(21,7),dpi=300)
+        data = (all_model_sims[ri], all_target_sims[ri], cross_sims[ri])
+        titles = ('Predictions', 'Targets', 'Cross')
+        for idx, datum in enumerate(data):
+            plt.subplot(1,2,idx+1)
+            img = plt.imshow(datum, interpolation='nearest', vmin=lb, vmax=ub)
+            plt.colorbar(img, fraction=0.046, pad=0.04)
+            plt.title(titles[idx])
+        plt.show()
+        plt.suptitle('Evaluation of %s' % (r_file))
+        # outfile = os.path.join(folder, f'sims-PKT-ep{ep}.png')
+        outfile = os.path.join(folder, f'sim_matrices_avg{ep}.png')
+        plt.savefig(outfile)
+        fig.clear()
+        plt.close()
+    """
+    fig = plt.figure()
+    plt.hist(all_model_sims, bins=100, range=(0. , 1.), fc=(0, 0, 1, 0.5), label='Predicted sims')
+    # , range=(0,1)
+    outfile = os.path.join(folder, f'model-sims-ep{ep}.png')
+    # plt.savefig(outfile)
+
+    plt.hist(all_target_sims, bins=100, range=(0. , 1.), fc=(1, 0, 0, 0.5), label='Target sims')
+    plt.legend()
+    """
+
+    """
+    plt.xlabel('Values distribution')
+    plt.ylabel('Count')
+    """
+
+    time_epoch = time.perf_counter() - start_time_epoch
+    logger.info('time taken for epoch %s' % str(datetime.timedelta(seconds=time_epoch)))
+
+    total_time = time.perf_counter() - start_time
+    logger.info('Total pretraining time %s' % str(datetime.timedelta(seconds = total_time)))
+
+
+if __name__ == "__main__":
+    main()

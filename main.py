@@ -70,32 +70,36 @@ def process_main(rank, fname, world_size, devices, test=0):
         # this r_file has the prefix!
         r_file = params['meta']['read_checkpoint']
         log_dir = params['logging'].get('folder', None)
+        evaluate_latest_only = params['meta'].get('evaluate_latest_only', True)
         r_file = os.path.join(log_dir, r_file)
         tarfiles = glob.glob(r_file + '-ep*.pth.tar')
-        
+
         import re # import regex
         def relevant(v):
 
             m = re.search(r'-ep(\d+)', v) # find the epoch number
             m = int(m.group(1))
-            rel = [500] 
+            rel = [750, 1000, 250]
             # rel = [100]
             if m in rel: # if the epoch number is in the relevant ones
                 return True
             else: 
                 return False
-        
+
         tarfiles = list(filter(relevant, tarfiles)) # this should only grab the relevant file
         logger.info('tarfiles: ' + str(tarfiles))
-        
+
         # tarfiles has a  list of names of all tarballs with this desired prefix
         import copy
         epoch = 0
-        for tarfile in sorted(tarfiles):
-            temp_params = copy.deepcopy(params)
-            logger.info('working on file %s out of %s...' % (str(tarfile), str(tarfiles)))
-            temp_params['meta']['read_checkpoint'] = os.path.basename(tarfile)
-            evall(args=temp_params)
+        if evaluate_latest_only:
+            evall(args=params)
+        else:
+            for tarfile in sorted(tarfiles):
+                temp_params = copy.deepcopy(params)
+                logger.info('working on file %s out of %s...' % (str(tarfile), str(tarfiles)))
+                temp_params['meta']['read_checkpoint'] = os.path.basename(tarfile)
+                evall(args=temp_params)
     else:
         logger.critical('PRETRAINING')
         app_main(args=params)
@@ -121,4 +125,3 @@ if __name__ == '__main__':
             args=(rank, args.fname, num_gpus, args.devices, test)
             # args=(rank, args.fname, num_gpus, args.devices)
         ).start()
-    
